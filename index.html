@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0F172A">
   <meta name="description" content="Aasaan Hisaab Enterprise Pro - Ultra Advanced Multi-Lingual AI Khata & Ledger System">
 
@@ -286,9 +286,46 @@
       .quick-entry-btns { grid-template-columns: 1fr 1fr; gap: 8px; }
       .btn-quick { padding: 10px 12px; font-size: 0.82rem; }
     }
+
+    /* "We have moved" notification */
+    .move-toast {
+      position: fixed; top: 12px; left: 50%; transform: translate(-50%, -150%); opacity: 0;
+      width: calc(100% - 24px); max-width: 496px; z-index: 2000; overflow: hidden;
+      display: flex; align-items: center; gap: 10px; padding: 12px 10px 15px 14px; border-radius: 14px;
+      background: linear-gradient(135deg, #0f172a, #1e1b4b); border: 1px solid rgba(245, 184, 61, 0.6);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.65), 0 0 24px rgba(245, 184, 61, 0.15);
+      transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.15), opacity 0.4s ease;
+    }
+    .move-toast.show { transform: translate(-50%, 0); opacity: 1; }
+    .move-toast .mt-ico { font-size: 1.5rem; flex-shrink: 0; }
+    .move-toast a { flex: 1; color: #fff; text-decoration: none; font-size: 0.82rem; line-height: 1.45; }
+    .move-toast a b { color: #F5B83D; }
+    .move-toast .mt-go { display: inline-block; margin-top: 3px; color: #F5B83D; font-weight: 700; }
+    .move-toast .mt-x {
+      background: rgba(255,255,255,0.1); border: 0; color: #fff; width: 28px; height: 28px; border-radius: 8px;
+      cursor: pointer; font-size: 0.9rem; flex-shrink: 0;
+    }
+    .move-toast .mt-bar {
+      position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: #F5B83D;
+      transform-origin: left; animation: mtbar 7s linear forwards;
+    }
+    @keyframes mtbar { to { transform: scaleX(0); } }
+    .empty-state { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 28px 10px; }
+    @media (prefers-reduced-motion: reduce) { .move-toast { transition: none; } .move-toast .mt-bar { animation-duration: 7s; } }
   </style>
 </head>
 <body>
+
+  <!-- We have moved notification (7 sec baad apne aap hat jata hai) -->
+  <div class="move-toast" id="move-toast" role="status" aria-live="polite">
+    <span class="mt-ico">📢</span>
+    <a id="move-link" href="https://roitx.dpdns.org/" rel="noopener">
+      <b>We have moved!</b> Hum ab naye domain <b>roitx.dpdns.org</b> par hain.<br>
+      <span class="mt-go">Wahan jaane ke liye yahan click karein →</span>
+    </a>
+    <button class="mt-x" type="button" onclick="hideMoveToast()" aria-label="Close">✕</button>
+    <div class="mt-bar"></div>
+  </div>
 
   <div id="app-container">
     <!-- Security Login & Dynamic New User Setup Screen -->
@@ -300,7 +337,7 @@
         <input type="tel" id="user-phone-input" class="login-input" placeholder="10-Digit Mobile Number" maxlength="10" oninput="checkUserExistingStatus()">
         
         <!-- PIN Input -->
-        <input type="password" id="user-pin-input" class="login-input" placeholder="Enter 4-Digit Security PIN" maxlength="4">
+        <input type="password" id="user-pin-input" class="login-input" placeholder="Enter 4-Digit Security PIN" maxlength="4" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
         
         <!-- Security Question Dropdown & Answer Box (Dynamically shown for New Users or Forgot PIN) -->
         <div id="security-setup-container" style="display:none; text-align:left; margin-top:10px;">
@@ -477,6 +514,7 @@
         <option value="Fuel">Fuel</option>
         <option value="Salary">Salary</option>
         <option value="Crop/Mandi">Crop / Mandi</option>
+        <option value="Mandi">Mandi</option>
       </select>
 
       <label style="font-size:0.75rem; color:var(--text-muted);">Type</label>
@@ -597,6 +635,7 @@
     } catch (e) { console.log("Offline mode or Firebase fallback initialized."); }
 
     window.addEventListener('DOMContentLoaded', () => {
+      showMoveToast();
       document.getElementById('lang-select').value = currentLang;
       changeLanguage(currentLang);
 
@@ -675,11 +714,44 @@
       }
     }
 
-    function handleSecureLogin() {
+    /* ---------- Security helpers: PIN/answer ab SHA-256 hash me save hote hain ---------- */
+    async function hashSecret(phone, label, secret) {
+      if (!(window.crypto && crypto.subtle)) return secret;
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`ah|${label}|${phone}|${secret}`));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    function isHashed(v) { return /^[0-9a-f]{64}$/.test(v || ''); }
+    async function secretMatches(phone, label, stored, entered) {
+      if (!stored) return false;
+      if (isHashed(stored)) return stored === await hashSecret(phone, label, entered);
+      return stored === entered; // purana plain-text data (migrate ho jayega)
+    }
+    function lockSecondsLeft(phone) {
+      const until = parseInt(localStorage.getItem(`ah_lock_${phone}`) || '0', 10);
+      return Math.max(0, Math.ceil((until - Date.now()) / 1000));
+    }
+    function registerFail(phone) {
+      const n = parseInt(localStorage.getItem(`ah_fail_${phone}`) || '0', 10) + 1;
+      if (n >= 5) {
+        localStorage.setItem(`ah_lock_${phone}`, String(Date.now() + 60000));
+        localStorage.setItem(`ah_fail_${phone}`, '0');
+      } else {
+        localStorage.setItem(`ah_fail_${phone}`, String(n));
+      }
+    }
+    function clearFails(phone) {
+      localStorage.removeItem(`ah_fail_${phone}`);
+      localStorage.removeItem(`ah_lock_${phone}`);
+    }
+
+    async function handleSecureLogin() {
       const phone = document.getElementById('user-phone-input').value.trim();
       const pin = document.getElementById('user-pin-input').value.trim();
 
       if (phone.length < 10) return alert("Kripya sahi 10-Digit Mobile Number dalein.");
+
+      const wait = lockSecondsLeft(phone);
+      if (wait > 0) return alert(`Bahut baar galat PIN daala gaya. ${wait} second baad dobara try karein.`);
 
       const storedPin = localStorage.getItem(`ah_pin_${phone}`);
 
@@ -687,16 +759,28 @@
         const q = document.getElementById('security-question-select').value;
         const ans = document.getElementById('security-answer-input').value.trim().toLowerCase();
 
-        if (pin.length !== 4) return alert("Kripya 4-digit ka valid PIN set karein.");
+        if (!/^\d{4}$/.test(pin)) return alert("Kripya 4-digit ka valid PIN set karein.");
         if (!ans) return alert("Kripya security question ka answer bharein.");
 
-        localStorage.setItem(`ah_pin_${phone}`, pin);
+        localStorage.setItem(`ah_pin_${phone}`, await hashSecret(phone, 'pin', pin));
         localStorage.setItem(`ah_sec_q_${phone}`, q);
-        localStorage.setItem(`ah_sec_ans_${phone}`, ans);
+        localStorage.setItem(`ah_sec_ans_${phone}`, await hashSecret(phone, 'ans', ans));
         alert("Aapka naya account aur Security Question safaltapurvak register ho gaya hai!");
       } else {
-        if (storedPin !== pin) {
+        if (!(await secretMatches(phone, 'pin', storedPin, pin))) {
+          registerFail(phone);
           return alert("Galat Security PIN!");
+        }
+        clearFails(phone);
+        // Purana plain-text PIN/answer ho to ab hash me badal do
+        if (!isHashed(storedPin)) {
+          const h = await hashSecret(phone, 'pin', pin);
+          if (isHashed(h)) localStorage.setItem(`ah_pin_${phone}`, h);
+        }
+        const sa = localStorage.getItem(`ah_sec_ans_${phone}`);
+        if (sa && !isHashed(sa)) {
+          const h = await hashSecret(phone, 'ans', sa);
+          if (isHashed(h)) localStorage.setItem(`ah_sec_ans_${phone}`, h);
         }
       }
 
@@ -704,7 +788,8 @@
       localStorage.setItem('ah_user_phone', currentUser);
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('user-display').innerText = `● Safe: ${currentUser}`;
-      
+      document.getElementById('user-pin-input').value = '';
+
       if (!localStorage.getItem('ah_cookies_accepted')) {
         document.getElementById('cookie-banner').style.display = 'flex';
       }
@@ -712,29 +797,35 @@
       syncFromFirebase();
     }
 
-    function handleSecureRecovery() {
+    async function handleSecureRecovery() {
       const phone = document.getElementById('user-phone-input').value.trim();
       const newPin = document.getElementById('user-pin-input').value.trim();
       const enteredAns = document.getElementById('security-answer-input').value.trim().toLowerCase();
 
-      if (phone.length < 10 || newPin.length !== 4) {
+      if (phone.length < 10 || !/^\d{4}$/.test(newPin)) {
         return alert("Sahi mobile number aur naya 4-digit PIN daalein.");
       }
 
+      const wait = lockSecondsLeft(phone);
+      if (wait > 0) return alert(`Bahut baar galat answer daala gaya. ${wait} second baad dobara try karein.`);
+
       const savedAns = localStorage.getItem(`ah_sec_ans_${phone}`);
 
-      if (savedAns && enteredAns === savedAns) {
-        localStorage.setItem(`ah_pin_${phone}`, newPin);
+      if (savedAns && await secretMatches(phone, 'ans', savedAns, enteredAns)) {
+        clearFails(phone);
+        localStorage.setItem(`ah_pin_${phone}`, await hashSecret(phone, 'pin', newPin));
+        if (!isHashed(savedAns)) localStorage.setItem(`ah_sec_ans_${phone}`, await hashSecret(phone, 'ans', enteredAns));
         alert("Badhai ho! Aapka PIN safaltapurvak reset ho gaya hai. Ab aap naye PIN se login karein.");
         toggleForgotMode();
         document.getElementById('user-pin-input').value = '';
         document.getElementById('security-answer-input').value = '';
       } else {
+        registerFail(phone);
         alert("Unauthorized! Security Answer galat hai, isliye PIN reset nahi kiya ja sakta.");
       }
     }
 
-    function updateSecurityCredentials() {
+    async function updateSecurityCredentials() {
       const oldPin = document.getElementById('settings-old-pin').value.trim();
       const newPin = document.getElementById('settings-new-pin').value.trim();
       const newQ = document.getElementById('settings-new-q').value;
@@ -742,15 +833,18 @@
 
       const storedPin = localStorage.getItem(`ah_pin_${currentUser}`);
 
-      if (oldPin !== storedPin) return alert("Purana PIN galat hai!");
-      if (newPin.length !== 4) return alert("Naya PIN 4 digits ka hona chahiye.");
+      if (!(await secretMatches(currentUser, 'pin', storedPin, oldPin))) return alert("Purana PIN galat hai!");
+      if (!/^\d{4}$/.test(newPin)) return alert("Naya PIN 4 digits ka hona chahiye.");
       if (!newAns) return alert("Security answer bharna anivarya hai.");
 
-      localStorage.setItem(`ah_pin_${currentUser}`, newPin);
+      localStorage.setItem(`ah_pin_${currentUser}`, await hashSecret(currentUser, 'pin', newPin));
       localStorage.setItem(`ah_sec_q_${currentUser}`, newQ);
-      localStorage.setItem(`ah_sec_ans_${currentUser}`, newAns);
+      localStorage.setItem(`ah_sec_ans_${currentUser}`, await hashSecret(currentUser, 'ans', newAns));
 
       alert("Aapke security credentials safaltapurvak update kar diye gaye hain!");
+      document.getElementById('settings-old-pin').value = '';
+      document.getElementById('settings-new-pin').value = '';
+      document.getElementById('settings-new-ans').value = '';
       closeModal('change-pin-modal');
     }
 
@@ -811,12 +905,13 @@
       const type = document.getElementById('edit-type').value;
       const mode = document.getElementById('edit-mode').value;
 
-      if (!amount || !note) return alert("Sahi Amount aur Note daalein.");
+      if (!Number.isFinite(amount) || amount <= 0 || !note) return alert("Sahi Amount aur Note daalein.");
 
-      const entryId = id ? parseInt(id) : Date.now();
+      const entryId = id ? parseInt(id, 10) : Date.now();
+      const existing = id ? transactions.find(t => t.id === entryId) : null;
       const entry = {
         id: entryId, amount, note, category, type, mode,
-        timestamp: new Date().toLocaleString('hi-IN', { dateStyle: 'short', timeStyle: 'short' })
+        timestamp: (existing && existing.timestamp) ? existing.timestamp : new Date().toLocaleString('hi-IN', { dateStyle: 'short', timeStyle: 'short' })
       };
 
       if (db && currentUser) {
@@ -841,6 +936,7 @@
     }
 
     let recognition;
+    let isRecording = false;
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       recognition = new SpeechRecognition();
@@ -851,14 +947,22 @@
         processGroqAI();
       };
       recognition.onend = stopRecording;
+      recognition.onerror = stopRecording;
     }
 
     function toggleVoiceRecording() {
       if (!recognition) return alert("Aapka browser voice recognition support nahi karta.");
-      document.getElementById('mic-btn').classList.toggle('recording');
-      recognition.start();
+      if (isRecording) { recognition.stop(); return; }
+      try {
+        recognition.start();
+        isRecording = true;
+        document.getElementById('mic-btn').classList.add('recording');
+      } catch (e) { stopRecording(); }
     }
-    function stopRecording() { document.getElementById('mic-btn').classList.remove('recording'); }
+    function stopRecording() {
+      isRecording = false;
+      document.getElementById('mic-btn').classList.remove('recording');
+    }
 
     async function processGroqAI() {
       const inputEl = document.getElementById('ai-input-text');
@@ -882,17 +986,23 @@ OUTPUT ONLY JSON:
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "llama3-70b-8192",
+            model: "llama-3.3-70b-versatile",
             messages: [{ role: "system", content: systemPrompt }, { role: "user", content: promptText }],
             temperature: 0.1
           })
         });
+        if (!response.ok) throw new Error("AI HTTP " + response.status);
 
         const data = await response.json();
         const cleanJson = data.choices[0].message.content.trim().replace(/```json|```/g, "");
         const parsed = JSON.parse(cleanJson);
 
-        createAndSaveEntry(parsed.type, parsed.amount, parsed.note || promptText, parsed.category || "General", parsed.mode || "Cash");
+        const amount = Number(parsed.amount);
+        if (!Number.isFinite(amount) || amount <= 0) throw new Error("Invalid amount from AI");
+        const type = parsed.type === 'IN' ? 'IN' : 'OUT';
+        const mode = ['Cash', 'Bank', 'Credit', 'Udhar'].includes(parsed.mode) ? parsed.mode : 'Cash';
+
+        createAndSaveEntry(type, amount, String(parsed.note || promptText).slice(0, 200), String(parsed.category || "General"), mode);
         inputEl.value = '';
       } catch (err) {
         fallbackLocalAI(promptText);
@@ -1038,19 +1148,27 @@ OUTPUT ONLY JSON:
       doc.save(`Ledger_Report_${currentUser}.pdf`);
     }
 
+    function csvCell(v) {
+      let str = String(v == null ? '' : v);
+      if (/^[=+\-@\t\r]/.test(str)) str = "'" + str; // Excel formula injection se bachav
+      return '"' + str.replace(/"/g, '""') + '"';
+    }
+
     function exportToCSV() {
       if (transactions.length === 0) return alert("Export ke liye data nahi hai.");
-      let csvContent = "data:text/csv;charset=utf-8,ID,Date,Note,Category,Mode,Type,Amount\n";
+      const rows = [["ID", "Date", "Note", "Category", "Mode", "Type", "Amount"].join(",")];
       transactions.forEach(t => {
-        csvContent += `${t.id},"${t.timestamp}","${t.note}","${t.category}","${t.mode}","${t.type}",${t.amount}\n`;
+        rows.push([t.id, csvCell(t.timestamp), csvCell(t.note), csvCell(t.category), csvCell(t.mode), csvCell(t.type), Number(t.amount) || 0].join(","));
       });
-      const encodedUri = encodeURI(csvContent);
+      const blob = new Blob(["﻿" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `Ledger_${currentUser}.csv`);
+      link.href = url;
+      link.download = `Ledger_${currentUser}.csv`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
     function backupAndRestoreModal() { openModal('backup-modal'); }
@@ -1066,22 +1184,41 @@ OUTPUT ONLY JSON:
     }
 
     function restoreBackupJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
       const fileReader = new FileReader();
-      fileReader.onload = function (e) {
+      fileReader.onload = async function (e) {
         try {
           const restoredData = JSON.parse(e.target.result);
-          if (Array.isArray(restoredData)) {
-            restoredData.forEach(item => {
-              if (db && currentUser) {
-                db.collection("users").doc(currentUser).collection("transactions").doc(String(item.id)).set(item);
-              }
-            });
-            alert("Backup safaltapurvak restore kar diya gaya hai!");
-            closeModal('backup-modal');
+          if (!Array.isArray(restoredData)) throw new Error("not array");
+
+          const modes = ['Cash', 'Bank', 'Credit', 'Udhar'];
+          const valid = restoredData.filter(i => i && Number.isFinite(Number(i.id)) && Number.isFinite(Number(i.amount)) && (i.type === 'IN' || i.type === 'OUT'))
+            .map(i => ({
+              id: Number(i.id), amount: Number(i.amount), type: i.type,
+              note: String(i.note == null ? '' : i.note).slice(0, 200),
+              category: String(i.category || 'General').slice(0, 40),
+              mode: modes.includes(i.mode) ? i.mode : 'Cash',
+              timestamp: String(i.timestamp || '').slice(0, 40)
+            }));
+
+          if (!valid.length) return alert("Is file me koi valid entry nahi mili.");
+
+          if (db && currentUser) {
+            for (let i = 0; i < valid.length; i += 400) {
+              const batch = db.batch();
+              valid.slice(i, i + 400).forEach(item => {
+                batch.set(db.collection("users").doc(currentUser).collection("transactions").doc(String(item.id)), item);
+              });
+              await batch.commit();
+            }
           }
+          alert(`Backup safaltapurvak restore ho gaya! ${valid.length} entries mili.`);
+          closeModal('backup-modal');
         } catch (err) { alert("Invalid Backup File"); }
+        event.target.value = '';
       };
-      fileReader.readAsText(event.target.files[0]);
+      fileReader.readAsText(file);
     }
 
     function shareToWhatsApp() {
@@ -1094,26 +1231,36 @@ OUTPUT ONLY JSON:
       });
 
       const lastTx = transactions[0];
-      const text = `📊 *Aasaan Hisaab AI Enterprise Statement*%0A` +
-        `👤 Phone: ${currentUser}%0A` +
-        `--------------------------------%0A` +
-        `🟢 Total Jama: ₹${totalIn}%0A` +
-        `🔴 Total Kharcha: ₹${totalOut}%0A` +
-        `💰 *Net Balance: ₹${totalIn - totalOut}*%0A` +
-        `--------------------------------%0A` +
-        `📌 *Latest Activity:*%0A` +
-        `${lastTx.note} - ₹${lastTx.amount} [${lastTx.mode || 'Cash'}]%0A%0A` +
+      const text = `📊 *Aasaan Hisaab AI Enterprise Statement*\n` +
+        `👤 Phone: ${currentUser}\n` +
+        `--------------------------------\n` +
+        `🟢 Total Jama: ₹${fmt(totalIn)}\n` +
+        `🔴 Total Kharcha: ₹${fmt(totalOut)}\n` +
+        `💰 *Net Balance: ₹${fmt(totalIn - totalOut)}*\n` +
+        `--------------------------------\n` +
+        `📌 *Latest Activity:*\n` +
+        `${lastTx.note} - ₹${fmt(lastTx.amount)} [${lastTx.mode || 'Cash'}]\n\n` +
         `_Generated via Aasaan Hisaab Enterprise Core Engine_`;
 
-      window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank');
     }
 
-    function sendUdharReminder(note, amount) {
-      const text = `🔔 *Udhar Khata Reminder*%0A` +
-        `Aapka ₹${amount} ka payment baaki hai (${note}). Kripya ise jald hi chukayein.%0A%0A` +
+    function sendUdharReminderById(id) {
+      const t = transactions.find(x => x.id === id);
+      if (!t) return;
+      const text = `🔔 *Udhar Khata Reminder*\n` +
+        `Aapka ₹${fmt(t.amount)} ka payment baaki hai (${t.note}). Kripya ise jald hi chukayein.\n\n` +
         `_Aasaan Hisaab Enterprise Khata_`;
-      window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank');
     }
+
+    /* ---------- XSS-safe helpers ---------- */
+    function esc(v) {
+      return String(v == null ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function fmt(n) { return Number(n || 0).toLocaleString('en-IN'); }
 
     function render() {
       const listEl = document.getElementById('history-list');
@@ -1124,7 +1271,7 @@ OUTPUT ONLY JSON:
       let totalIn = 0, totalOut = 0;
 
       const filtered = transactions.filter(t => {
-        const matchesSearch = t.note.toLowerCase().includes(searchQuery) || (t.category && t.category.toLowerCase().includes(searchQuery));
+        const matchesSearch = String(t.note || '').toLowerCase().includes(searchQuery) || (t.category && t.category.toLowerCase().includes(searchQuery));
         const matchesType = filterType === 'ALL' || t.type === filterType;
         const matchesWallet = selectedWalletFilter === 'ALL' || (t.mode && t.mode.toLowerCase() === selectedWalletFilter.toLowerCase());
         return matchesSearch && matchesType && matchesWallet;
@@ -1135,37 +1282,43 @@ OUTPUT ONLY JSON:
         else totalOut += t.amount;
       });
 
-      document.getElementById('total-balance').innerText = `₹${totalIn - totalOut}`;
-      document.getElementById('stat-in').innerText = `+₹${totalIn}`;
-      document.getElementById('stat-out').innerText = `-₹${totalOut}`;
+      document.getElementById('total-balance').innerText = `₹${fmt(totalIn - totalOut)}`;
+      document.getElementById('stat-in').innerText = `+₹${fmt(totalIn)}`;
+      document.getElementById('stat-out').innerText = `-₹${fmt(totalOut)}`;
 
       renderChart();
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="empty-state">${transactions.length ? 'Is filter me koi entry nahi mili.' : 'Abhi koi entry nahi hai. Upar se pehli entry add karein! ✨'}</div>`;
+        return;
+      }
 
       filtered.forEach(item => {
         const itemEl = document.createElement('div');
         itemEl.className = 'history-item';
-        
+
         let modeClass = 'mode-cash';
         if (item.mode === 'Bank' || item.mode === 'Online') modeClass = 'mode-online';
         if (item.mode === 'Udhar') modeClass = 'mode-udhar';
 
         const isUdhar = item.mode === 'Udhar';
+        const itemId = Number(item.id);
 
         itemEl.innerHTML = `
-          <div onclick="openEditModal(${item.id})">
+          <div onclick="openEditModal(${itemId})">
             <div style="font-weight:700; display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
-              ${item.note}
-              <span class="category-badge">${item.category || 'General'}</span>
-              <span class="payment-mode-tag ${modeClass}">${item.mode || 'Cash'}</span>
+              ${esc(item.note)}
+              <span class="category-badge">${esc(item.category || 'General')}</span>
+              <span class="payment-mode-tag ${modeClass}">${esc(item.mode || 'Cash')}</span>
             </div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">${item.timestamp}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">${esc(item.timestamp)}</div>
           </div>
           <div style="display:flex; align-items:center; gap:8px;">
-            ${isUdhar ? `<button style="background:rgba(239, 68, 68, 0.15); border:1px solid var(--danger); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); sendUdharReminder('${item.note}',${item.amount})" title="WhatsApp Reminder">🔔</button>` : ''}
+            ${isUdhar ? `<button style="background:rgba(239, 68, 68, 0.15); border:1px solid var(--danger); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); sendUdharReminderById(${itemId})" title="WhatsApp Reminder">🔔</button>` : ''}
             <span style="font-weight:900; color:${item.type === 'IN' ? 'var(--primary)' : 'var(--danger)'}">
-              ${item.type === 'IN' ? '+' : '-'}₹${item.amount}
+              ${item.type === 'IN' ? '+' : '-'}₹${fmt(item.amount)}
             </span>
-            <button style="background:rgba(255,255,255,0.05); border:1px solid var(--card-border); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); deleteEntry(${item.id})">🗑️</button>
+            <button style="background:rgba(255,255,255,0.05); border:1px solid var(--card-border); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); deleteEntry(${itemId})">🗑️</button>
           </div>
         `;
         listEl.appendChild(itemEl);
@@ -1174,6 +1327,25 @@ OUTPUT ONLY JSON:
 
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    /* ---------- "We have moved" notification: 7 sec baad apne aap gayab ---------- */
+    const NEW_SITE_URL = 'https://roitx.dpdns.org/';
+    let moveToastTimer = null;
+    function showMoveToast() {
+      const toast = document.getElementById('move-toast');
+      if (!toast) return;
+      if (location.hostname === 'roitx.dpdns.org') { toast.style.display = 'none'; return; } // naye domain par zaroorat nahi
+      document.getElementById('move-link').href = NEW_SITE_URL;
+      requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
+      moveToastTimer = setTimeout(hideMoveToast, 7000);
+    }
+    function hideMoveToast() {
+      const toast = document.getElementById('move-toast');
+      if (!toast) return;
+      clearTimeout(moveToastTimer);
+      toast.classList.remove('show');
+      setTimeout(() => { toast.style.display = 'none'; }, 600);
+    }
   </script>
 </body>
 </html>
