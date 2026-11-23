@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://roitx.qd.je/sitemap.xml

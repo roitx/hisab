@@ -1,130 +1,88 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="hi-Latn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0b1220">
-<title>PM Roitx ab naye address par | roitx.dpdns.org</title>
-<meta name="description" content="PM Roitx Study Hub ab roitx.dpdns.org par shift ho gaya hai.">
-<link rel="icon" href="https://roitx.dpdns.org/icon-512.png">
-<link rel="canonical" id="canon" href="https://roitx.dpdns.org/">
-<noscript><meta http-equiv="refresh" content="3;url=https://roitx.dpdns.org/"></noscript>
+<meta name="theme-color" content="#0F172A">
+<title>404 – Page nahi mila | Aasaan Hisaab</title>
+<meta name="description" content="Yeh page maujood nahi hai. Aasaan Hisaab ke home page par jaayein.">
+<meta name="robots" content="noindex, follow">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <style>
-  :root{--navy:#0b1220;--navy2:#16223d;--gold:#f5b83d;--text:#e8edf7;--muted:#9fb0cc;}
+  :root{--bg:#030712;--card:rgba(30,41,59,.7);--line:rgba(255,255,255,.12);--green:#10B981;--violet:#8B5CF6;--text:#F8FAFC;--muted:#94A3B8}
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:var(--text);
-    background:radial-gradient(900px 500px at 50% -10%,#1d2f57 0%,transparent 60%),radial-gradient(700px 400px at 90% 110%,rgba(245,184,61,.12) 0%,transparent 60%),var(--navy);
-    display:flex;align-items:center;justify-content:center;padding:20px}
-  .card{width:100%;max-width:440px;text-align:center;background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
-    border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:32px 24px 26px;box-shadow:0 24px 60px rgba(0,0,0,.5);backdrop-filter:blur(14px)}
-  .logo{width:72px;height:72px;border-radius:18px;border:2px solid var(--gold);background:var(--navy2);display:block;margin:0 auto 14px;object-fit:cover}
-  .pill{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1.5px;color:#111827;background:var(--gold);padding:5px 12px;border-radius:999px;margin-bottom:14px}
-  h1{font-size:24px;line-height:1.3;font-weight:800;margin-bottom:10px}
-  p.sub{font-size:15px;line-height:1.7;color:var(--muted);margin-bottom:18px}
-  .domains{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:22px;font-size:14px}
-  .old{color:#8b98b2;text-decoration:line-through}
-  .arrow{color:var(--gold);font-size:18px}
-  .new{color:#fff;font-weight:700;background:rgba(245,184,61,.14);border:1px solid rgba(245,184,61,.4);padding:6px 12px;border-radius:10px}
-  .ring{position:relative;width:96px;height:96px;margin:0 auto 18px}
-  .ring svg{transform:rotate(-90deg);width:96px;height:96px}
-  .ring circle{fill:none;stroke-width:7}
-  .ring .bg{stroke:rgba(255,255,255,.12)}
-  .ring .fg{stroke:var(--gold);stroke-linecap:round;stroke-dasharray:264;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear}
-  .count{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800}
-  .btn{display:block;width:100%;background:var(--gold);color:#111827;font-weight:800;font-size:16px;text-decoration:none;padding:15px 18px;border-radius:14px;
-    box-shadow:0 6px 18px rgba(245,184,61,.35);border:0;cursor:pointer}
+  body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:14px;
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--text);
+    background:radial-gradient(800px 460px at 50% -10%,rgba(139,92,246,.25),transparent 60%),radial-gradient(600px 380px at 90% 110%,rgba(16,185,129,.18),transparent 60%),var(--bg)}
+  .breadcrumb{width:100%;max-width:420px;font-size:.78rem;color:var(--muted)}
+  .breadcrumb ol{list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+  .breadcrumb li+li::before{content:"›";margin-right:6px}
+  .breadcrumb a{color:var(--green);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  .breadcrumb [aria-current="page"]{color:var(--text)}
+  .card{width:100%;max-width:420px;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:32px 24px;box-shadow:0 24px 60px rgba(0,0,0,.5);backdrop-filter:blur(14px)}
+  .logo{width:72px;height:72px;border-radius:18px;display:block;margin:0 auto 14px}
+  .code{font-size:64px;font-weight:900;line-height:1;background:linear-gradient(135deg,var(--green),var(--violet));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  h1{font-size:1.25rem;margin:10px 0 8px}
+  p{font-size:.9rem;line-height:1.7;color:var(--muted);margin-bottom:20px}
+  .btn{display:block;width:100%;padding:14px 18px;border-radius:14px;font-weight:800;font-size:1rem;text-decoration:none;color:#fff;
+    background:linear-gradient(135deg,#8B5CF6,#6D28D9);box-shadow:0 6px 18px rgba(139,92,246,.35)}
   .btn:active{transform:scale(.98)}
-  .small{margin-top:12px;font-size:12.5px;color:var(--muted);line-height:1.6}
-  .link{background:none;border:0;color:var(--gold);font-size:13px;text-decoration:underline;cursor:pointer;margin-top:10px}
-  .note{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;line-height:1.7;color:var(--muted)}
-  @media (prefers-reduced-motion:reduce){.ring .fg{transition:none}}
+  .btn+.btn{margin-top:10px}
+  .btn.alt{background:linear-gradient(135deg,#F5B83D,#D99A1E);color:#111827;box-shadow:0 6px 18px rgba(245,184,61,.3)}
+  .small{margin-top:16px;font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:0}
+  .small b{color:var(--text)}
+  .link{background:none;border:0;color:var(--green);font-size:.82rem;text-decoration:underline;cursor:pointer;margin-top:8px}
 </style>
 </head>
 <body>
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <ol>
+    <li><a href="/">Home</a></li>
+    <li aria-current="page">404 Page Not Found</li>
+  </ol>
+</nav>
 <main class="card">
-  <img class="logo" src="https://roitx.dpdns.org/icon-512.png" alt="PM Roitx" width="72" height="72">
-  <span class="pill">WE HAVE MOVED</span>
-  <h1>PM Roitx ab naye address par hai!</h1>
-  <p class="sub">Hamari site ab naye domain par shift ho gayi hai. Saare notes, tests, formulas aur PYQs wahin milenge.</p>
-
-  <div class="domains">
-    <span class="old" id="oldHost">roitx.qd.je</span>
-    <span class="arrow">&rarr;</span>
-    <span class="new">roitx.dpdns.org</span>
-  </div>
-
-  <div class="ring" aria-live="polite">
-    <svg viewBox="0 0 96 96"><circle class="bg" cx="48" cy="48" r="42"/><circle class="fg" id="fg" cx="48" cy="48" r="42"/></svg>
-    <div class="count" id="count">10</div>
-  </div>
-
-  <a class="btn" id="goBtn" href="https://roitx.dpdns.org/">Naye address par jaayein &rarr;</a>
-  <p class="small" id="status">Aap <b id="secs">10</b> second me apne aap redirect ho jaayenge.</p>
+  <img class="logo" src="/icon-512.png" alt="Aasaan Hisaab logo" width="72" height="72">
+  <div class="code" aria-hidden="true">404</div>
+  <h1>Yeh page nahi mila</h1>
+  <p>Hamari main site ab naye domain par shift ho gayi hai. Neeche se woh site chuniye jahan aapko jaana hai.</p>
+  <a class="btn" id="newBtn" href="https://roitx.dpdns.org/index.html">PM Roitx  par jaayein</a>
+  <a class="btn alt" id="homeBtn" href="https://roitx.qd.je/">Aasaan Hisaab par jaayein</a>
+  <p class="small" id="status">Koi option na chunne par <b id="secs">5</b> second me aap apne aap <b>roitx.qd.je</b> par pahunch jaayenge.</p>
   <button class="link" id="pauseBtn" type="button">Ruko, redirect band karo</button>
-
-  <p class="note">Bookmark ho to naya link <b>roitx.dpdns.org</b> save kar lein. Naye address par ek baar dobara login karna pad sakta hai. Email ab <b>@roitx.dpdns.org</b> par hai.</p>
 </main>
-
+<noscript><meta http-equiv="refresh" content="5;url=https://roitx.qd.je/"></noscript>
 <script>
 (function () {
+  var DEFAULT_URL = 'https://roitx.qd.je/';
   var NEW_HOST = 'roitx.dpdns.org';
-  var SECONDS = 10;
-  var KEY = 'roitx_move_notice_seen';
+  var left = 5, paused = false;
 
-  // Purani URL ka path/query/hash naye domain par same rakho
-  var path = location.pathname.replace(/\/index\.html$/, '/');
-  if (path === '' ) path = '/';
-  var target = 'https://' + NEW_HOST + path + location.search + location.hash;
+  // Naye site ke button par purana path/query same rakho (purane PM Roitx links ke liye)
+  var path = location.pathname.replace(/\/index\.html$/, '/') || '/';
+  // Saath me ?from=roitx-qd jodte hain taaki PM Roitx ka 404 page pyara welcome message dikha sake
+  var q = new URLSearchParams(location.search);
+  q.set('from', 'roitx-qd');
+  document.getElementById('newBtn').href = 'https://' + NEW_HOST + path + '?' + q.toString() + location.hash;
 
-  // Agar galti se naye domain par hi ye page khul jaye to loop mat banao
-  if (location.hostname === NEW_HOST) return;
-
-  document.getElementById('goBtn').href = target;
-  document.getElementById('canon').href = target;
-  document.getElementById('oldHost').textContent = location.hostname || 'purana address';
-
-  var seen = false;
-  try { seen = localStorage.getItem(KEY) === '1'; } catch (e) {}
-
-  function go() {
-    try { localStorage.setItem(KEY, '1'); } catch (e) {}
-    location.replace(target);
-  }
-
-  // Purana visitor: notice ek baar dekh chuka hai, seedha bhej do
-  if (seen) { location.replace(target); return; }
-
-  var left = SECONDS, total = SECONDS, paused = false;
-  var fg = document.getElementById('fg');
-  var countEl = document.getElementById('count');
   var secsEl = document.getElementById('secs');
-  var CIRC = 264;
-
-  function paint() {
-    countEl.textContent = left;
-    secsEl.textContent = left;
-    fg.style.strokeDashoffset = String(CIRC * (1 - left / total));
-  }
-  paint();
-
   var timer = setInterval(function () {
     if (paused) return;
     left--;
-    if (left <= 0) { clearInterval(timer); left = 0; paint(); go(); return; }
-    paint();
+    if (left <= 0) { clearInterval(timer); location.replace(DEFAULT_URL); return; }
+    secsEl.textContent = left;
   }, 1000);
-
-  document.getElementById('goBtn').addEventListener('click', function () {
-    try { localStorage.setItem(KEY, '1'); } catch (e) {}
-  });
 
   document.getElementById('pauseBtn').addEventListener('click', function () {
     paused = !paused;
     this.textContent = paused ? 'Redirect dobara chalu karo' : 'Ruko, redirect band karo';
     document.getElementById('status').innerHTML = paused
-      ? 'Redirect ruka hua hai. Jab chahein upar button se naye address par jaayein.'
-      : 'Aap <b id="secs">' + left + '</b> second me apne aap redirect ho jaayenge.';
+      ? 'Redirect ruka hua hai. Upar se apna site chuniye.'
+      : 'Koi option na chunne par <b id="secs">' + left + '</b> second me aap apne aap <b>roitx.qd.je</b> par pahunch jaayenge.';
     secsEl = document.getElementById('secs');
   });
 })();

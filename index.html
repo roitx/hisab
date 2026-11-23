@@ -1,12 +1,100 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="hi-Latn">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0F172A">
-  <meta name="description" content="Aasaan Hisaab Enterprise Pro - Ultra Advanced Multi-Lingual AI Khata & Ledger System">
+  <title>Aasaan Hisaab – Free Online Khata, Udhar & Expense Ledger</title>
+  <meta name="description" content="Aasaan Hisaab ek online khata app hai: voice ya AI se jama-kharcha likhein, party-wise udhar khata, monthly budget, PDF/Excel report aur WhatsApp summary.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://roitx.qd.je/">
 
-  <title>Aasaan Hisaab AI Pro Enterprise Ledger</title>
+  <!-- Icons -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Aasaan Hisaab">
+  <meta property="og:locale" content="hi_IN">
+  <meta property="og:title" content="Aasaan Hisaab – Free Online Khata, Udhar & Expense Ledger">
+  <meta property="og:description" content="Aasaan Hisaab ek online khata app hai: voice ya AI se jama-kharcha likhein, party-wise udhar khata, monthly budget, PDF/Excel report aur WhatsApp summary.">
+  <meta property="og:url" content="https://roitx.qd.je/">
+  <meta property="og:image" content="https://roitx.qd.je/icon-512.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Aasaan Hisaab – Free Online Khata, Udhar & Expense Ledger">
+  <meta name="twitter:description" content="Aasaan Hisaab ek online khata app hai: voice ya AI se jama-kharcha likhein, party-wise udhar khata, monthly budget, PDF/Excel report aur WhatsApp summary.">
+  <meta name="twitter:image" content="https://roitx.qd.je/icon-512.png">
+
+  <!-- Structured data: WebSite + WebApplication + Breadcrumb -->
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://roitx.qd.je/#website",
+      "url": "https://roitx.qd.je/",
+      "name": "Aasaan Hisaab",
+      "inLanguage": "hi-Latn"
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://roitx.qd.je/#app",
+      "name": "Aasaan Hisaab",
+      "url": "https://roitx.qd.je/",
+      "description": "Aasaan Hisaab ek online khata app hai: voice ya AI se jama-kharcha likhein, party-wise udhar khata, monthly budget, PDF/Excel report aur WhatsApp summary.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any (Web browser)",
+      "browserRequirements": "Requires JavaScript",
+      "inLanguage": [
+        "hi",
+        "en"
+      ],
+      "image": "https://roitx.qd.je/icon-512.png",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      },
+      "featureList": [
+        "AI aur voice se jama-kharcha entry",
+        "Party-wise udhar khata (lena/dena)",
+        "Category wise monthly budget",
+        "Charts aur smart insights",
+        "PDF, Excel/CSV export aur WhatsApp summary",
+        "Backup aur restore",
+        "Hinglish, Hindi aur English"
+      ],
+      "isPartOf": {
+        "@id": "https://roitx.qd.je/#website"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://roitx.qd.je/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://roitx.qd.je/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Khata & Ledger App"
+        }
+      ]
+    }
+  ]
+}
+  </script>
 
   <!-- External CDNs: Firebase v10, jsPDF, AutoTable, Chart.js -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -353,9 +441,26 @@
     .linkish { background: none; border: 0; color: var(--accent); cursor: pointer; font-size: 0.8rem; text-decoration: underline; }
     .empty-state { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 28px 10px; }
     @media (prefers-reduced-motion: reduce) { .move-toast { transition: none; } .move-toast .mt-bar { animation-duration: 7s; } }
+
+    /* ---- SEO: breadcrumb + about ---- */
+    .breadcrumb { padding: 10px 16px 0 16px; font-size: 0.74rem; color: var(--text-muted); }
+    .breadcrumb ol { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+    .breadcrumb li + li::before { content: "›"; margin-right: 6px; color: var(--text-muted); }
+    .breadcrumb a { color: var(--primary); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb [aria-current="page"] { color: var(--text-main); }
+    .about { margin: 16px; padding: 18px 16px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); }
+    .about h2 { font-size: 1rem; color: var(--primary); margin: 0 0 8px 0; }
+    .about h3 { font-size: 0.88rem; margin: 14px 0 6px 0; color: var(--text-main); }
+    .about p, .about li, .about summary { font-size: 0.82rem; line-height: 1.7; color: var(--text-muted); }
+    .about ul { padding-left: 18px; margin-bottom: 4px; }
+    .about details { border-top: 1px solid var(--card-border); padding: 8px 0; }
+    .about summary { cursor: pointer; color: var(--text-main); font-weight: 600; }
+    .about details p { margin-top: 6px; }
   </style>
 </head>
 <body>
+  <noscript><p style="padding:16px;text-align:center;">Aasaan Hisaab chalane ke liye JavaScript on karein. Yeh ek online khata, udhar aur expense ledger app hai.</p></noscript>
 
   <!-- We have moved notification (7 sec baad apne aap hat jata hai) -->
   <div class="move-toast" id="move-toast" role="status" aria-live="polite">
@@ -372,7 +477,7 @@
     <!-- Security Login & Dynamic New User Setup Screen -->
     <div class="login-screen" id="login-screen">
       <div class="login-card">
-        <h1 class="brand-title" style="font-size: 1.8rem;">🔒 Enterprise Khata AI</h1>
+        <h2 class="brand-title" style="font-size: 1.8rem;">🔒 Enterprise Khata AI</h2>
         <p style="color:var(--text-muted); margin-top:8px; font-size:0.85rem;" id="login-sub-text">Mobile & Security PIN System</p>
         
         <input type="tel" id="user-phone-input" class="login-input" placeholder="10-Digit Mobile Number" maxlength="10" oninput="checkUserExistingStatus()">
@@ -404,7 +509,7 @@
     <!-- Application Navigation Header -->
     <header>
       <div>
-        <div class="brand-title" id="app-header-title">Aasaan Hisaab AI Enterprise</div>
+        <h1 class="brand-title" id="app-header-title">Aasaan Hisaab AI Enterprise</h1>
         <div style="font-size: 0.68rem; color: var(--primary);" id="user-display">● Sync Active</div>
       </div>
       <div style="display:flex; gap: 8px; align-items:center;">
@@ -416,6 +521,14 @@
         <button class="logout-btn" onclick="logoutUser()">Logout</button>
       </div>
     </header>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li aria-current="page">Khata &amp; Ledger App</li>
+      </ol>
+    </nav>
 
     <!-- Main Dashboard Section -->
     <div class="dashboard">
@@ -549,6 +662,37 @@
       <div class="section-title" style="margin-bottom:8px;">Transaction Ledger (Click to Edit/View)</div>
       <div id="history-list"></div>
     </div>
+
+    <!-- About (crawlable content) -->
+    <section class="about" aria-labelledby="about-title">
+      <h2 id="about-title">Aasaan Hisaab kya hai?</h2>
+      <p>Aasaan Hisaab ek online khata aur ledger app hai jisse kisan, dukandaar aur aam parivar apna roz ka jama-kharcha, udhar (lena/dena) aur monthly budget mobile se aasani se sambhal sakte hain. Entry bolkar ya likhkar AI se ho jaati hai.</p>
+
+      <h3>Mukhya features</h3>
+      <ul>
+        <li>Voice aur AI se turant entry: "500 ki khad" ya "1000 salary"</li>
+        <li>Party-wise Udhar Khata: kisko kitna lena-dena hai, WhatsApp reminder ke saath</li>
+        <li>Cash, Bank/UPI, Credit Card aur Udhar wallet ke hisaab se alag balance</li>
+        <li>Category wise monthly budget aur limit paar hone par warning</li>
+        <li>Charts, smart insights aur 6 mahine ka graph</li>
+        <li>PDF statement, Excel/CSV export, WhatsApp summary aur backup/restore</li>
+        <li>Hinglish, हिंदी aur English language support</li>
+      </ul>
+
+      <h3>Aksar poochhe jaane wale sawal</h3>
+      <details>
+        <summary>Aasaan Hisaab kaise use karein?</summary>
+        <p>Apna 10-digit mobile number aur 4-digit PIN se login karein, phir upar AI box me likhein ya mic dabakar bolein. Jama aur Kharcha ke direct buttons se bhi entry kar sakte hain.</p>
+      </details>
+      <details>
+        <summary>Mera khata data kahan save hota hai?</summary>
+        <p>Entries aapke mobile number ke account me Firebase cloud par sync hoti hain, aur offline cache ki wajah se net kam hone par bhi app chalta rehta hai.</p>
+      </details>
+      <details>
+        <summary>Kya Udhar Khata me party ke naam se hisaab rakh sakte hain?</summary>
+        <p>Haan. Har party ka alag khata banta hai jisme dikhta hai ki aapko kitna lena hai ya dena hai, aur lena wali party ko WhatsApp par reminder bhej sakte hain.</p>
+      </details>
+    </section>
 
     <!-- Footer Links & Copyright -->
     <footer>
@@ -1753,71 +1897,4 @@ OUTPUT ONLY JSON:
       updatePartyStrip();
       if (document.getElementById('party-modal').style.display === 'flex') renderParty();
 
-      const filtered = pTx.filter(t => {
-        const matchesSearch = String(t.note || '').toLowerCase().includes(searchQuery) || (t.category && t.category.toLowerCase().includes(searchQuery));
-        const matchesType = filterType === 'ALL' || t.type === filterType;
-        const matchesWallet = selectedWalletFilter === 'ALL' || (t.mode && t.mode.toLowerCase() === selectedWalletFilter.toLowerCase());
-        return matchesSearch && matchesType && matchesWallet;
-      }).sort((a, b) => entryDateISO(b).localeCompare(entryDateISO(a)) || b.id - a.id);
-
-      if (filtered.length === 0) {
-        listEl.innerHTML = `<div class="empty-state">${ledgerTx().length ? 'Is period/filter me koi entry nahi mili.' : 'Abhi koi entry nahi hai. Upar se pehli entry add karein! ✨'}</div>`;
-        return;
-      }
-
-      filtered.forEach(item => {
-        const itemEl = document.createElement('div');
-        itemEl.className = 'history-item';
-
-        let modeClass = 'mode-cash';
-        if (item.mode === 'Bank' || item.mode === 'Online') modeClass = 'mode-online';
-        if (item.mode === 'Udhar') modeClass = 'mode-udhar';
-
-        const isUdhar = item.mode === 'Udhar';
-        const itemId = Number(item.id);
-
-        itemEl.innerHTML = `
-          <div onclick="openEditModal(${itemId})">
-            <div style="font-weight:700; display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
-              ${esc(item.note)}
-              <span class="category-badge">${esc(item.category || 'General')}</span>
-              <span class="payment-mode-tag ${modeClass}">${esc(item.mode || 'Cash')}</span>
-            </div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">${esc(fmtDateShort(entryDateISO(item)))}</div>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            ${isUdhar ? `<button style="background:rgba(239, 68, 68, 0.15); border:1px solid var(--danger); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); sendUdharReminderById(${itemId})" title="WhatsApp Reminder">🔔</button>` : ''}
-            <span style="font-weight:900; color:${item.type === 'IN' ? 'var(--primary)' : 'var(--danger)'}">
-              ${item.type === 'IN' ? '+' : '-'}₹${fmt(item.amount)}
-            </span>
-            <button style="background:rgba(255,255,255,0.05); border:1px solid var(--card-border); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); deleteEntry(${itemId})">🗑️</button>
-          </div>
-        `;
-        listEl.appendChild(itemEl);
-      });
-    }
-
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    /* ---------- "We have moved" notification: 7 sec baad apne aap gayab ---------- */
-    const NEW_SITE_URL = 'https://roitx.dpdns.org/';
-    let moveToastTimer = null;
-    function showMoveToast() {
-      const toast = document.getElementById('move-toast');
-      if (!toast) return;
-      if (location.hostname === 'roitx.dpdns.org') { toast.style.display = 'none'; return; } // naye domain par zaroorat nahi
-      document.getElementById('move-link').href = NEW_SITE_URL;
-      requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
-      moveToastTimer = setTimeout(hideMoveToast, 7000);
-    }
-    function hideMoveToast() {
-      const toast = document.getElementById('move-toast');
-      if (!toast) return;
-      clearTimeout(moveToastTimer);
-      toast.classList.remove('show');
-      setTimeout(() => { toast.style.display = 'none'; }, 600);
-    }
-  </script>
-</body>
-</html>
+      const 
