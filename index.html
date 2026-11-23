@@ -1897,4 +1897,71 @@ OUTPUT ONLY JSON:
       updatePartyStrip();
       if (document.getElementById('party-modal').style.display === 'flex') renderParty();
 
-      const 
+      const filtered = pTx.filter(t => {
+        const matchesSearch = String(t.note || '').toLowerCase().includes(searchQuery) || (t.category && t.category.toLowerCase().includes(searchQuery));
+        const matchesType = filterType === 'ALL' || t.type === filterType;
+        const matchesWallet = selectedWalletFilter === 'ALL' || (t.mode && t.mode.toLowerCase() === selectedWalletFilter.toLowerCase());
+        return matchesSearch && matchesType && matchesWallet;
+      }).sort((a, b) => entryDateISO(b).localeCompare(entryDateISO(a)) || b.id - a.id);
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="empty-state">${ledgerTx().length ? 'Is period/filter me koi entry nahi mili.' : 'Abhi koi entry nahi hai. Upar se pehli entry add karein! ✨'}</div>`;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'history-item';
+
+        let modeClass = 'mode-cash';
+        if (item.mode === 'Bank' || item.mode === 'Online') modeClass = 'mode-online';
+        if (item.mode === 'Udhar') modeClass = 'mode-udhar';
+
+        const isUdhar = item.mode === 'Udhar';
+        const itemId = Number(item.id);
+
+        itemEl.innerHTML = `
+          <div onclick="openEditModal(${itemId})">
+            <div style="font-weight:700; display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+              ${esc(item.note)}
+              <span class="category-badge">${esc(item.category || 'General')}</span>
+              <span class="payment-mode-tag ${modeClass}">${esc(item.mode || 'Cash')}</span>
+            </div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">${esc(fmtDateShort(entryDateISO(item)))}</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            ${isUdhar ? `<button style="background:rgba(239, 68, 68, 0.15); border:1px solid var(--danger); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); sendUdharReminderById(${itemId})" title="WhatsApp Reminder">🔔</button>` : ''}
+            <span style="font-weight:900; color:${item.type === 'IN' ? 'var(--primary)' : 'var(--danger)'}">
+              ${item.type === 'IN' ? '+' : '-'}₹${fmt(item.amount)}
+            </span>
+            <button style="background:rgba(255,255,255,0.05); border:1px solid var(--card-border); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); deleteEntry(${itemId})">🗑️</button>
+          </div>
+        `;
+        listEl.appendChild(itemEl);
+      });
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    /* ---------- "We have moved" notification: 7 sec baad apne aap gayab ---------- */
+    const NEW_SITE_URL = 'https://roitx.dpdns.org/';
+    let moveToastTimer = null;
+    function showMoveToast() {
+      const toast = document.getElementById('move-toast');
+      if (!toast) return;
+      if (location.hostname === 'roitx.dpdns.org') { toast.style.display = 'none'; return; } // naye domain par zaroorat nahi
+      document.getElementById('move-link').href = NEW_SITE_URL;
+      requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
+      moveToastTimer = setTimeout(hideMoveToast, 7000);
+    }
+    function hideMoveToast() {
+      const toast = document.getElementById('move-toast');
+      if (!toast) return;
+      clearTimeout(moveToastTimer);
+      toast.classList.remove('show');
+      setTimeout(() => { toast.style.display = 'none'; }, 600);
+    }
+  </script>
+</body>
+</html>
