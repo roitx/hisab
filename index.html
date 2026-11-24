@@ -43,7 +43,7 @@
       width: 100%; max-width: 520px; background: #0B0F19; min-height: 100vh;
       display: flex; flex-direction: column; position: relative;
       border-left: 1px solid var(--card-border); border-right: 1px solid var(--card-border);
-      padding-bottom: 70px; box-shadow: 0 0 80px rgba(0,0,0,0.95);
+      padding-bottom: 96px; box-shadow: 0 0 80px rgba(0,0,0,0.95);
     }
 
     /* Auth Overlay Screen */
@@ -267,7 +267,7 @@
     .close-btn:active { transform: scale(0.92); }
 
     .cookie-banner {
-      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      position: fixed; bottom: 68px; left: 50%; transform: translateX(-50%);
       width: 100%; max-width: 520px; background: rgba(15, 23, 42, 0.98);
       border-top: 1px solid var(--card-border); backdrop-filter: blur(15px);
       padding: 14px 18px; z-index: 900; display: none; justify-content: space-between; align-items: center; gap: 10px;
@@ -341,7 +341,7 @@
     .budget-track { height: 8px; border-radius: 6px; background: rgba(255,255,255,0.1); overflow: hidden; }
     .budget-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; }
     .app-toast {
-      position: fixed; left: 50%; bottom: 84px; transform: translate(-50%, 30px); opacity: 0; pointer-events: none;
+      position: fixed; left: 50%; bottom: 92px; transform: translate(-50%, 30px); opacity: 0; pointer-events: none;
       z-index: 1500; width: calc(100% - 28px); max-width: 480px; background: #111827; border: 1px solid var(--card-border);
       border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
       box-shadow: 0 12px 36px rgba(0,0,0,0.6); font-size: 0.85rem; transition: all 0.35s ease;
@@ -360,16 +360,61 @@
     .p-tab.sel-get { background: rgba(16,185,129,0.25); border-color: var(--primary); }
     .linkish { background: none; border: 0; color: var(--accent); cursor: pointer; font-size: 0.8rem; text-decoration: underline; }
     .empty-state { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 28px 10px; }
+
+    /* ---- v3: simple auth + bottom navigation ---- */
+    .ic.fill { fill: currentColor; stroke: none; }
+    .login-logo { width: 56px; height: 56px; margin: 0 auto 10px; border-radius: 16px; display: flex; align-items: center; justify-content: center;
+      background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.4); color: var(--primary); }
+    .login-logo .ic { width: 28px; height: 28px; }
+    .login-label { display: block; text-align: left; font-size: 0.78rem; color: var(--text-muted); font-weight: 600; margin-top: 12px; }
+    .login-card .login-input { margin: 6px 0 0 0; min-height: 50px; }
+    .auth-hint { min-height: 18px; margin-top: 8px; font-size: 0.78rem; color: var(--text-muted); text-align: left; }
+    .auth-hint.good { color: var(--primary); }
+    .auth-msg { display: none; margin-top: 12px; padding: 10px 12px; border-radius: var(--radius-sm); font-size: 0.82rem; text-align: left; line-height: 1.4; }
+    .auth-msg.err { display: block; background: rgba(239,68,68,0.14); border: 1px solid rgba(239,68,68,0.5); color: #fca5a5; }
+    .auth-msg.ok { display: block; background: rgba(16,185,129,0.14); border: 1px solid rgba(16,185,129,0.5); color: #6ee7b7; }
+    .pin-wrap { position: relative; }
+    .pin-wrap .login-input { padding-right: 52px; letter-spacing: 6px; }
+    .pin-eye { position: absolute; right: 6px; top: 6px; width: 42px; height: 42px; background: none; border: 0; color: var(--text-muted); cursor: pointer; border-radius: 10px; }
+    .pin-eye .ic { width: 22px; height: 22px; vertical-align: middle; }
+    .sec-q-box { text-align: left; background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.4); border-radius: var(--radius-md); padding: 12px 14px; font-size: 0.88rem; margin-top: 6px; }
+    .auth-links { display: flex; justify-content: center; margin-top: 16px; min-height: 20px; }
+    .auth-links .forgot-link { font-size: 0.88rem; padding: 6px 10px; }
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 520px; z-index: 500;
+      display: none; justify-content: space-around; align-items: stretch; gap: 2px;
+      background: rgba(15, 23, 42, 0.97); backdrop-filter: blur(18px); border-top: 1px solid var(--card-border);
+      padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+    }
+    .nav-btn {
+      flex: 1; min-height: 54px; background: none; border: 0; color: var(--text-muted); cursor: pointer; border-radius: 12px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 0.68rem; font-weight: 600;
+    }
+    .nav-btn .ic { width: 24px; height: 24px; margin: 0; vertical-align: middle; }
+    .nav-btn:hover { color: #fff; }
+    .nav-btn:active { background: rgba(255,255,255,0.08); transform: scale(0.95); }
+    .nav-btn.nav-logout { color: var(--danger); }
+    .sheet-title { color: var(--primary); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .sheet-title .ic { width: 22px; height: 22px; }
+    .sheet-btn {
+      width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; padding: 14px; margin-bottom: 10px; min-height: 52px;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); border-radius: var(--radius-md); color: #fff; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+    }
+    .sheet-btn:active { transform: scale(0.98); }
+    .sheet-btn .ic { width: 22px; height: 22px; color: var(--accent); }
+    .sheet-btn.sel { border-color: var(--primary); background: rgba(16,185,129,0.14); }
+    .sheet-btn .tick { margin-left: auto; color: var(--primary); display: none; }
+    .sheet-btn.sel .tick { display: block; }
     @media (prefers-reduced-motion: reduce) { .move-toast { transition: none; } .move-toast .mt-bar { animation-duration: 7s; } }
   </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M17.94 17.94A10.5 10.5 0 0 1 12 19C5.5 19 2 12 2 12a18 18 0 0 1 5.06-5.94M9.9 4.24A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m2 2 20 20"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="currentColor" stroke="none"/></symbol><symbol id="i-cash" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></symbol><symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 22h18"/><path d="M6 18v-7M10 18v-7M14 18v-7M18 18v-7"/><path d="m12 2 9 5H3z"/></symbol><symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol><symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></symbol><symbol id="i-ledger" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></symbol><symbol id="i-sprout" viewBox="0 0 24 24"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></symbol><symbol id="i-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol><symbol id="i-tractor" viewBox="0 0 24 24"><circle cx="7" cy="16" r="4"/><circle cx="18" cy="18" r="2"/><path d="M3 12V5h7l1.5 7H3"/><path d="M11 12h8a2 2 0 0 1 2 2v2M18 16V8h-4"/></symbol><symbol id="i-box" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></symbol><symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol><symbol id="i-bar" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></symbol><symbol id="i-pie" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></symbol><symbol id="i-trend" viewBox="0 0 24 24"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></symbol><symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l2-5.2A8.4 8.4 0 1 1 21 11.5z"/></symbol><symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol><symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol><symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l8.59-8.59a1 1 0 0 0 0-1.41z"/><path d="M7 7h.01"/></symbol><symbol id="i-down2" viewBox="0 0 24 24"><path d="m22 17-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76V6h6v4.76l2 3.24H7z"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol><symbol id="i-checkc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M17.94 17.94A10.5 10.5 0 0 1 12 19C5.5 19 2 12 2 12a18 18 0 0 1 5.06-5.94M9.9 4.24A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m2 2 20 20"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="currentColor" stroke="none"/></symbol><symbol id="i-cash" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></symbol><symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 22h18"/><path d="M6 18v-7M10 18v-7M14 18v-7M18 18v-7"/><path d="m12 2 9 5H3z"/></symbol><symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol><symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></symbol><symbol id="i-ledger" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></symbol><symbol id="i-sprout" viewBox="0 0 24 24"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></symbol><symbol id="i-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol><symbol id="i-tractor" viewBox="0 0 24 24"><circle cx="7" cy="16" r="4"/><circle cx="18" cy="18" r="2"/><path d="M3 12V5h7l1.5 7H3"/><path d="M11 12h8a2 2 0 0 1 2 2v2M18 16V8h-4"/></symbol><symbol id="i-box" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></symbol><symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol><symbol id="i-bar" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></symbol><symbol id="i-pie" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></symbol><symbol id="i-trend" viewBox="0 0 24 24"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></symbol><symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l2-5.2A8.4 8.4 0 1 1 21 11.5z"/></symbol><symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol><symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol><symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l8.59-8.59a1 1 0 0 0 0-1.41z"/><path d="M7 7h.01"/></symbol><symbol id="i-down2" viewBox="0 0 24 24"><path d="m22 17-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76V6h6v4.76l2 3.24H7z"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol><symbol id="i-checkc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol><symbol id="i-translate" viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></symbol><symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol></defs></svg>
 
   <!-- We have moved notification (7 sec baad apne aap hat jata hai) -->
   <div class="move-toast" id="move-toast" role="status" aria-live="polite">
     <span class="mt-ico" id="move-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span>
-    <a id="move-link" href="https://roitx.dpdns.org/" rel="noopener">
+    <a id="move-link" href="https://roitx.dpdns.org/?from=rhisab" rel="noopener">
       <span id="move-text"><b>We have moved!</b> Hum ab naye domain <b>roitx.dpdns.org</b> par hain.</span><br>
       <span class="mt-go" id="move-go">Wahan jaane ke liye yahan click karein →</span>
     </a>
@@ -378,34 +423,46 @@
   </div>
 
   <div id="app-container">
-    <!-- Security Login & Dynamic New User Setup Screen -->
+    <!-- Login / Naya account / PIN reset (ek hi simple screen) -->
     <div class="login-screen" id="login-screen">
       <div class="login-card">
-        <h1 class="brand-title" style="font-size: 1.8rem;"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg> Enterprise Khata AI</h1>
-        <p style="color:var(--text-muted); margin-top:8px; font-size:0.85rem;" id="login-sub-text">Mobile & Security PIN System</p>
-        
-        <input type="tel" id="user-phone-input" class="login-input" placeholder="10-Digit Mobile Number" maxlength="10" oninput="checkUserExistingStatus()">
-        
-        <!-- PIN Input -->
-        <input type="password" id="user-pin-input" class="login-input" placeholder="Enter 4-Digit Security PIN" maxlength="4" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-        
-        <!-- Security Question Dropdown & Answer Box (Dynamically shown for New Users or Forgot PIN) -->
-        <div id="security-setup-container" style="display:none; text-align:left; margin-top:10px;">
-          <label style="font-size:0.75rem; color:var(--primary); font-weight:700;">Select Security Question (For Recovery):</label>
-          <select id="security-question-select" class="login-input" style="margin-top:4px; font-size:0.85rem;">
+        <div class="login-logo"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg></div>
+        <h1 class="brand-title" style="font-size: 1.6rem;">Aasaan Hisaab</h1>
+        <p style="color:var(--text-muted); margin-top:6px; font-size:0.85rem;" id="login-sub-text">Mobile & Security PIN Login</p>
+
+        <label class="login-label" for="user-phone-input">Mobile number</label>
+        <input type="tel" id="user-phone-input" class="login-input" placeholder="10 digit mobile number" maxlength="10" inputmode="numeric" autocomplete="tel"
+               oninput="this.value=this.value.replace(/\D/g,''); checkUserExistingStatus()">
+        <div class="auth-hint" id="auth-hint"></div>
+
+        <div id="pin-group">
+          <label class="login-label" for="user-pin-input" id="pin-label">4-digit PIN</label>
+          <div class="pin-wrap">
+            <input type="password" id="user-pin-input" class="login-input" placeholder="4-digit PIN" maxlength="4" inputmode="numeric" autocomplete="off"
+                   oninput="this.value=this.value.replace(/\D/g,'')">
+            <button type="button" class="pin-eye" id="pin-eye" onclick="togglePinVisibility()" aria-label="PIN dikhayein / chhupayein"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></button>
+          </div>
+        </div>
+
+        <!-- Naye account ya PIN reset ke time hi dikhta hai -->
+        <div id="security-setup-container" style="display:none;">
+          <label class="login-label" id="sec-q-label">Security question (PIN bhoolne par kaam aayega)</label>
+          <div class="sec-q-box" id="sec-q-fixed" style="display:none;"></div>
+          <select id="security-question-select" class="login-input" style="font-size:0.9rem;">
             <option value="Aapke pehle pet ka naam kya hai?">Aapke pehle pet ka naam kya hai?</option>
             <option value="Aapke bachpan ka school kaun sa tha?">Aapke bachpan ka school kaun sa tha?</option>
             <option value="Aapka sabse pasandida khana kya hai?">Aapka sabse pasandida khana kya hai?</option>
             <option value="Aapke best friend ka naam kya hai?">Aapke best friend ka naam kya hai?</option>
           </select>
-          <input type="text" id="security-answer-input" class="login-input" placeholder="Enter Secret Answer (e.g. Tom)">
+          <input type="text" id="security-answer-input" class="login-input" placeholder="Aapka jawab" autocomplete="off" style="margin-top:8px;">
         </div>
 
-        <button class="btn-action" style="width: 100%; padding: 14px; margin-top: 12px;" id="login-btn-txt" onclick="handleSecureLogin()">Unlock Secure Ledger</button>
-        
-        <div style="display:flex; justify-content:space-between; margin-top:12px;">
-          <span class="forgot-link" onclick="toggleForgotMode()" id="forgot-mode-btn">Forgot PIN?</span>
-          <span class="forgot-link" onclick="handleSecureRecovery()" id="recovery-action-btn" style="display:none;">Verify & Reset PIN</span>
+        <div class="auth-msg" id="auth-msg" role="alert"></div>
+
+        <button class="btn-action" style="width: 100%; padding: 14px; margin-top: 16px; font-size: 1rem;" id="login-btn-txt" onclick="submitAuth()">Login</button>
+
+        <div class="auth-links">
+          <span class="forgot-link" onclick="toggleForgotMode()" id="forgot-mode-btn">PIN bhool gaye?</span>
         </div>
       </div>
     </div>
@@ -415,14 +472,6 @@
       <div>
         <div class="brand-title" id="app-header-title">Aasaan Hisaab AI Enterprise</div>
         <div style="font-size: 0.68rem; color: var(--primary);" id="user-display">● Sync Active</div>
-      </div>
-      <div style="display:flex; gap: 8px; align-items:center;">
-        <select class="lang-select" id="lang-select" onchange="changeLanguage(this.value)">
-          <option value="hinglish" selected>Hinglish</option>
-          <option value="hi">हिंदी</option>
-          <option value="en">English</option>
-        </select>
-        <button class="logout-btn" onclick="logoutUser()">Logout</button>
       </div>
     </header>
 
@@ -570,6 +619,15 @@
     </footer>
   </div>
 
+  <!-- Bottom navigation -->
+  <nav class="bottom-nav" id="bottom-nav" aria-label="Main navigation">
+    <button class="nav-btn" onclick="navHome()" aria-label="Home"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></button>
+    <button class="nav-btn" onclick="openPartyModal()" aria-label="Udhar Khata"><svg class="ic" aria-hidden="true"><use href="#i-ledger"/></svg><span>Udhar</span></button>
+    <button class="nav-btn" onclick="openModal('lang-modal')" aria-label="Language badlein"><svg class="ic fill" aria-hidden="true"><use href="#i-translate"/></svg><span>Language</span></button>
+    <button class="nav-btn" onclick="openModal('settings-modal')" aria-label="Settings"><svg class="ic" aria-hidden="true"><use href="#i-gear"/></svg><span>Settings</span></button>
+    <button class="nav-btn nav-logout" onclick="logoutUser()" aria-label="Logout"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg><span>Logout</span></button>
+  </nav>
+
   <!-- Cookie Consent Banner -->
   <div class="cookie-banner" id="cookie-banner">
     <p id="txt-cookie-msg" style="font-size:0.75rem; color:var(--text-muted);">Hum aapke data ko local storage aur secure cloud sync ke liye process karte hain.</p>
@@ -697,6 +755,29 @@
     <button class="at-act" type="button" style="display:none;"></button>
   </div>
 
+  <!-- Language Modal -->
+  <div class="modal-overlay" id="lang-modal" onclick="if(event.target===this)closeModal('lang-modal')">
+    <div class="modal-content" style="max-width:360px;">
+      <button class="close-btn" onclick="closeModal('lang-modal')" aria-label="Band karein"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+      <h3 class="sheet-title"><svg class="ic fill" aria-hidden="true"><use href="#i-translate"/></svg> Language / भाषा</h3>
+      <button class="sheet-btn" data-lang="hinglish" onclick="pickLanguage('hinglish')">Hinglish<svg class="ic tick" aria-hidden="true"><use href="#i-check"/></svg></button>
+      <button class="sheet-btn" data-lang="hi" onclick="pickLanguage('hi')">हिंदी<svg class="ic tick" aria-hidden="true"><use href="#i-check"/></svg></button>
+      <button class="sheet-btn" data-lang="en" onclick="pickLanguage('en')">English<svg class="ic tick" aria-hidden="true"><use href="#i-check"/></svg></button>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settings-modal" onclick="if(event.target===this)closeModal('settings-modal')">
+    <div class="modal-content" style="max-width:380px;">
+      <button class="close-btn" onclick="closeModal('settings-modal')" aria-label="Band karein"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+      <h3 class="sheet-title"><svg class="ic" aria-hidden="true"><use href="#i-gear"/></svg> Settings</h3>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:14px;" id="settings-phone"></p>
+      <button class="sheet-btn" onclick="closeModal('settings-modal'); openModal('change-pin-modal')"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg> PIN / Security Question badlein</button>
+      <button class="sheet-btn" onclick="closeModal('settings-modal'); openBudgetModal()"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Mahine ka Budget</button>
+      <button class="sheet-btn" onclick="closeModal('settings-modal'); backupAndRestoreModal()"><svg class="ic" aria-hidden="true"><use href="#i-save"/></svg> Data Backup / Restore</button>
+    </div>
+  </div>
+
   <!-- Legal Modals -->
   <div class="modal-overlay" id="privacy-modal">
     <div class="modal-content">
@@ -723,6 +804,17 @@
   </div>
 
   <script>
+    /* Safe storage: private mode / blocked storage me bhi app crash nahi hoga */
+    const LS = (() => {
+      const mem = {}; let ok = true;
+      try { window.localStorage.setItem('__t', '1'); window.localStorage.removeItem('__t'); } catch (e) { ok = false; }
+      return {
+        getItem(k) { try { if (ok) return window.localStorage.getItem(k); } catch (e) {} return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null; },
+        setItem(k, v) { try { if (ok) { window.localStorage.setItem(k, v); return; } } catch (e) {} mem[k] = String(v); },
+        removeItem(k) { try { if (ok) window.localStorage.removeItem(k); } catch (e) {} delete mem[k]; }
+      };
+    })();
+    const gid = id => document.getElementById(id);
     const firebaseConfig = {
       apiKey: "AIzaSyA7nDHaverP0ET_SS8uGiHfC97rO0idBlc",
       authDomain: "roitx-30e9a.firebaseapp.com",
@@ -733,15 +825,15 @@
     };
 
     let db;
-    let currentUser = localStorage.getItem('ah_user_phone') || null;
-    let currentLang = localStorage.getItem('ah_app_lang') || 'hinglish';
+    let currentUser = LS.getItem('ah_user_phone') || null;
+    let currentLang = LS.getItem('ah_app_lang') || 'hinglish';
     let selectedWalletFilter = 'ALL';
     let selectedChartType = 'bar';
     let currentChart = null;
     let transactions = [];
     let isForgotMode = false;
-    let selectedPeriod = localStorage.getItem('ah_period') || 'month';
-    let hideBalance = localStorage.getItem('ah_hide_balance') === '1';
+    let selectedPeriod = LS.getItem('ah_period') || 'month';
+    let hideBalance = LS.getItem('ah_hide_balance') === '1';
     let budgets = {};
     const BUDGET_CATS = ['Farming', 'Ration', 'Rent', 'Fuel', 'Health', 'Education', 'Transport', 'Bills', 'Shopping', 'Dukaan', 'General'];
     const PERIOD_LABELS = { today: 'Aaj', week: 'Pichle 7 Din', month: 'Is Mahina', lastmonth: 'Pichla Mahina', year: 'Is Saal', all: 'Sab Time' };
@@ -760,25 +852,15 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       showMoveToast();
-      document.getElementById('lang-select').value = currentLang;
       changeLanguage(currentLang);
 
-      if (currentUser) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('user-display').innerText = `● Safe: ${currentUser}`;
-        
-        if (!localStorage.getItem('ah_cookies_accepted')) {
-          document.getElementById('cookie-banner').style.display = 'flex';
-        }
-        
-        syncFromFirebase();
-      }
-      render();
+      gid('login-screen').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); submitAuth(); } });
+      if (currentUser) enterApp(); else { render(); showLoginUI(); }
     });
 
     function changeLanguage(lang) {
       currentLang = lang;
-      localStorage.setItem('ah_app_lang', lang);
+      LS.setItem('ah_app_lang', lang);
       const dict = translations[lang] || translations.hinglish;
 
       document.getElementById('lbl-total').innerText = dict.totalBal;
@@ -791,55 +873,169 @@
       document.getElementById('lbl-shortcuts').innerText = dict.shortcutsTitle;
       document.getElementById('txt-cookie-msg').innerText = dict.cookieMsg;
       document.getElementById('login-sub-text').innerText = dict.loginSub;
+      document.querySelectorAll('#lang-modal .sheet-btn').forEach(b => b.classList.toggle('sel', b.dataset.lang === lang));
+      document.documentElement.lang = lang === 'en' ? 'en' : 'hi';
     }
+    function pickLanguage(lang) { changeLanguage(lang); closeModal('lang-modal'); render(); }
+    function navHome() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
     function acceptCookies() {
-      localStorage.setItem('ah_cookies_accepted', 'true');
+      LS.setItem('ah_cookies_accepted', 'true');
       document.getElementById('cookie-banner').style.display = 'none';
     }
 
-    function checkUserExistingStatus() {
-      const phone = document.getElementById('user-phone-input').value.trim();
-      const setupContainer = document.getElementById('security-setup-container');
-      const pinInput = document.getElementById('user-pin-input');
-      
-      if (phone.length === 10) {
-        const storedPin = localStorage.getItem(`ah_pin_${phone}`);
-        if (!storedPin) {
-          setupContainer.style.display = 'block';
-          pinInput.placeholder = 'Create New 4-Digit PIN';
+/* =====================================================================
+       AUTH: login / naya account / PIN reset  (cloud + phone dono me save)
+       - Account (PIN hash + security question) Firebase me bhi save hota hai,
+         isliye naye phone/browser par bhi wahi PIN chalta hai aur reset bhi.
+       - Internet na ho to phone me saved account se login ho jata hai.
+       ===================================================================== */
+    let authMode = 'login';        // 'login' | 'forgot'
+    let acctState = 'unknown';     // unknown | checking | new | existing | offline
+    let acctCache = null;          // typed phone ka account {pin,q,ans}
+    let lookupToken = 0;
+    let authBusy = false;
+
+    function withTimeout(p, ms) {
+      return Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
+    }
+    function localAcct(phone) {
+      const pin = LS.getItem(`ah_pin_${phone}`);
+      if (!pin) return null;
+      return { pin, q: LS.getItem(`ah_sec_q_${phone}`) || '', ans: LS.getItem(`ah_sec_ans_${phone}`) || '' };
+    }
+    function saveLocalAcct(phone, a) {
+      LS.setItem(`ah_pin_${phone}`, a.pin);
+      LS.setItem(`ah_sec_q_${phone}`, a.q || '');
+      LS.setItem(`ah_sec_ans_${phone}`, a.ans || '');
+    }
+    async function cloudAcct(phone) {
+      if (!db) return null;
+      const d = await withTimeout(db.collection('users').doc(phone).get(), 7000);
+      const a = d && d.exists && d.data() && d.data().auth;
+      return (a && a.pin) ? { pin: a.pin, q: a.q || '', ans: a.ans || '' } : null;
+    }
+    function pushAcct(phone, a) {
+      if (!db) return;
+      db.collection('users').doc(phone).set({ auth: { pin: a.pin, q: a.q || '', ans: a.ans || '' } }, { merge: true }).catch(() => {});
+    }
+    // Cloud ko authority maante hain; cloud na mile to phone ka account use hota hai (aur cloud me upload ho jata hai)
+    async function resolveAccount(phone) {
+      const l = localAcct(phone);
+      let c = null, reach = true;
+      try { c = await cloudAcct(phone); } catch (e) { reach = false; }
+      if (c) { saveLocalAcct(phone, c); return { acct: c, reach }; }
+      if (l) { if (reach) pushAcct(phone, l); return { acct: l, reach }; }
+      return { acct: null, reach };
+    }
+
+    function setAuthMsg(text, type) {
+      const m = gid('auth-msg');
+      m.textContent = text || '';
+      m.className = 'auth-msg' + (text ? (' ' + (type || 'err')) : '');
+    }
+    function togglePinVisibility() {
+      const i = gid('user-pin-input');
+      const show = i.type === 'password';
+      i.type = show ? 'text' : 'password';
+      gid('pin-eye').innerHTML = `<svg class="ic" aria-hidden="true"><use href="#${show ? 'i-eyeoff' : 'i-eye'}"/></svg>`;
+    }
+
+    function applyAuthUI() {
+      const hint = gid('auth-hint'), btn = gid('login-btn-txt'), pinLabel = gid('pin-label'), pin = gid('user-pin-input');
+      const setup = gid('security-setup-container'), fixedQ = gid('sec-q-fixed'), qSel = gid('security-question-select');
+      const qLabel = gid('sec-q-label'), forgot = gid('forgot-mode-btn');
+      hint.className = 'auth-hint';
+      setup.style.display = 'none'; fixedQ.style.display = 'none'; qSel.style.display = 'block';
+      gid('pin-group').style.display = 'block';
+
+      if (authMode === 'forgot') {
+        forgot.style.display = 'inline'; forgot.textContent = '← Wapas Login';
+        btn.textContent = 'PIN reset karein';
+        pinLabel.textContent = 'Naya 4-digit PIN'; pin.placeholder = 'Naya PIN';
+        if (acctState === 'existing') {
+          hint.textContent = 'Security question ka sahi jawab dein, phir naya PIN set ho jayega.';
+          setup.style.display = 'block';
+          qSel.style.display = 'none';
+          qLabel.textContent = 'Aapka security question';
+          if (acctCache && acctCache.q) { fixedQ.textContent = acctCache.q; fixedQ.style.display = 'block'; }
+        } else if (acctState === 'offline') {
+          hint.textContent = 'Internet check karein, phir dobara try karein.';
+        } else if (acctState === 'new') {
+          hint.textContent = 'Is number se koi account nahi mila.';
         } else {
-          setupContainer.style.display = 'none';
-          pinInput.placeholder = 'Enter 4-Digit Security PIN';
+          hint.textContent = 'Upar apna mobile number daalein.';
         }
+        return;
       }
+
+      qLabel.textContent = 'Security question (PIN bhoolne par kaam aayega)';
+      pinLabel.textContent = '4-digit PIN';
+      if (acctState === 'new') {
+        hint.textContent = 'Naya account banega. PIN aur security question set karein.';
+        hint.classList.add('good');
+        setup.style.display = 'block';
+        btn.textContent = 'Account banayein';
+        pinLabel.textContent = 'Naya 4-digit PIN banayein'; pin.placeholder = 'Naya PIN';
+        forgot.style.display = 'none';
+      } else if (acctState === 'existing') {
+        hint.textContent = 'Account mil gaya. Apna PIN daalein.';
+        hint.classList.add('good');
+        btn.textContent = 'Login';
+        pin.placeholder = '4-digit PIN';
+        forgot.style.display = 'inline'; forgot.textContent = 'PIN bhool gaye?';
+      } else if (acctState === 'offline') {
+        hint.textContent = 'Internet nahi mil raha. Internet chalu karke dobara try karein.';
+        btn.textContent = 'Login';
+        forgot.style.display = 'none';
+      } else if (acctState === 'checking') {
+        hint.textContent = 'Check ho raha hai…';
+        btn.textContent = 'Login';
+        forgot.style.display = 'none';
+      } else {
+        hint.textContent = 'Apna 10 digit mobile number daalein. Naya number hoga to account ban jayega.';
+        btn.textContent = 'Login';
+        pin.placeholder = '4-digit PIN';
+        forgot.style.display = 'none';
+      }
+    }
+
+    async function checkUserExistingStatus() {
+      const phone = gid('user-phone-input').value.trim();
+      const tok = ++lookupToken;
+      setAuthMsg('');
+      if (phone.length !== 10) { acctState = 'unknown'; acctCache = null; applyAuthUI(); return; }
+      acctState = 'checking'; applyAuthUI();
+      const r = await resolveAccount(phone);
+      if (tok !== lookupToken) return;
+      acctCache = r.acct;
+      acctState = r.acct ? 'existing' : (r.reach ? 'new' : 'offline');
+      applyAuthUI();
     }
 
     function toggleForgotMode() {
-      isForgotMode = !isForgotMode;
-      const setupContainer = document.getElementById('security-setup-container');
-      const recoveryBtn = document.getElementById('recovery-action-btn');
-      const mainBtn = document.getElementById('login-btn-txt');
-      const forgotBtn = document.getElementById('forgot-mode-btn');
-      const pinInput = document.getElementById('user-pin-input');
-
-      if (isForgotMode) {
-        setupContainer.style.display = 'block';
-        pinInput.placeholder = 'Enter NEW 4-Digit PIN';
-        recoveryBtn.style.display = 'block';
-        mainBtn.style.display = 'none';
-        forgotBtn.innerText = 'Back to Login';
-        alert("Security Check: Apne security question ka sahi answer daalein tabhi PIN reset hoga.");
-      } else {
-        setupContainer.style.display = 'none';
-        pinInput.placeholder = 'Enter 4-Digit Security PIN';
-        recoveryBtn.style.display = 'none';
-        mainBtn.style.display = 'block';
-        forgotBtn.innerText = 'Forgot PIN?';
-      }
+      authMode = authMode === 'forgot' ? 'login' : 'forgot';
+      setAuthMsg('');
+      gid('user-pin-input').value = '';
+      gid('security-answer-input').value = '';
+      applyAuthUI();
     }
 
-    /* ---------- Security helpers: PIN/answer ab SHA-256 hash me save hote hain ---------- */
+    function showLoginUI() {
+      gid('login-screen').style.display = 'flex';
+      gid('bottom-nav').style.display = 'none';
+      authMode = 'login';
+      setAuthMsg('');
+      const last = LS.getItem('ah_last_phone') || '';
+      gid('user-phone-input').value = /^\d{10}$/.test(last) ? last : '';
+      gid('user-pin-input').value = '';
+      gid('security-answer-input').value = '';
+      acctState = 'unknown'; acctCache = null;
+      applyAuthUI();
+      if (gid('user-phone-input').value) checkUserExistingStatus();
+    }
+
+    /* ---------- Security helpers: PIN/answer SHA-256 hash me save hote hain ---------- */
     async function hashSecret(phone, label, secret) {
       if (!(window.crypto && crypto.subtle)) return secret;
       const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`ah|${label}|${phone}|${secret}`));
@@ -852,146 +1048,218 @@
       return stored === entered; // purana plain-text data (migrate ho jayega)
     }
     function lockSecondsLeft(phone) {
-      const until = parseInt(localStorage.getItem(`ah_lock_${phone}`) || '0', 10);
+      const until = parseInt(LS.getItem(`ah_lock_${phone}`) || '0', 10);
       return Math.max(0, Math.ceil((until - Date.now()) / 1000));
     }
     function registerFail(phone) {
-      const n = parseInt(localStorage.getItem(`ah_fail_${phone}`) || '0', 10) + 1;
+      const n = parseInt(LS.getItem(`ah_fail_${phone}`) || '0', 10) + 1;
       if (n >= 5) {
-        localStorage.setItem(`ah_lock_${phone}`, String(Date.now() + 60000));
-        localStorage.setItem(`ah_fail_${phone}`, '0');
+        LS.setItem(`ah_lock_${phone}`, String(Date.now() + 60000));
+        LS.setItem(`ah_fail_${phone}`, '0');
       } else {
-        localStorage.setItem(`ah_fail_${phone}`, String(n));
+        LS.setItem(`ah_fail_${phone}`, String(n));
       }
     }
     function clearFails(phone) {
-      localStorage.removeItem(`ah_fail_${phone}`);
-      localStorage.removeItem(`ah_lock_${phone}`);
+      LS.removeItem(`ah_fail_${phone}`);
+      LS.removeItem(`ah_lock_${phone}`);
     }
 
-    async function handleSecureLogin() {
-      const phone = document.getElementById('user-phone-input').value.trim();
-      const pin = document.getElementById('user-pin-input').value.trim();
-
-      if (phone.length < 10) return alert("Kripya sahi 10-Digit Mobile Number dalein.");
-
+    async function submitAuth() {
+      if (authBusy) return;
+      const phone = gid('user-phone-input').value.trim();
+      const btn = gid('login-btn-txt');
+      setAuthMsg('');
+      if (!/^\d{10}$/.test(phone)) return setAuthMsg('Sahi 10 digit mobile number daalein.');
       const wait = lockSecondsLeft(phone);
-      if (wait > 0) return alert(`Bahut baar galat PIN daala gaya. ${wait} second baad dobara try karein.`);
-
-      const storedPin = localStorage.getItem(`ah_pin_${phone}`);
-
-      if (!storedPin) {
-        const q = document.getElementById('security-question-select').value;
-        const ans = document.getElementById('security-answer-input').value.trim().toLowerCase();
-
-        if (!/^\d{4}$/.test(pin)) return alert("Kripya 4-digit ka valid PIN set karein.");
-        if (!ans) return alert("Kripya security question ka answer bharein.");
-
-        localStorage.setItem(`ah_pin_${phone}`, await hashSecret(phone, 'pin', pin));
-        localStorage.setItem(`ah_sec_q_${phone}`, q);
-        localStorage.setItem(`ah_sec_ans_${phone}`, await hashSecret(phone, 'ans', ans));
-        alert("Aapka naya account aur Security Question safaltapurvak register ho gaya hai!");
-      } else {
-        if (!(await secretMatches(phone, 'pin', storedPin, pin))) {
-          registerFail(phone);
-          return alert("Galat Security PIN!");
-        }
-        clearFails(phone);
-        // Purana plain-text PIN/answer ho to ab hash me badal do
-        if (!isHashed(storedPin)) {
-          const h = await hashSecret(phone, 'pin', pin);
-          if (isHashed(h)) localStorage.setItem(`ah_pin_${phone}`, h);
-        }
-        const sa = localStorage.getItem(`ah_sec_ans_${phone}`);
-        if (sa && !isHashed(sa)) {
-          const h = await hashSecret(phone, 'ans', sa);
-          if (isHashed(h)) localStorage.setItem(`ah_sec_ans_${phone}`, h);
-        }
+      if (wait > 0) return setAuthMsg(`Bahut baar galat try hua. ${wait} second baad dobara try karein.`);
+      authBusy = true; btn.disabled = true; btn.style.opacity = '0.7';
+      try {
+        if (authMode === 'forgot') await doReset(phone); else await doLogin(phone);
+      } catch (e) {
+        setAuthMsg('Kuch gadbad ho gayi. Dobara try karein.');
+      } finally {
+        authBusy = false; btn.disabled = false; btn.style.opacity = '';
       }
-
-      currentUser = phone;
-      localStorage.setItem('ah_user_phone', currentUser);
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('user-display').innerText = `● Safe: ${currentUser}`;
-      document.getElementById('user-pin-input').value = '';
-
-      if (!localStorage.getItem('ah_cookies_accepted')) {
-        document.getElementById('cookie-banner').style.display = 'flex';
-      }
-
-      syncFromFirebase();
     }
 
-    async function handleSecureRecovery() {
-      const phone = document.getElementById('user-phone-input').value.trim();
-      const newPin = document.getElementById('user-pin-input').value.trim();
-      const enteredAns = document.getElementById('security-answer-input').value.trim().toLowerCase();
+    async function doLogin(phone) {
+      const pin = gid('user-pin-input').value.trim();
+      const r = await resolveAccount(phone);
 
-      if (phone.length < 10 || !/^\d{4}$/.test(newPin)) {
-        return alert("Sahi mobile number aur naya 4-digit PIN daalein.");
+      if (!r.acct) {
+        if (!r.reach) return setAuthMsg('Internet check karein, phir dobara try karein.');
+        // Naya account
+        const q = gid('security-question-select').value;
+        const ans = gid('security-answer-input').value.trim().toLowerCase();
+        gid('security-setup-container').style.display = 'block';
+        if (!/^\d{4}$/.test(pin)) return setAuthMsg('4 digit ka PIN set karein.');
+        if (!ans) return setAuthMsg('Security question ka jawab bharein.');
+        const acct = { pin: await hashSecret(phone, 'pin', pin), q, ans: await hashSecret(phone, 'ans', ans) };
+        saveLocalAcct(phone, acct);
+        pushAcct(phone, acct);
+        return enterAppFor(phone, 'Account ban gaya! Swagat hai.');
       }
 
-      const wait = lockSecondsLeft(phone);
-      if (wait > 0) return alert(`Bahut baar galat answer daala gaya. ${wait} second baad dobara try karein.`);
-
-      const savedAns = localStorage.getItem(`ah_sec_ans_${phone}`);
-
-      if (savedAns && await secretMatches(phone, 'ans', savedAns, enteredAns)) {
-        clearFails(phone);
-        localStorage.setItem(`ah_pin_${phone}`, await hashSecret(phone, 'pin', newPin));
-        if (!isHashed(savedAns)) localStorage.setItem(`ah_sec_ans_${phone}`, await hashSecret(phone, 'ans', enteredAns));
-        alert("Badhai ho! Aapka PIN safaltapurvak reset ho gaya hai. Ab aap naye PIN se login karein.");
-        toggleForgotMode();
-        document.getElementById('user-pin-input').value = '';
-        document.getElementById('security-answer-input').value = '';
-      } else {
+      if (!/^\d{4}$/.test(pin)) return setAuthMsg('Apna 4 digit PIN daalein.');
+      if (!(await secretMatches(phone, 'pin', r.acct.pin, pin))) {
         registerFail(phone);
-        alert("Unauthorized! Security Answer galat hai, isliye PIN reset nahi kiya ja sakta.");
+        return setAuthMsg('Galat PIN. Bhool gaye ho to neeche "PIN bhool gaye?" dabayein.');
       }
+      clearFails(phone);
+      // Purana plain-text PIN/answer ho to hash me badal do
+      const upd = { ...r.acct };
+      let changed = false;
+      if (!isHashed(upd.pin)) { upd.pin = await hashSecret(phone, 'pin', pin); changed = true; }
+      if (upd.ans && !isHashed(upd.ans)) { upd.ans = await hashSecret(phone, 'ans', upd.ans); changed = true; }
+      if (changed) { saveLocalAcct(phone, upd); pushAcct(phone, upd); }
+      enterAppFor(phone);
+    }
+
+    async function doReset(phone) {
+      const newPin = gid('user-pin-input').value.trim();
+      const ans = gid('security-answer-input').value.trim().toLowerCase();
+      const r = await resolveAccount(phone);
+      if (!r.acct) return setAuthMsg(r.reach ? 'Is number se koi account nahi mila.' : 'Internet check karein, phir dobara try karein.');
+      acctCache = r.acct; acctState = 'existing'; applyAuthUI();
+      if (!ans) return setAuthMsg('Security question ka jawab daalein.');
+      if (!/^\d{4}$/.test(newPin)) return setAuthMsg('Naya 4 digit PIN daalein.');
+      if (!(await secretMatches(phone, 'ans', r.acct.ans, ans))) {
+        registerFail(phone);
+        return setAuthMsg('Jawab galat hai. PIN reset nahi ho sakta.');
+      }
+      clearFails(phone);
+      const upd = { ...r.acct, pin: await hashSecret(phone, 'pin', newPin) };
+      if (upd.ans && !isHashed(upd.ans)) upd.ans = await hashSecret(phone, 'ans', ans);
+      saveLocalAcct(phone, upd);
+      pushAcct(phone, upd);
+      enterAppFor(phone, 'PIN reset ho gaya. Naya PIN yaad rakhein.');
     }
 
     async function updateSecurityCredentials() {
-      const oldPin = document.getElementById('settings-old-pin').value.trim();
-      const newPin = document.getElementById('settings-new-pin').value.trim();
-      const newQ = document.getElementById('settings-new-q').value;
-      const newAns = document.getElementById('settings-new-ans').value.trim().toLowerCase();
+      const oldPin = gid('settings-old-pin').value.trim();
+      const newPin = gid('settings-new-pin').value.trim();
+      const newQ = gid('settings-new-q').value;
+      const newAns = gid('settings-new-ans').value.trim().toLowerCase();
 
-      const storedPin = localStorage.getItem(`ah_pin_${currentUser}`);
-
-      if (!(await secretMatches(currentUser, 'pin', storedPin, oldPin))) return alert("Purana PIN galat hai!");
+      const cur = localAcct(currentUser);
+      if (!cur || !(await secretMatches(currentUser, 'pin', cur.pin, oldPin))) return alert("Purana PIN galat hai!");
       if (!/^\d{4}$/.test(newPin)) return alert("Naya PIN 4 digits ka hona chahiye.");
       if (!newAns) return alert("Security answer bharna anivarya hai.");
 
-      localStorage.setItem(`ah_pin_${currentUser}`, await hashSecret(currentUser, 'pin', newPin));
-      localStorage.setItem(`ah_sec_q_${currentUser}`, newQ);
-      localStorage.setItem(`ah_sec_ans_${currentUser}`, await hashSecret(currentUser, 'ans', newAns));
+      const acct = { pin: await hashSecret(currentUser, 'pin', newPin), q: newQ, ans: await hashSecret(currentUser, 'ans', newAns) };
+      saveLocalAcct(currentUser, acct);
+      pushAcct(currentUser, acct);
 
-      alert("Aapke security credentials safaltapurvak update kar diye gaye hain!");
-      document.getElementById('settings-old-pin').value = '';
-      document.getElementById('settings-new-pin').value = '';
-      document.getElementById('settings-new-ans').value = '';
+      gid('settings-old-pin').value = '';
+      gid('settings-new-pin').value = '';
+      gid('settings-new-ans').value = '';
       closeModal('change-pin-modal');
+      showToast("PIN aur security question update ho gaye");
+    }
+
+    function enterAppFor(phone, welcomeMsg) {
+      currentUser = phone;
+      LS.setItem('ah_user_phone', phone);
+      LS.setItem('ah_last_phone', phone);
+      gid('user-pin-input').value = '';
+      gid('security-answer-input').value = '';
+      setAuthMsg('');
+      enterApp();
+      if (welcomeMsg) showToast(welcomeMsg);
+    }
+
+    function enterApp() {
+      gid('login-screen').style.display = 'none';
+      gid('bottom-nav').style.display = 'flex';
+      gid('user-display').innerText = `● Safe: ${currentUser}`;
+      gid('settings-phone').textContent = `Account: ${currentUser}`;
+      transactions = txCacheRead();          // pehle phone ka saved data turant dikhao
+      if (!LS.getItem('ah_cookies_accepted')) gid('cookie-banner').style.display = 'flex';
+      syncFromFirebase();
+      render();
+      window.scrollTo(0, 0);
     }
 
     function logoutUser() {
-      localStorage.removeItem('ah_user_phone');
+      if (!confirm('Kya aap logout karna chahte hain?')) return;
+      if (unsubTx) { unsubTx(); unsubTx = null; }
+      LS.removeItem('ah_user_phone');
       currentUser = null;
-      document.getElementById('cookie-banner').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'flex';
+      transactions = [];
+      budgets = {};
+      gid('cookie-banner').style.display = 'none';
+      document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+      showLoginUI();
+    }
+
+    /* =====================================================================
+       STORAGE: phone (localStorage) + cloud (Firebase) dono me entry save
+       - Entry pehle phone me save hoti hai, screen turant update hoti hai
+       - Cloud sync fail ho to entry pending rehti hai aur net aate hi upload hoti hai
+       ===================================================================== */
+    let unsubTx = null;
+    const txCol = user => db.collection("users").doc(user).collection("transactions");
+    function txCacheRead() {
+      try { const a = JSON.parse(LS.getItem('ah_tx_' + currentUser) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+    }
+    function txCacheWrite() {
+      try { LS.setItem('ah_tx_' + currentUser, JSON.stringify(transactions)); } catch (e) {}
+    }
+    function pendRead(user) {
+      try { const a = JSON.parse(LS.getItem('ah_pend_' + user) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+    }
+    function pendWrite(user, a) { try { LS.setItem('ah_pend_' + user, JSON.stringify(a)); } catch (e) {} }
+    function pendAdd(user, e) { pendWrite(user, pendRead(user).filter(x => x.id !== e.id).concat([e])); }
+    function pendDone(user, id) { pendWrite(user, pendRead(user).filter(x => x.id !== id)); }
+    function cloudSet(e) {
+      if (!db || !currentUser) return;
+      const user = currentUser;
+      pendAdd(user, e);
+      txCol(user).doc(String(e.id)).set(e)
+        .then(() => pendDone(user, e.id))
+        .catch(() => showToast('Cloud sync nahi hua. Data phone me safe hai, baad me sync hoga.'));
+    }
+    function flushPending() { if (currentUser) pendRead(currentUser).forEach(cloudSet); }
+    function txUpsertLocal(e) {
+      const i = transactions.findIndex(t => Number(t.id) === Number(e.id));
+      if (i >= 0) transactions[i] = e; else transactions.push(e);
+      transactions.sort((a, b) => Number(b.id) - Number(a.id));
+    }
+    function txSave(entry) {
+      txUpsertLocal(entry);
+      txCacheWrite();
+      render();
+      cloudSet(entry);
+    }
+    function txRemove(id) {
+      id = Number(id);
+      transactions = transactions.filter(t => Number(t.id) !== id);
+      txCacheWrite();
+      if (currentUser) pendDone(currentUser, id);
+      render();
+      if (db && currentUser) txCol(currentUser).doc(String(id)).delete().catch(() => {});
     }
 
     function syncFromFirebase() {
-      if (!db || !currentUser) return;
-      db.collection("users").doc(currentUser).collection("transactions").orderBy("id", "desc")
-        .onSnapshot(snapshot => {
-          transactions = [];
-          snapshot.forEach(doc => transactions.push(doc.data()));
-          render();
-        }, err => console.log("Cloud sync error / fallback running"));
       try { loadBudgets(); } catch (e) { console.log('Budget load skipped'); }
+      if (!db || !currentUser) return;
+      if (unsubTx) { unsubTx(); unsubTx = null; }
+      const user = currentUser;
+      unsubTx = txCol(user).orderBy("id", "desc").onSnapshot(snapshot => {
+        if (user !== currentUser) return;
+        const list = [];
+        snapshot.forEach(doc => list.push(doc.data()));
+        // cloud abhi khali-cache se aaya ho to phone ka data mat mitao
+        if (snapshot.metadata.fromCache && !list.length && transactions.length) return;
+        transactions = list;
+        txCacheWrite();
+        render();
+        if (!snapshot.metadata.fromCache) flushPending();
+      }, err => { showToast('Cloud se connect nahi ho paya. Phone me saved data dikh raha hai.'); });
     }
 
-    /* ---------- Date / period helpers ---------- */
+        /* ---------- Date / period helpers ---------- */
     function pad2(n) { return String(n).padStart(2, '0'); }
     function toISO(d) { return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
     function todayISO() { return toISO(new Date()); }
@@ -1023,12 +1291,12 @@
     }
     function setPeriod(p) {
       selectedPeriod = p;
-      localStorage.setItem('ah_period', p);
+      LS.setItem('ah_period', p);
       render();
     }
     function toggleHideBalance() {
       hideBalance = !hideBalance;
-      localStorage.setItem('ah_hide_balance', hideBalance ? '1' : '0');
+      LS.setItem('ah_hide_balance', hideBalance ? '1' : '0');
       render();
     }
 
@@ -1055,12 +1323,12 @@
 
     /* ---------- Budgets ---------- */
     function loadBudgets() {
-      try { budgets = JSON.parse(localStorage.getItem('ah_budgets_' + currentUser) || '{}') || {}; } catch (e) { budgets = {}; }
+      try { budgets = JSON.parse(LS.getItem('ah_budgets_' + currentUser) || '{}') || {}; } catch (e) { budgets = {}; }
       if (db && currentUser) {
         db.collection("users").doc(currentUser).get().then(d => {
           if (d && d.exists && d.data() && d.data().budgets) {
             budgets = d.data().budgets;
-            localStorage.setItem('ah_budgets_' + currentUser, JSON.stringify(budgets));
+            LS.setItem('ah_budgets_' + currentUser, JSON.stringify(budgets));
             renderBudgets();
           }
         }).catch(() => {});
@@ -1080,7 +1348,7 @@
         if (Number.isFinite(v) && v > 0) nb[c] = v;
       });
       budgets = nb;
-      localStorage.setItem('ah_budgets_' + currentUser, JSON.stringify(budgets));
+      LS.setItem('ah_budgets_' + currentUser, JSON.stringify(budgets));
       if (db && currentUser) db.collection("users").doc(currentUser).set({ budgets: budgets }, { merge: true });
       closeModal('budget-modal');
       renderBudgets();
@@ -1181,9 +1449,7 @@
         timestamp: (!dateChanged && existing.timestamp) ? existing.timestamp : stampFor(date)
       };
 
-      if (db && currentUser) {
-        db.collection("users").doc(currentUser).collection("transactions").doc(String(entryId)).set(entry);
-      }
+      txSave(entry);
       closeModal('edit-modal');
       if (!existing && type === 'OUT') checkBudgetAfterAdd(category, amount, date, entryId);
     }
@@ -1198,14 +1464,8 @@
     function deleteEntry(id) {
       const entry = transactions.find(t => t.id === Number(id));
       if (!confirm('Kya aap is entry ko delete karna chahte hain?')) return;
-      if (db && currentUser) {
-        db.collection("users").doc(currentUser).collection("transactions").doc(String(id)).delete();
-      }
-      if (entry) {
-        showToast("Entry delete ho gayi", "Undo ↩", () => {
-          if (db && currentUser) db.collection("users").doc(currentUser).collection("transactions").doc(String(entry.id)).set(entry);
-        }, 6000);
-      }
+      txRemove(id);
+      if (entry) showToast("Entry delete ho gayi", "Undo ↩", () => txSave(entry), 6000);
     }
 
     let recognition;
@@ -1321,9 +1581,7 @@ OUTPUT ONLY JSON:
         entry.mode = 'Udhar'; entry.category = 'Udhar';
       }
 
-      if (db && currentUser) {
-        db.collection("users").doc(currentUser).collection("transactions").doc(String(entry.id)).set(entry);
-      }
+      txSave(entry);
       if (party) showToast(`${party} ke khate me entry add ho gayi`);
       else if (type === 'OUT') checkBudgetAfterAdd(category, amount, date, entry.id);
     }
@@ -1495,13 +1753,16 @@ OUTPUT ONLY JSON:
 
           if (!valid.length) return alert("Is file me koi valid entry nahi mili.");
 
+          valid.forEach(txUpsertLocal);
+          txCacheWrite();
+          render();
           if (db && currentUser) {
             for (let i = 0; i < valid.length; i += 400) {
               const batch = db.batch();
               valid.slice(i, i + 400).forEach(item => {
                 batch.set(db.collection("users").doc(currentUser).collection("transactions").doc(String(item.id)), item);
               });
-              await batch.commit();
+              batch.commit().catch(() => showToast('Cloud sync baad me hoga.'));
             }
           }
           alert(`Backup safaltapurvak restore ho gaya! ${valid.length} entries mili.`);
@@ -1718,9 +1979,7 @@ OUTPUT ONLY JSON:
         type: partyFormDir === 'GAVE' ? 'OUT' : 'IN', amount, note,
         category: 'Udhar', mode: 'Udhar', date, timestamp: stampFor(date)
       };
-      if (db && currentUser) {
-        db.collection("users").doc(currentUser).collection("transactions").doc(String(entry.id)).set(entry);
-      }
+      txSave(entry);
       partyCurrent = partyKey(name);
       partyView = 'detail';
       renderParty();
@@ -1810,7 +2069,7 @@ OUTPUT ONLY JSON:
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
     /* ---------- "We have moved" notification: 7 sec baad apne aap gayab ---------- */
-    const NEW_SITE_URL = 'https://roitx.dpdns.org/';
+    const NEW_SITE_URL = 'https://roitx.dpdns.org/?from=rhisab';
     let moveToastTimer = null;
     const MOVE_SEEN_KEY = 'moveNoticeSeen';
     function cameFromNewSite() {
@@ -1822,14 +2081,14 @@ OUTPUT ONLY JSON:
       } catch (e) {}
       return false;
     }
-    function markMoveSeen() { try { localStorage.setItem(MOVE_SEEN_KEY, '1'); } catch (e) {} }
+    function markMoveSeen() { try { LS.setItem(MOVE_SEEN_KEY, '1'); } catch (e) {} }
     function showMoveToast() {
       const toast = document.getElementById('move-toast');
       if (!toast) return;
       // naye domain par ho -> kabhi kuch nahi. Baaki sab jagah sirf PEHLI visit par ek notice.
       if (location.hostname === 'roitx.dpdns.org') { toast.style.display = 'none'; return; }
       let seen = false;
-      try { seen = localStorage.getItem(MOVE_SEEN_KEY) === '1'; } catch (e) {}
+      try { seen = LS.getItem(MOVE_SEEN_KEY) === '1'; } catch (e) {}
       if (seen) { toast.style.display = 'none'; return; }
       markMoveSeen();
       const link = document.getElementById('move-link');
