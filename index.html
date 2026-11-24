@@ -359,10 +359,10 @@
 
   <!-- We have moved notification (7 sec baad apne aap hat jata hai) -->
   <div class="move-toast" id="move-toast" role="status" aria-live="polite">
-    <span class="mt-ico">📢</span>
+    <span class="mt-ico" id="move-ico">📢</span>
     <a id="move-link" href="https://roitx.dpdns.org/" rel="noopener">
-      <b>We have moved!</b> Hum ab naye domain <b>roitx.dpdns.org</b> par hain.<br>
-      <span class="mt-go">Wahan jaane ke liye yahan click karein →</span>
+      <span id="move-text"><b>We have moved!</b> Hum ab naye domain <b>roitx.dpdns.org</b> par hain.</span><br>
+      <span class="mt-go" id="move-go">Wahan jaane ke liye yahan click karein →</span>
     </a>
     <button class="mt-x" type="button" onclick="hideMoveToast()" aria-label="Close">✕</button>
     <div class="mt-bar"></div>
@@ -1817,18 +1817,24 @@ OUTPUT ONLY JSON:
     function showMoveToast() {
       const toast = document.getElementById('move-toast');
       if (!toast) return;
-      // 1) naye domain par ho -> kabhi nahi
-      // 2) naye domain ke More Apps se aaya -> nahi (aur aage bhi nahi)
-      // 3) pehle dekh chuka -> nahi (sirf first visit par)
+      // naye domain par ho -> kabhi kuch nahi. Baaki sab jagah sirf PEHLI visit par ek notice.
+      if (location.hostname === 'roitx.dpdns.org') { toast.style.display = 'none'; return; }
       let seen = false;
       try { seen = localStorage.getItem(MOVE_SEEN_KEY) === '1'; } catch (e) {}
-      if (location.hostname === 'roitx.dpdns.org' || cameFromNewSite() || seen) {
-        if (location.hostname !== 'roitx.dpdns.org') markMoveSeen();
-        toast.style.display = 'none';
-        return;
-      }
+      if (seen) { toast.style.display = 'none'; return; }
       markMoveSeen();
-      document.getElementById('move-link').href = NEW_SITE_URL;
+      const link = document.getElementById('move-link');
+      if (cameFromNewSite()) {
+        // PM Roitx (naye site) se aaya -> achha sa greeting
+        document.getElementById('move-ico').textContent = '👋';
+        document.getElementById('move-text').innerHTML = '<b>Swagat hai!</b> PM Roitx se aane ke liye shukriya. Yahan apna khata aasaani se sambhaalein.';
+        document.getElementById('move-go').textContent = 'Shuru karein ✨';
+        link.removeAttribute('href');
+        link.style.cursor = 'pointer';
+        link.onclick = (e) => { e.preventDefault(); hideMoveToast(); };
+      } else {
+        link.href = NEW_SITE_URL;
+      }
       requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
       moveToastTimer = setTimeout(hideMoveToast, 7000);
     }
