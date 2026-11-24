@@ -287,6 +287,13 @@
       .btn-quick { padding: 10px 12px; font-size: 0.82rem; }
     }
 
+    /* SVG icons (emoji ki jagah) */
+    .ic { width: 1.15em; height: 1.15em; vertical-align: -0.2em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .ic.g { color: #22c55e; } .ic.r { color: #ef4444; } .ic.o { color: #f97316; }
+    .brand-title .ic { width: 1em; height: 1em; vertical-align: -0.12em; }
+    .eye-btn .ic, .mic-btn .ic { width: 1.25em; height: 1.25em; vertical-align: middle; }
+    .btn-quick .ic.g, .btn-quick .ic.r { color: #fff; }
+    .chip .ic, .tab-btn .ic, .wallet-chip .ic, .btn-action .ic, .btn-quick .ic { margin-right: 4px; }
     /* "We have moved" notification */
     .move-toast {
       position: fixed; top: 12px; left: 50%; transform: translate(-50%, -150%); opacity: 0;
@@ -297,7 +304,8 @@
       transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.15), opacity 0.4s ease;
     }
     .move-toast.show { transform: translate(-50%, 0); opacity: 1; }
-    .move-toast .mt-ico { font-size: 1.5rem; flex-shrink: 0; }
+    .move-toast .mt-ico { width: 38px; height: 38px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(245,184,61,.14); border: 1px solid rgba(245,184,61,.35); }
+    .move-toast .mt-ico svg { width: 22px; height: 22px; stroke: #F5B83D; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
     .move-toast a { flex: 1; color: #fff; text-decoration: none; font-size: 0.82rem; line-height: 1.45; }
     .move-toast a b { color: #F5B83D; }
     .move-toast .mt-go { display: inline-block; margin-top: 3px; color: #F5B83D; font-weight: 700; }
@@ -356,15 +364,16 @@
   </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M17.94 17.94A10.5 10.5 0 0 1 12 19C5.5 19 2 12 2 12a18 18 0 0 1 5.06-5.94M9.9 4.24A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m2 2 20 20"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="currentColor" stroke="none"/></symbol><symbol id="i-cash" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></symbol><symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 22h18"/><path d="M6 18v-7M10 18v-7M14 18v-7M18 18v-7"/><path d="m12 2 9 5H3z"/></symbol><symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol><symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></symbol><symbol id="i-ledger" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></symbol><symbol id="i-sprout" viewBox="0 0 24 24"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></symbol><symbol id="i-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol><symbol id="i-tractor" viewBox="0 0 24 24"><circle cx="7" cy="16" r="4"/><circle cx="18" cy="18" r="2"/><path d="M3 12V5h7l1.5 7H3"/><path d="M11 12h8a2 2 0 0 1 2 2v2M18 16V8h-4"/></symbol><symbol id="i-box" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></symbol><symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol><symbol id="i-bar" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></symbol><symbol id="i-pie" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></symbol><symbol id="i-trend" viewBox="0 0 24 24"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></symbol><symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l2-5.2A8.4 8.4 0 1 1 21 11.5z"/></symbol><symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol><symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol><symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l8.59-8.59a1 1 0 0 0 0-1.41z"/><path d="M7 7h.01"/></symbol><symbol id="i-down2" viewBox="0 0 24 24"><path d="m22 17-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76V6h6v4.76l2 3.24H7z"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol><symbol id="i-checkc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol></defs></svg>
 
   <!-- We have moved notification (7 sec baad apne aap hat jata hai) -->
   <div class="move-toast" id="move-toast" role="status" aria-live="polite">
-    <span class="mt-ico" id="move-ico">📢</span>
+    <span class="mt-ico" id="move-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></span>
     <a id="move-link" href="https://roitx.dpdns.org/" rel="noopener">
       <span id="move-text"><b>We have moved!</b> Hum ab naye domain <b>roitx.dpdns.org</b> par hain.</span><br>
       <span class="mt-go" id="move-go">Wahan jaane ke liye yahan click karein →</span>
     </a>
-    <button class="mt-x" type="button" onclick="hideMoveToast()" aria-label="Close">✕</button>
+    <button class="mt-x" type="button" onclick="hideMoveToast()" aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
     <div class="mt-bar"></div>
   </div>
 
@@ -372,7 +381,7 @@
     <!-- Security Login & Dynamic New User Setup Screen -->
     <div class="login-screen" id="login-screen">
       <div class="login-card">
-        <h1 class="brand-title" style="font-size: 1.8rem;">🔒 Enterprise Khata AI</h1>
+        <h1 class="brand-title" style="font-size: 1.8rem;"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg> Enterprise Khata AI</h1>
         <p style="color:var(--text-muted); margin-top:8px; font-size:0.85rem;" id="login-sub-text">Mobile & Security PIN System</p>
         
         <input type="tel" id="user-phone-input" class="login-input" placeholder="10-Digit Mobile Number" maxlength="10" oninput="checkUserExistingStatus()">
@@ -430,7 +439,7 @@
       </div>
 
       <div class="balance-card">
-        <button class="eye-btn" id="eye-btn" onclick="toggleHideBalance()" aria-label="Balance chhupayein/dikhayein">👁️</button>
+        <button class="eye-btn" id="eye-btn" onclick="toggleHideBalance()" aria-label="Balance chhupayein/dikhayein"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></button>
         <div style="font-size: 0.8rem; color: var(--text-muted);" id="lbl-total">Total Net Balance</div>
         <div class="balance-amount" id="total-balance">₹0</div>
         <div class="alltime-line" id="alltime-line"></div>
@@ -448,23 +457,23 @@
 
         <!-- Easy Direct Buttons -->
         <div class="quick-entry-btns">
-          <button class="btn-quick btn-jama" onclick="openManualModal('IN')">🟢 Direct Jama (+)</button>
-          <button class="btn-quick btn-kharcha" onclick="openManualModal('OUT')">🔴 Direct Kharcha (-)</button>
+          <button class="btn-quick btn-jama" onclick="openManualModal('IN')"><svg class="ic g" aria-hidden="true"><use href="#i-dot"/></svg> Direct Jama (+)</button>
+          <button class="btn-quick btn-kharcha" onclick="openManualModal('OUT')"><svg class="ic r" aria-hidden="true"><use href="#i-dot"/></svg> Direct Kharcha (-)</button>
         </div>
 
         <!-- Wallet Selection Bar -->
         <div class="wallet-selector">
           <div class="wallet-chip active" onclick="switchWallet('ALL', this)">All Accounts</div>
-          <div class="wallet-chip" onclick="switchWallet('Cash', this)">💵 Cash</div>
-          <div class="wallet-chip" onclick="switchWallet('Bank', this)">🏦 Bank/UPI</div>
-          <div class="wallet-chip" onclick="switchWallet('Credit', this)">💳 Credit Card</div>
-          <div class="wallet-chip" onclick="switchWallet('Udhar', this)">📜 Udhar Khata</div>
+          <div class="wallet-chip" onclick="switchWallet('Cash', this)"><svg class="ic" aria-hidden="true"><use href="#i-cash"/></svg> Cash</div>
+          <div class="wallet-chip" onclick="switchWallet('Bank', this)"><svg class="ic" aria-hidden="true"><use href="#i-bank"/></svg> Bank/UPI</div>
+          <div class="wallet-chip" onclick="switchWallet('Credit', this)"><svg class="ic" aria-hidden="true"><use href="#i-card"/></svg> Credit Card</div>
+          <div class="wallet-chip" onclick="switchWallet('Udhar', this)"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg> Udhar Khata</div>
         </div>
       </div>
 
       <!-- Advanced Voice & Text AI Input -->
       <div class="ai-box">
-        <button class="mic-btn" id="mic-btn" onclick="toggleVoiceRecording()">🎙️</button>
+        <button class="mic-btn" id="mic-btn" onclick="toggleVoiceRecording()"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg></button>
         <input type="text" id="ai-input-text" class="ai-input" placeholder="Bolien ya Likhein: '500 ki khad' ya '1000 salary'">
         <button class="btn-action" id="ai-submit-btn" onclick="processGroqAI()">
           <span id="btn-text">Add AI</span>
@@ -476,7 +485,7 @@
     <!-- Party udhar summary strip -->
     <div style="padding: 0 16px;">
       <div class="party-strip" onclick="openPartyModal()">
-        <span>📒 <b>Udhar Khata</b></span>
+        <span><svg class="ic" aria-hidden="true"><use href="#i-ledger"/></svg> <b>Udhar Khata</b></span>
         <span id="party-strip-text">Lena hai <b class="get">₹0</b> • Dena hai <b class="give">₹0</b> ›</span>
       </div>
     </div>
@@ -488,12 +497,12 @@
     <div class="shortcuts-section">
       <div class="section-title" id="lbl-shortcuts">Quick Category Shortcuts</div>
       <div class="shortcut-chips">
-        <div class="chip" onclick="quickAdd('🌾 Khad/Beej', 'OUT', 'Farming', 'Cash')">🌾 Khad/Beej</div>
-        <div class="chip" onclick="quickAdd('🛒 Daily Ration', 'OUT', 'Ration', 'Cash')">🛒 Ration</div>
-        <div class="chip" onclick="quickAdd('🏠 House Rent', 'OUT', 'Rent', 'Bank')">🏠 Rent</div>
-        <div class="chip" onclick="quickAdd('🚜 Tractor Fuel', 'OUT', 'Fuel', 'Cash')">🚜 Tractor</div>
-        <div class="chip" onclick="quickAdd('📦 Mandi Sales', 'IN', 'Crop/Mandi', 'Bank')">📦 Mandi Sale</div>
-        <div class="chip" onclick="quickAdd('💰 Salary Received', 'IN', 'Salary', 'Bank')">💰 Salary</div>
+        <div class="chip" onclick="quickAdd('Khad/Beej', 'OUT', 'Farming', 'Cash')"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Khad/Beej</div>
+        <div class="chip" onclick="quickAdd('Daily Ration', 'OUT', 'Ration', 'Cash')"><svg class="ic" aria-hidden="true"><use href="#i-cart"/></svg> Ration</div>
+        <div class="chip" onclick="quickAdd('House Rent', 'OUT', 'Rent', 'Bank')"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg> Rent</div>
+        <div class="chip" onclick="quickAdd('Tractor Fuel', 'OUT', 'Fuel', 'Cash')"><svg class="ic" aria-hidden="true"><use href="#i-tractor"/></svg> Tractor</div>
+        <div class="chip" onclick="quickAdd('Mandi Sales', 'IN', 'Crop/Mandi', 'Bank')"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg> Mandi Sale</div>
+        <div class="chip" onclick="quickAdd('Salary Received', 'IN', 'Salary', 'Bank')"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg> Salary</div>
       </div>
     </div>
 
@@ -501,10 +510,10 @@
     <div class="chart-section">
       <div class="section-title" style="margin-bottom:8px;">Visual Analytics Chart</div>
       <div class="chart-tabs">
-        <button class="tab-btn active" onclick="switchChartType('bar', this)">📊 Dandalekh (Bar)</button>
-        <button class="tab-btn" onclick="switchChartType('pie', this)">🥧 Category Kharcha</button>
-        <button class="tab-btn" onclick="switchChartType('line', this)">📈 Roz Ka Graph</button>
-        <button class="tab-btn" onclick="switchChartType('months', this)">📅 6 Mahine</button>
+        <button class="tab-btn active" onclick="switchChartType('bar', this)"><svg class="ic" aria-hidden="true"><use href="#i-bar"/></svg> Dandalekh (Bar)</button>
+        <button class="tab-btn" onclick="switchChartType('pie', this)"><svg class="ic" aria-hidden="true"><use href="#i-pie"/></svg> Category Kharcha</button>
+        <button class="tab-btn" onclick="switchChartType('line', this)"><svg class="ic" aria-hidden="true"><use href="#i-trend"/></svg> Roz Ka Graph</button>
+        <button class="tab-btn" onclick="switchChartType('months', this)"><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg> 6 Mahine</button>
       </div>
       <div class="chart-container">
         <canvas id="analyticsChart"></canvas>
@@ -514,7 +523,7 @@
     <!-- Budget Section -->
     <div class="budget-section">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <div class="section-title" style="margin:0;">🎯 Is Mahine Ka Budget</div>
+        <div class="section-title" style="margin:0;"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Is Mahine Ka Budget</div>
         <button class="linkish" onclick="openBudgetModal()">Set / Edit</button>
       </div>
       <div id="budget-list"></div>
@@ -522,21 +531,21 @@
 
     <!-- Action Buttons Bar -->
     <div class="action-grid">
-      <button class="btn-action pdf-btn" id="btn-pdf-txt" onclick="downloadPDFReport()">📄 Export PDF Statement</button>
-      <button class="btn-action wa-btn" id="btn-wa-txt" onclick="shareToWhatsApp()">💬 WhatsApp Summary</button>
-      <button class="btn-action csv-btn" onclick="exportToCSV()">📊 Export Excel/CSV</button>
-      <button class="btn-action backup-btn" onclick="backupAndRestoreModal()">💾 Data Backup/Restore</button>
-      <button class="btn-action" style="grid-column: 1 / -1;" onclick="openPartyModal()">📒 Party-wise Udhar Khata (Lena/Dena)</button>
+      <button class="btn-action pdf-btn" id="btn-pdf-txt" onclick="downloadPDFReport()"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg> Export PDF Statement</button>
+      <button class="btn-action wa-btn" id="btn-wa-txt" onclick="shareToWhatsApp()"><svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg> WhatsApp Summary</button>
+      <button class="btn-action csv-btn" onclick="exportToCSV()"><svg class="ic" aria-hidden="true"><use href="#i-bar"/></svg> Export Excel/CSV</button>
+      <button class="btn-action backup-btn" onclick="backupAndRestoreModal()"><svg class="ic" aria-hidden="true"><use href="#i-save"/></svg> Data Backup/Restore</button>
+      <button class="btn-action" style="grid-column: 1 / -1;" onclick="openPartyModal()"><svg class="ic" aria-hidden="true"><use href="#i-ledger"/></svg> Party-wise Udhar Khata (Lena/Dena)</button>
     </div>
 
     <!-- Security Update Shortcut Button inside page options -->
     <div style="margin: 14px 16px 0 16px; text-align: right;">
-      <span class="forgot-link" style="color:var(--primary);" onclick="openModal('change-pin-modal')">⚙️ Change Security PIN / Question</span>
+      <span class="forgot-link" style="color:var(--primary);" onclick="openModal('change-pin-modal')"><svg class="ic" aria-hidden="true"><use href="#i-gear"/></svg> Change Security PIN / Question</span>
     </div>
 
     <!-- Filters and Search Bar -->
     <div class="filter-bar">
-      <input type="text" id="search-box" class="search-input" placeholder="🔍 Search transactions..." oninput="render()">
+      <input type="text" id="search-box" class="search-input" placeholder="Search transactions..." oninput="render()">
       <select class="lang-select" id="type-filter" onchange="render()">
         <option value="ALL">All Entries</option>
         <option value="IN">Income Only</option>
@@ -570,7 +579,7 @@
   <!-- Edit / View Transaction Modal -->
   <div class="modal-overlay" id="edit-modal">
     <div class="modal-content">
-      <button class="close-btn" onclick="closeModal('edit-modal')">✕</button>
+      <button class="close-btn" onclick="closeModal('edit-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
       <h3 style="color:var(--primary); margin-bottom:12px;" id="modal-title">Edit/View Transaction</h3>
       
       <input type="hidden" id="edit-id">
@@ -628,7 +637,7 @@
   <!-- Change PIN Modal (In-page update option) -->
   <div class="modal-overlay" id="change-pin-modal">
     <div class="modal-content">
-      <button class="close-btn" onclick="closeModal('change-pin-modal')">✕</button>
+      <button class="close-btn" onclick="closeModal('change-pin-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
       <h3 style="color:var(--primary); margin-bottom:10px;">Update Security PIN & Question</h3>
       <label style="font-size:0.75rem; color:var(--text-muted);">Current PIN</label>
       <input type="password" id="settings-old-pin" class="modal-input" placeholder="Enter Old PIN" maxlength="4">
@@ -653,20 +662,20 @@
   <!-- Data Backup Modal -->
   <div class="modal-overlay" id="backup-modal">
     <div class="modal-content">
-      <button class="close-btn" onclick="closeModal('backup-modal')">✕</button>
+      <button class="close-btn" onclick="closeModal('backup-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
       <h3 style="color:var(--primary); margin-bottom:10px;">Data Backup & Restore</h3>
       <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Apne saare khata data ka offline JSON backup download karein ya restore karein.</p>
-      <button class="btn-action" style="width:100%; margin-bottom:10px;" onclick="downloadBackupJSON()">📥 Download Backup File</button>
+      <button class="btn-action" style="width:100%; margin-bottom:10px;" onclick="downloadBackupJSON()"><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg> Download Backup File</button>
       <input type="file" id="restore-file-input" style="display:none;" onchange="restoreBackupJSON(event)">
-      <button class="btn-action wa-btn" style="width:100%;" onclick="document.getElementById('restore-file-input').click()">📤 Restore Backup File</button>
+      <button class="btn-action wa-btn" style="width:100%;" onclick="document.getElementById('restore-file-input').click()"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg> Restore Backup File</button>
     </div>
   </div>
 
   <!-- Party Udhar Khata Modal -->
   <div class="modal-overlay" id="party-modal">
     <div class="modal-content" style="max-width:480px;">
-      <button class="close-btn" onclick="closeModal('party-modal')">✕</button>
-      <h3 style="color:var(--primary); margin-bottom:12px;">📒 Party Udhar Khata</h3>
+      <button class="close-btn" onclick="closeModal('party-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+      <h3 style="color:var(--primary); margin-bottom:12px;"><svg class="ic" aria-hidden="true"><use href="#i-ledger"/></svg> Party Udhar Khata</h3>
       <div id="party-body"></div>
     </div>
   </div>
@@ -674,8 +683,8 @@
   <!-- Budget Modal -->
   <div class="modal-overlay" id="budget-modal">
     <div class="modal-content">
-      <button class="close-btn" onclick="closeModal('budget-modal')">✕</button>
-      <h3 style="color:var(--primary); margin-bottom:6px;">🎯 Mahine Ka Budget</h3>
+      <button class="close-btn" onclick="closeModal('budget-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+      <h3 style="color:var(--primary); margin-bottom:6px;"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Mahine Ka Budget</h3>
       <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:12px;">Category ke hisaab se mahine ka limit lagayein. Limit paar hone par warning milegi. Khali chhodne par budget nahi lagega.</p>
       <div id="budget-fields"></div>
       <button class="btn-action" style="width:100%; margin-top:6px; background:var(--primary); color:black; font-weight:800;" onclick="saveBudgets()">Save Budget</button>
@@ -691,7 +700,7 @@
   <!-- Legal Modals -->
   <div class="modal-overlay" id="privacy-modal">
     <div class="modal-content">
-      <button class="close-btn" onclick="closeModal('privacy-modal')">✕</button>
+      <button class="close-btn" onclick="closeModal('privacy-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
       <h3 style="color:var(--primary); margin-bottom:10px;">Privacy & Security Standard</h3>
       <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.5;">Aapka saara financial transaction ledger Firebase Cloud Infrastructure par encrypted format me save hota hai.</p>
     </div>
@@ -699,7 +708,7 @@
 
   <div class="modal-overlay" id="terms-modal">
     <div class="modal-content">
-      <button class="close-btn" onclick="closeModal('terms-modal')">✕</button>
+      <button class="close-btn" onclick="closeModal('terms-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
       <h3 style="color:var(--primary); margin-bottom:10px;">Terms of Service</h3>
       <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.5;">Yeh application kheti, vyapar, dukaan, aur personal daily expense ledger tracking ke liye design ki gayi hai.</p>
     </div>
@@ -707,7 +716,7 @@
 
   <div class="modal-overlay" id="cookies-modal">
     <div class="modal-content">
-      <button class="close-btn" onclick="closeModal('cookies-modal')">✕</button>
+      <button class="close-btn" onclick="closeModal('cookies-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
       <h3 style="color:var(--primary); margin-bottom:10px;">Cookies & Storage Policy</h3>
       <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.5;">Browser storage aur essential session cookies ka upyog aapke authentication state aur fast offline rendering ke liye kiya jata hai.</p>
     </div>
@@ -738,9 +747,9 @@
     const PERIOD_LABELS = { today: 'Aaj', week: 'Pichle 7 Din', month: 'Is Mahina', lastmonth: 'Pichla Mahina', year: 'Is Saal', all: 'Sab Time' };
 
     const translations = {
-      hinglish: { totalBal: "Total Net Balance", inc: "Total Jama (Income)", exp: "Total Kharcha (Expense)", placeholderAI: "Bolien ya Likhein: '500 ki khad' ya '1000 salary'", addBtn: "Add AI", pdfBtn: "📄 PDF Report", waBtn: "💬 WA Summary", shortcutsTitle: "Quick Category Shortcuts", cookieMsg: "Hum local storage/cookies use karte hain data sync ke liye.", loginSub: "Mobile Account & Security PIN Login" },
-      hi: { totalBal: "कुल शुद्ध शेष", inc: "कुल जमा (आय)", exp: "कुल खर्च (व्यय)", placeholderAI: "बोलें या लिखें: '500 की खाद' या '1000 किराया'", addBtn: "जोड़ें", pdfBtn: "📄 पीडीएफ रिपोर्ट", waBtn: "💬 व्हाट्सएप सारांश", shortcutsTitle: "त्वरित श्रेणी शॉर्टकट", cookieMsg: "हम डेटा सिंक के लिए लोकल स्टोरेज/कुकीज़ का उपयोग करते हैं।", loginSub: "मोबाइल और सुरक्षा पिन लॉगिन" },
-      en: { totalBal: "Total Net Balance", inc: "Total Income", exp: "Total Expense", placeholderAI: "Speak or type: '500 fertilizer' or '1000 rent'", addBtn: "Add AI", pdfBtn: "📄 PDF Report", waBtn: "💬 WA Summary", shortcutsTitle: "Quick Category Shortcuts", cookieMsg: "We use local storage/cookies for data synchronization.", loginSub: "Mobile & Security PIN Login" }
+      hinglish: { totalBal: "Total Net Balance", inc: "Total Jama (Income)", exp: "Total Kharcha (Expense)", placeholderAI: "Bolien ya Likhein: '500 ki khad' ya '1000 salary'", addBtn: "Add AI", pdfBtn: "PDF Report", waBtn: "WA Summary", shortcutsTitle: "Quick Category Shortcuts", cookieMsg: "Hum local storage/cookies use karte hain data sync ke liye.", loginSub: "Mobile Account & Security PIN Login" },
+      hi: { totalBal: "कुल शुद्ध शेष", inc: "कुल जमा (आय)", exp: "कुल खर्च (व्यय)", placeholderAI: "बोलें या लिखें: '500 की खाद' या '1000 किराया'", addBtn: "जोड़ें", pdfBtn: "पीडीएफ रिपोर्ट", waBtn: "व्हाट्सएप सारांश", shortcutsTitle: "त्वरित श्रेणी शॉर्टकट", cookieMsg: "हम डेटा सिंक के लिए लोकल स्टोरेज/कुकीज़ का उपयोग करते हैं।", loginSub: "मोबाइल और सुरक्षा पिन लॉगिन" },
+      en: { totalBal: "Total Net Balance", inc: "Total Income", exp: "Total Expense", placeholderAI: "Speak or type: '500 fertilizer' or '1000 rent'", addBtn: "Add AI", pdfBtn: "PDF Report", waBtn: "WA Summary", shortcutsTitle: "Quick Category Shortcuts", cookieMsg: "We use local storage/cookies for data synchronization.", loginSub: "Mobile & Security PIN Login" }
     };
 
     try {
@@ -777,8 +786,8 @@
       document.getElementById('lbl-out').innerText = dict.exp;
       document.getElementById('ai-input-text').placeholder = dict.placeholderAI;
       document.getElementById('btn-text').innerText = dict.addBtn;
-      document.getElementById('btn-pdf-txt').innerText = dict.pdfBtn;
-      document.getElementById('btn-wa-txt').innerText = dict.waBtn;
+      document.getElementById('btn-pdf-txt').innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-file"/></svg> ' + dict.pdfBtn;
+      document.getElementById('btn-wa-txt').innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg> ' + dict.waBtn;
       document.getElementById('lbl-shortcuts').innerText = dict.shortcutsTitle;
       document.getElementById('txt-cookie-msg').innerText = dict.cookieMsg;
       document.getElementById('login-sub-text').innerText = dict.loginSub;
@@ -1075,7 +1084,7 @@
       if (db && currentUser) db.collection("users").doc(currentUser).set({ budgets: budgets }, { merge: true });
       closeModal('budget-modal');
       renderBudgets();
-      showToast("Budget save ho gaya ✅");
+      showToast("Budget save ho gaya");
     }
     function monthSpentByCategory(excludeId) {
       const r = periodRange('month'), spent = {};
@@ -1113,8 +1122,8 @@
       if (dateISO < r[0] || dateISO > r[1]) return;
       const total = (monthSpentByCategory(entryId)[category] || 0) + amount;
       const pct = Math.round(total / lim * 100);
-      if (pct >= 100) showToast(`⚠️ ${category} ka budget paar ho gaya! (₹${fmt(total)} / ₹${fmt(lim)})`, null, null, 6000);
-      else if (pct >= 80) showToast(`🟠 ${category} budget ka ${pct}% use ho chuka hai.`, null, null, 6000);
+      if (pct >= 100) showToast(`${category} ka budget paar ho gaya! (₹${fmt(total)} / ₹${fmt(lim)})`, null, null, 6000);
+      else if (pct >= 80) showToast(`${category} budget ka ${pct}% use ho chuka hai.`, null, null, 6000);
     }
 
     function switchWallet(wallet, element) {
@@ -1315,7 +1324,7 @@ OUTPUT ONLY JSON:
       if (db && currentUser) {
         db.collection("users").doc(currentUser).collection("transactions").doc(String(entry.id)).set(entry);
       }
-      if (party) showToast(`📒 ${party} ke khate me entry add ho gayi`);
+      if (party) showToast(`${party} ke khate me entry add ho gayi`);
       else if (type === 'OUT') checkBudgetAfterAdd(category, amount, date, entry.id);
     }
 
@@ -1549,22 +1558,22 @@ OUTPUT ONLY JSON:
       const tot = sumTx(pTx), lines = [];
       const net = tot.inn - tot.out;
       if (tot.inn > 0) {
-        lines.push(net >= 0 ? `💚 Bachat: <b>₹${fmt(net)}</b> (jama ka ${Math.round(net / tot.inn * 100)}%)` : `⚠️ Kharcha jama se <b>₹${fmt(-net)}</b> zyada hai`);
+        lines.push(net >= 0 ? `<svg class="ic g" aria-hidden="true"><use href="#i-heart"/></svg> Bachat: <b>₹${fmt(net)}</b> (jama ka ${Math.round(net / tot.inn * 100)}%)` : `<svg class="ic" aria-hidden="true"><use href="#i-alert"/></svg> Kharcha jama se <b>₹${fmt(-net)}</b> zyada hai`);
       } else if (tot.out > 0) {
-        lines.push(`🔴 Is period me <b>₹${fmt(tot.out)}</b> kharcha hua`);
+        lines.push(`<svg class="ic r" aria-hidden="true"><use href="#i-dot"/></svg> Is period me <b>₹${fmt(tot.out)}</b> kharcha hua`);
       }
       const cat = {};
       pTx.forEach(t => { if (t.type === 'OUT') { const c = t.category || 'General'; cat[c] = (cat[c] || 0) + (Number(t.amount) || 0); } });
       const top = Object.entries(cat).sort((a, b) => b[1] - a[1])[0];
-      if (top) lines.push(`🏷️ Sabse zyada kharcha: <b>${esc(top[0])}</b> (₹${fmt(top[1])})`);
+      if (top) lines.push(`<svg class="ic" aria-hidden="true"><use href="#i-tag"/></svg> Sabse zyada kharcha: <b>${esc(top[0])}</b> (₹${fmt(top[1])})`);
       const big = pTx.filter(t => t.type === 'OUT').sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0))[0];
-      if (big) lines.push(`💸 Sabse bada kharcha: <b>${esc(big.note)}</b> (₹${fmt(big.amount)})`);
+      if (big) lines.push(`<svg class="ic" aria-hidden="true"><use href="#i-down2"/></svg> Sabse bada kharcha: <b>${esc(big.note)}</b> (₹${fmt(big.amount)})`);
       if (selectedPeriod !== 'all' && tot.out > 0) {
         const r = periodRange(selectedPeriod), end = r[1] < todayISO() ? r[1] : todayISO();
         const days = Math.max(1, Math.round((new Date(end) - new Date(r[0])) / 86400000) + 1);
-        lines.push(`📆 Roz ka average kharcha: <b>₹${fmt(Math.round(tot.out / days))}</b>`);
+        lines.push(`<svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg> Roz ka average kharcha: <b>₹${fmt(Math.round(tot.out / days))}</b>`);
       }
-      el.innerHTML = `<div class="section-title" style="margin-bottom:6px;">💡 ${esc(PERIOD_LABELS[selectedPeriod] || '')} ka Summary</div>` + lines.map(l => `<div class="ins-line">${l}</div>`).join('');
+      el.innerHTML = `<div class="section-title" style="margin-bottom:6px;"><svg class="ic" aria-hidden="true"><use href="#i-bulb"/></svg> ${esc(PERIOD_LABELS[selectedPeriod] || '')} ka Summary</div>` + lines.map(l => `<div class="ins-line">${l}</div>`).join('');
       el.style.display = 'block';
     }
 
@@ -1619,8 +1628,8 @@ OUTPUT ONLY JSON:
             <div class="p-box"><div style="font-size:0.72rem; color:var(--text-muted);">Aapko LENA hai</div><div class="v" style="color:var(--primary);">₹${fmt(t.lena)}</div></div>
             <div class="p-box"><div style="font-size:0.72rem; color:var(--text-muted);">Aapko DENA hai</div><div class="v" style="color:var(--danger);">₹${fmt(t.dena)}</div></div>
           </div>
-          <button class="btn-action" style="width:100%; margin-bottom:10px;" onclick="openPartyForm('GAVE', null)">➕ Naya Udhar Entry</button>
-          <input type="text" class="modal-input" id="party-search" placeholder="🔍 Party ka naam search karein" value="${esc(partyQuery)}" oninput="partyQuery=this.value; renderPartyList()" style="margin-bottom:10px;">
+          <button class="btn-action" style="width:100%; margin-bottom:10px;" onclick="openPartyForm('GAVE', null)"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Naya Udhar Entry</button>
+          <input type="text" class="modal-input" id="party-search" placeholder="Party ka naam search karein" value="${esc(partyQuery)}" oninput="partyQuery=this.value; renderPartyList()" style="margin-bottom:10px;">
           <div id="party-list"></div>`;
         renderPartyList();
         return;
@@ -1630,14 +1639,14 @@ OUTPUT ONLY JSON:
 
       if (partyView === 'detail') {
         if (!g) { partyView = 'list'; return renderParty(); }
-        const balTxt = g.bal > 0 ? `<span class="p-get">Aapko LENA hai ₹${fmt(g.bal)}</span>` : g.bal < 0 ? `<span class="p-give">Aapko DENA hai ₹${fmt(-g.bal)}</span>` : `<span style="color:var(--text-muted);">Hisaab barabar ✅</span>`;
+        const balTxt = g.bal > 0 ? `<span class="p-get">Aapko LENA hai ₹${fmt(g.bal)}</span>` : g.bal < 0 ? `<span class="p-give">Aapko DENA hai ₹${fmt(-g.bal)}</span>` : `<span style="color:var(--text-muted);">Hisaab barabar <svg class="ic g" aria-hidden="true"><use href="#i-checkc"/></svg></span>`;
         const rows = g.list.slice().sort((a, b) => entryDateISO(b).localeCompare(entryDateISO(a)) || b.id - a.id).map(t => `
           <div class="p-row" style="cursor:default;">
             <div><div style="font-weight:600;">${esc(t.note || (t.dir === 'GOT' ? 'Mila' : 'Diya'))}</div>
               <div style="font-size:0.72rem; color:var(--text-muted);">${esc(fmtDateShort(entryDateISO(t)))}</div></div>
             <div style="display:flex; align-items:center; gap:8px;">
               <span class="${t.dir === 'GOT' ? 'p-get' : 'p-give'}">${t.dir === 'GOT' ? 'Mila +' : 'Diya −'}₹${fmt(t.amount)}</span>
-              <button style="background:rgba(255,255,255,0.05); border:1px solid var(--card-border); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="deleteEntry(${Number(t.id)})">🗑️</button>
+              <button style="background:rgba(255,255,255,0.05); border:1px solid var(--card-border); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="deleteEntry(${Number(t.id)})"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg></button>
             </div>
           </div>`).join('');
         body.innerHTML = `
@@ -1645,10 +1654,10 @@ OUTPUT ONLY JSON:
           <h3 style="margin:8px 0 2px 0;">${esc(g.name)}</h3>
           <div style="margin-bottom:10px;">${balTxt}</div>
           <div class="p-tabs">
-            <button class="p-tab sel-give" onclick="openPartyForm('GAVE')">➖ Diya (maine diya)</button>
-            <button class="p-tab sel-get" onclick="openPartyForm('GOT')">➕ Mila (mujhe mila)</button>
+            <button class="p-tab sel-give" onclick="openPartyForm('GAVE')"><svg class="ic" aria-hidden="true"><use href="#i-minus"/></svg> Diya (maine diya)</button>
+            <button class="p-tab sel-get" onclick="openPartyForm('GOT')"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Mila (mujhe mila)</button>
           </div>
-          ${g.bal > 0 ? `<button class="btn-action wa-btn" style="width:100%; margin-bottom:12px;" data-k="${esc(g.key)}" onclick="sendPartyReminder(this.dataset.k)">🔔 WhatsApp Reminder Bhejein</button>` : ''}
+          ${g.bal > 0 ? `<button class="btn-action wa-btn" style="width:100%; margin-bottom:12px;" data-k="${esc(g.key)}" onclick="sendPartyReminder(this.dataset.k)"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg> WhatsApp Reminder Bhejein</button>` : ''}
           <div class="section-title">Hisaab ki history</div>
           ${rows}`;
         return;
@@ -1660,8 +1669,8 @@ OUTPUT ONLY JSON:
           <button class="linkish" onclick="${partyCurrent ? 'openPartyDetail(partyCurrent)' : 'partyBack()'}">← Wapas</button>
           <h3 style="margin:8px 0 8px 0;">Udhar Entry</h3>
           <div class="p-tabs">
-            <button class="p-tab${partyFormDir === 'GAVE' ? ' sel-give' : ''}" id="pf-give" onclick="setPartyDir('GAVE')">➖ Diya (maine diya)</button>
-            <button class="p-tab${partyFormDir === 'GOT' ? ' sel-get' : ''}" id="pf-get" onclick="setPartyDir('GOT')">➕ Mila (mujhe mila)</button>
+            <button class="p-tab${partyFormDir === 'GAVE' ? ' sel-give' : ''}" id="pf-give" onclick="setPartyDir('GAVE')"><svg class="ic" aria-hidden="true"><use href="#i-minus"/></svg> Diya (maine diya)</button>
+            <button class="p-tab${partyFormDir === 'GOT' ? ' sel-get' : ''}" id="pf-get" onclick="setPartyDir('GOT')"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Mila (mujhe mila)</button>
           </div>
           <label style="font-size:0.75rem; color:var(--text-muted);">Party ka naam</label>
           <input type="text" class="modal-input" id="pf-name" list="pf-names" maxlength="40" placeholder="Jaise: Ramesh" value="${g ? esc(g.name) : ''}" ${g ? 'readonly' : ''}>
@@ -1715,7 +1724,7 @@ OUTPUT ONLY JSON:
       partyCurrent = partyKey(name);
       partyView = 'detail';
       renderParty();
-      showToast("Udhar entry save ho gayi ✅");
+      showToast("Udhar entry save ho gayi");
     }
 
     function sendPartyReminder(key) {
@@ -1745,7 +1754,7 @@ OUTPUT ONLY JSON:
       document.getElementById('stat-in').innerText = mask(`+₹${fmt(tot.inn)}`);
       document.getElementById('stat-out').innerText = mask(`-₹${fmt(tot.out)}`);
       document.getElementById('alltime-line').innerText = selectedPeriod === 'all' ? '' : (hideBalance ? '' : `Sab time ka balance: ₹${fmt(all.inn - all.out)}`);
-      document.getElementById('eye-btn').innerText = hideBalance ? '🙈' : '👁️';
+      document.getElementById('eye-btn').innerHTML = hideBalance ? '<svg class="ic" aria-hidden="true"><use href="#i-eyeoff"/></svg>' : '<svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg>';
 
       renderChart();
       renderInsights(pTx);
@@ -1761,7 +1770,7 @@ OUTPUT ONLY JSON:
       }).sort((a, b) => entryDateISO(b).localeCompare(entryDateISO(a)) || b.id - a.id);
 
       if (filtered.length === 0) {
-        listEl.innerHTML = `<div class="empty-state">${ledgerTx().length ? 'Is period/filter me koi entry nahi mili.' : 'Abhi koi entry nahi hai. Upar se pehli entry add karein! ✨'}</div>`;
+        listEl.innerHTML = `<div class="empty-state">${ledgerTx().length ? 'Is period/filter me koi entry nahi mili.' : 'Abhi koi entry nahi hai. Upar se pehli entry add karein!'}</div>`;
         return;
       }
 
@@ -1786,11 +1795,11 @@ OUTPUT ONLY JSON:
             <div style="font-size:0.75rem; color:var(--text-muted); margin-top:3px;">${esc(fmtDateShort(entryDateISO(item)))}</div>
           </div>
           <div style="display:flex; align-items:center; gap:8px;">
-            ${isUdhar ? `<button style="background:rgba(239, 68, 68, 0.15); border:1px solid var(--danger); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); sendUdharReminderById(${itemId})" title="WhatsApp Reminder">🔔</button>` : ''}
+            ${isUdhar ? `<button style="background:rgba(239, 68, 68, 0.15); border:1px solid var(--danger); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); sendUdharReminderById(${itemId})" title="WhatsApp Reminder"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg></button>` : ''}
             <span style="font-weight:900; color:${item.type === 'IN' ? 'var(--primary)' : 'var(--danger)'}">
               ${item.type === 'IN' ? '+' : '-'}₹${fmt(item.amount)}
             </span>
-            <button style="background:rgba(255,255,255,0.05); border:1px solid var(--card-border); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); deleteEntry(${itemId})">🗑️</button>
+            <button style="background:rgba(255,255,255,0.05); border:1px solid var(--card-border); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); deleteEntry(${itemId})"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg></button>
           </div>
         `;
         listEl.appendChild(itemEl);
@@ -1826,9 +1835,9 @@ OUTPUT ONLY JSON:
       const link = document.getElementById('move-link');
       if (cameFromNewSite()) {
         // PM Roitx (naye site) se aaya -> achha sa greeting
-        document.getElementById('move-ico').textContent = '👋';
+        document.getElementById('move-ico').innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 11V6a2 2 0 0 0-4 0v1"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>';
         document.getElementById('move-text').innerHTML = '<b>Swagat hai!</b> PM Roitx se aane ke liye shukriya. Yahan apna khata aasaani se sambhaalein.';
-        document.getElementById('move-go').textContent = 'Shuru karein ✨';
+        document.getElementById('move-go').textContent = 'Shuru karein →';
         link.removeAttribute('href');
         link.style.cursor = 'pointer';
         link.onclick = (e) => { e.preventDefault(); hideMoveToast(); };
