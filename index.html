@@ -294,6 +294,16 @@
     .eye-btn .ic, .mic-btn .ic { width: 1.25em; height: 1.25em; vertical-align: middle; }
     .btn-quick .ic.g, .btn-quick .ic.r { color: #fff; }
     .chip .ic, .tab-btn .ic, .wallet-chip .ic, .btn-action .ic, .btn-quick .ic { margin-right: 4px; }
+    /* Code Lab (createfile) button */
+    .code-lab-btn {
+      display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+      width: 40px; height: 40px; border-radius: 10px; text-decoration: none; cursor: pointer;
+      background: rgba(255,255,255,0.08); border: 1px solid var(--card-border); color: #fff;
+      transition: border-color .2s, color .2s, transform .1s;
+    }
+    .code-lab-btn .ic { width: 22px; height: 22px; vertical-align: middle; }
+    .code-lab-btn:hover, .code-lab-btn:focus-visible { border-color: var(--primary); color: var(--primary); outline: none; }
+    .code-lab-btn:active { transform: scale(0.94); }
     /* "We have moved" notification */
     .move-toast {
       position: fixed; top: 12px; left: 50%; transform: translate(-50%, -150%); opacity: 0;
@@ -473,6 +483,9 @@
         <div class="brand-title" id="app-header-title">Aasaan Hisaab AI Enterprise</div>
         <div style="font-size: 0.68rem; color: var(--primary);" id="user-display">● Sync Active</div>
       </div>
+      <a class="code-lab-btn" id="code-lab-btn" href="createfile.html" title="Roitx Code Lab" aria-label="Roitx Code Lab kholein">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
+      </a>
     </header>
 
     <!-- Main Dashboard Section -->

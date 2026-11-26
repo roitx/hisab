@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Roitx Studio IDE v5.6 - Pro Engine Stylesheet (cfile.css) [Complete]
+   Roitx Studio IDE v6.0 - Pro Engine Stylesheet (cfile.css) [Complete]
    ========================================================================== */
 
 :root {
@@ -299,6 +299,7 @@ body.light-theme .menu-item:hover {
 .css-icon { background: rgba(0, 150, 255, 0.2); color: #0096ff; }
 .js-icon { background: rgba(255, 220, 0, 0.2); color: #ffdc00; }
 .py-icon { background: rgba(53, 114, 165, 0.2); color: #3572a5; }
+.php-icon { background: rgba(119, 123, 180, 0.25); color: #8892bf; }
 
 .mini-btn {
     background: transparent;
@@ -771,3 +772,108 @@ textarea, .highlight-layer { line-height: var(--code-lh) !important; }
 .highlight-layer code { display: block; will-change: transform; }
 .ln-inner { will-change: transform; }
 .line-numbers { width: 52px; }
+
+
+/* ==========================================================================
+   v6.0 - Working navigation + CodePen-style features
+   ========================================================================== */
+
+/* ---- Dropdown menus (Export / View) ---- */
+.menu-wrap { position: relative; display: inline-flex; }
+.dropdown-menu {
+    position: fixed; z-index: 1500;
+    width: max-content; min-width: 220px; max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 80px); max-height: calc(100dvh - 80px); overflow-y: auto;
+    background: var(--bg-panel); border: 1px solid var(--accent-color);
+    border-radius: 8px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); padding: 6px 0;
+}
+.menu-item { color: var(--text-main); font-family: inherit; }
+.menu-item.active { color: var(--accent-color); font-weight: 700; }
+.menu-item.active::after { content: "\2713"; margin-left: auto; padding-left: 12px; }
+.menu-item i { width: 16px; text-align: center; }
+.menu-label { padding: 6px 14px 2px; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+.menu-sep { height: 1px; background: var(--border-color); margin: 6px 0; }
+.btn-save { background: #00f0ff; color: #0a0c10; border: none; font-weight: 700; }
+.btn-save:hover { filter: brightness(1.1); }
+
+/* ---- Panel header actions ---- */
+.panel-actions { display: flex; gap: 6px; align-items: center; }
+.mini-btn.on { color: var(--accent-color); border-color: var(--accent-color); }
+.output-tools { display: flex; gap: 8px; align-items: center; }
+#autoRunBtn i { margin-right: 3px; }
+
+/* ---- Layouts (Auto / Left-Right / Top-Bottom / Editor only / Preview only) ---- */
+.workspace-grid { position: relative; }
+.workspace-grid[data-layout="lr"] { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; grid-template-rows: minmax(0, 1fr) !important; }
+.workspace-grid[data-layout="tb"] { grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) !important; }
+.workspace-grid[data-layout="editor"],
+.workspace-grid[data-layout="preview"] { grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: minmax(0, 1fr) !important; }
+.workspace-grid[data-layout="editor"] .output-container { display: none !important; }
+.workspace-grid[data-layout="preview"] .editors-wrapper { display: none !important; }
+/* Forced layouts keep the preview visible while the phone keyboard is open */
+.workspace-grid[data-layout="lr"]:has(textarea:focus) .output-container,
+.workspace-grid[data-layout="tb"]:has(textarea:focus) .output-container { display: flex !important; }
+
+/* ---- Splitter (drag to resize, double-tap to reset) ---- */
+.splitter { position: absolute; z-index: 20; display: none; touch-action: none; }
+.splitter::after { content: ""; position: absolute; background: var(--accent-color); opacity: 0.25; transition: opacity 0.15s; }
+.splitter:hover::after, .workspace-grid.dragging .splitter::after { opacity: 0.9; }
+.workspace-grid[data-orient="h"] .splitter { display: block; top: 0; bottom: 0; width: 14px; margin-left: -7px; left: var(--split, 50%); cursor: col-resize; }
+.workspace-grid[data-orient="h"] .splitter::after { left: 6px; width: 2px; top: 0; bottom: 0; }
+.workspace-grid[data-orient="v"] .splitter { display: block; left: 0; right: 0; height: 14px; margin-top: -7px; top: var(--split, 50%); cursor: row-resize; }
+.workspace-grid[data-orient="v"] .splitter::after { top: 6px; height: 2px; left: 0; right: 0; }
+.workspace-grid[data-split][data-orient="h"] { grid-template-columns: minmax(0, var(--split)) minmax(0, 1fr) !important; }
+.workspace-grid[data-split][data-orient="v"] { grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: minmax(0, var(--split)) minmax(0, 1fr) !important; }
+.workspace-grid.dragging { user-select: none; }
+.workspace-grid.dragging iframe { pointer-events: none; }
+
+/* ---- Tablet preview + fullscreen ---- */
+.preview-wrapper.tablet-mode iframe {
+    width: 768px; height: 1024px; border: 8px solid #222; border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    max-width: calc(100% - 16px); max-height: calc(100% - 16px);
+}
+.preview-wrapper:fullscreen, .preview-wrapper:-webkit-full-screen { background: #fff; }
+
+/* ---- Console input (REPL) ---- */
+.console-input-row { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-top: 1px solid var(--border-color); background: var(--bg-panel-header); flex-shrink: 0; }
+.console-prompt { color: var(--accent-color); font-family: var(--font-code); }
+#consoleInput { flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: var(--text-main); font-family: var(--font-code); font-size: 13px; }
+.log-in { color: var(--text-muted); }
+.log-out { color: #7dd3fc; }
+body.light-theme .log-out { color: #0369a1; }
+
+/* ---- Settings modal ---- */
+.modal-body { overflow-y: auto; padding: 4px 14px 12px; }
+.set-h { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin: 14px 0 4px; }
+.set-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 13px; }
+.set-row small { display: block; color: var(--text-muted); font-size: 11px; margin-top: 2px; }
+.set-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent-color); flex-shrink: 0; }
+.set-row select, .set-select { background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 8px; font-size: 13px; max-width: 60%; }
+.set-stepper { display: flex; align-items: center; gap: 8px; }
+.set-label { font-size: 12px; color: var(--text-muted); margin: 10px 0 4px; display: block; }
+/* global textarea rules are for the code editors - reset them for settings fields */
+textarea.set-input {
+    position: static !important; width: 100% !important; height: auto !important; min-height: 64px;
+    padding: 8px !important; color: var(--text-main) !important; background: var(--bg-input) !important;
+    border: 1px solid var(--border-color) !important; border-radius: 6px;
+    font-size: 12px !important; line-height: 1.4 !important; letter-spacing: 0 !important;
+    white-space: pre; resize: vertical; display: block;
+}
+textarea.set-input:focus { border-color: var(--accent-color) !important; }
+.set-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+@media (pointer: coarse) {
+    #consoleInput, .set-row select, .set-select { font-size: 16px; }
+    textarea.set-input { font-size: 16px !important; }
+    .set-row input[type="checkbox"] { width: 24px; height: 24px; }
+}
+@media (max-width: 480px) {
+    #autoRunBtn .lbl { display: none; }
+    .output-tools { gap: 4px; }
+}
+@media (max-width: 400px) {
+    .project-chip { max-width: 84px; }
+    .project-chip i { display: none; }
+    .header-actions { gap: 3px; }
+}

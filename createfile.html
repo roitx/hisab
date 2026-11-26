@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
-    <title>Roitx Studio IDE v5.7</title>
+    <title>Roitx Studio IDE v6.0</title>
     <!-- Stylesheet -->
     <link rel="stylesheet" href="cfile.css">
     <!-- FontAwesome for Icons -->
@@ -24,28 +24,44 @@
             <button class="icon-btn" onclick="toggleFindReplaceModal()" title="Find & Replace (Ctrl+F)"><i class="fas fa-search"></i></button>
             <button class="btn btn-primary" onclick="runManualCode()" title="Run (Ctrl+Enter)"><i class="fas fa-play"></i> <span>Run</span></button>
 
-            <div class="export-dropdown" style="position: relative; display: inline-block;">
-                <button class="btn btn-save" onclick="toggleExportMenu()" style="background: #00f0ff; color: #0a0c10; font-weight: bold; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">
+            <div class="menu-wrap">
+                <button class="btn btn-save" id="exportBtn" onclick="toggleExportMenu(event)" title="Save / Export">
                     <i class="fas fa-download"></i> <span>Export</span> <i class="fas fa-caret-down"></i>
                 </button>
-                <div id="exportMenu" class="dropdown-menu hidden" style="position: absolute; right: 0; top: 110%; background: #12161f; border: 1px solid #00f0ff; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); width: 230px; z-index: 1000; padding: 6px 0;">
+                <input type="file" id="importFile" class="hidden" multiple accept=".html,.htm,.css,.js,.py,.php,.txt" onchange="importFiles(this)">
+                <div id="exportMenu" class="dropdown-menu hidden">
                     <button onclick="saveProjectNow()" class="menu-item"><i class="fas fa-floppy-disk"></i> Save Project (Ctrl+S)</button>
                     <button onclick="exportZip()" class="menu-item"><i class="fas fa-file-zipper"></i> Download ZIP</button>
                     <button onclick="copyShareLink()" class="menu-item"><i class="fas fa-link"></i> Copy Share Link</button>
+                    <button onclick="document.getElementById('importFile').click()" class="menu-item"><i class="fas fa-file-import"></i> Import File(s)</button>
                     <button onclick="saveCurrentActiveFile()" class="menu-item"><i class="fas fa-file-code"></i> Save Active File</button>
                     <button onclick="exportFullHTMLProject()" class="menu-item"><i class="fas fa-globe"></i> Export Complete Web Page (.html)</button>
-                    <button onclick="exportAllSeparateFiles()" class="menu-item"><i class="fas fa-folder-open"></i> Export All Files (.html, .css, .js, .py)</button>
+                    <button onclick="exportAllSeparateFiles()" class="menu-item"><i class="fas fa-folder-open"></i> Export All Files (.html, .css, .js, .py, .php)</button>
                 </div>
             </div>
 
-            <button class="icon-btn" onclick="togglePreviewPanel()" title="Toggle Preview"><i class="fas fa-columns"></i></button>
-            <button class="icon-btn hide-xs" onclick="openPreviewFullscreen()" title="Fullscreen Preview"><i class="fas fa-expand"></i></button>
+            <div class="menu-wrap">
+                <button class="icon-btn" id="viewBtn" onclick="toggleViewMenu(event)" title="Change View"><i class="fas fa-table-columns"></i></button>
+                <div id="viewMenu" class="dropdown-menu hidden">
+                    <div class="menu-label">Layout</div>
+                    <button class="menu-item" data-layout="auto" onclick="setLayout('auto')"><i class="fas fa-wand-magic-sparkles"></i> Auto (responsive)</button>
+                    <button class="menu-item" data-layout="lr" onclick="setLayout('lr')"><i class="fas fa-table-columns"></i> Left / Right</button>
+                    <button class="menu-item" data-layout="tb" onclick="setLayout('tb')"><i class="fas fa-grip-lines"></i> Top / Bottom</button>
+                    <button class="menu-item" data-layout="editor" onclick="setLayout('editor')"><i class="fas fa-code"></i> Editors only</button>
+                    <button class="menu-item" data-layout="preview" onclick="setLayout('preview')"><i class="fas fa-eye"></i> Preview only</button>
+                    <div class="menu-sep"></div>
+                    <button class="menu-item" onclick="openPreviewFullscreen()"><i class="fas fa-expand"></i> Fullscreen preview</button>
+                    <button class="menu-item" onclick="openPreviewNewTab()"><i class="fas fa-up-right-from-square"></i> Open preview in new tab</button>
+                </div>
+            </div>
+
+            <button class="icon-btn" onclick="openSettings()" title="Settings"><i class="fas fa-gear"></i></button>
             <button class="icon-btn mode-changer-btn" id="mode-toggle" onclick="toggleThemeMode()" title="Toggle Theme"><i class="fas fa-moon"></i></button>
         </div>
     </header>
 
     <!-- Main Workspace Grid -->
-    <div class="workspace-grid">
+    <div class="workspace-grid" data-layout="auto">
         <!-- Editors Container -->
         <div class="editors-wrapper">
             <div class="editor-tabs-bar">
@@ -53,6 +69,7 @@
                 <button class="tab-btn" id="tabBtnCss" onclick="switchEditorTab('css')">CSS</button>
                 <button class="tab-btn" id="tabBtnJs" onclick="switchEditorTab('js')">JS</button>
                 <button class="tab-btn" id="tabBtnPy" onclick="switchEditorTab('py')">Python</button>
+                <button class="tab-btn" id="tabBtnPhp" onclick="switchEditorTab('php')">PHP</button>
             </div>
 
             <div class="editors-container">
@@ -60,7 +77,7 @@
                 <div class="editor-panel active" id="htmlPanel">
                     <div class="panel-header">
                         <span class="panel-title"><span class="file-icon html-icon">&lt;/&gt;</span> HTML</span>
-                        <button class="mini-btn" onclick="clearEditor('html')">Clear</button>
+                        <span class="panel-actions"><button class="mini-btn" onclick="formatCode('html')" title="Format (Ctrl+Shift+F)">Format</button><button class="mini-btn" onclick="clearEditor('html')">Clear</button></span>
                     </div>
                     <div class="editor-body">
                         <div class="line-numbers" id="htmlLineNums">1</div>
@@ -75,7 +92,7 @@
                 <div class="editor-panel" id="cssPanel">
                     <div class="panel-header">
                         <span class="panel-title"><span class="file-icon css-icon">#</span> CSS</span>
-                        <button class="mini-btn" onclick="clearEditor('css')">Clear</button>
+                        <span class="panel-actions"><button class="mini-btn" onclick="formatCode('css')" title="Format (Ctrl+Shift+F)">Format</button><button class="mini-btn" onclick="clearEditor('css')">Clear</button></span>
                     </div>
                     <div class="editor-body">
                         <div class="line-numbers" id="cssLineNums">1</div>
@@ -90,7 +107,7 @@
                 <div class="editor-panel" id="jsPanel">
                     <div class="panel-header">
                         <span class="panel-title"><span class="file-icon js-icon">JS</span> JavaScript</span>
-                        <button class="mini-btn" onclick="clearEditor('js')">Clear</button>
+                        <span class="panel-actions"><button class="mini-btn" onclick="formatCode('js')" title="Format (Ctrl+Shift+F)">Format</button><button class="mini-btn" onclick="clearEditor('js')">Clear</button></span>
                     </div>
                     <div class="editor-body">
                         <div class="line-numbers" id="jsLineNums">1</div>
@@ -115,6 +132,22 @@
                         </div>
                     </div>
                 </div>
+
+
+                <!-- PHP Panel (runs in browser via php-wasm) -->
+                <div class="editor-panel" id="phpPanel">
+                    <div class="panel-header">
+                        <span class="panel-title"><span class="file-icon php-icon">PHP</span> PHP</span>
+                        <span class="panel-actions"><button class="mini-btn" onclick="toast('PHP output HTML tab ke &lt;!--php--&gt; marker ki jagah dikhta hai (marker na ho to end me)')" title="How it works">?</button><button class="mini-btn" onclick="clearEditor('php')">Clear</button></span>
+                    </div>
+                    <div class="editor-body">
+                        <div class="line-numbers" id="phpLineNums">1</div>
+                        <div class="code-area-wrapper">
+                            <textarea id="phpInput" spellcheck="false"></textarea>
+                            <pre class="highlight-layer"><code id="phpHighlight"></code></pre>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Custom Keyboard Shortcut Toolbar -->
@@ -123,6 +156,15 @@
                 <button onclick="expandEmmet()" title="Emmet: div.card&gt;p*3">Emmet</button>
                 <button onclick="undoEdit()" title="Undo"><i class="fas fa-rotate-left"></i></button>
                 <button onclick="redoEdit()" title="Redo"><i class="fas fa-rotate-right"></i></button>
+                <button onclick="lineOp('comment')" title="Toggle comment (Ctrl+/)">//</button>
+                <button onclick="lineOp('dup')" title="Duplicate line (Ctrl+D)">Dup</button>
+                <button onclick="lineOp('del')" title="Delete line (Ctrl+Shift+K)">Del</button>
+                <button onclick="lineOp('up')" title="Move line up (Alt+Up)">&uarr;</button>
+                <button onclick="lineOp('down')" title="Move line down (Alt+Down)">&darr;</button>
+                <button onclick="gotoLine()" title="Go to line (Ctrl+G)">Go</button>
+                <button onclick="clipAction('all')" title="Select all">All</button>
+                <button onclick="clipAction('copy')" title="Copy">Copy</button>
+                <button onclick="clipAction('paste')" title="Paste">Paste</button>
                 <button onclick="insertAtCursor(null, '&lt;div&gt;$|&lt;/div&gt;')">&lt;div&gt;</button>
                 <button onclick="insertAtCursor(null, '&lt;p&gt;$|&lt;/p&gt;')">&lt;p&gt;</button>
                 <button onclick="insertAtCursor(null, '&lt;h1&gt;$|&lt;/h1&gt;')">&lt;h1&gt;</button>
@@ -130,6 +172,10 @@
                 <button onclick="insertAtCursor(null, '&lt;a href=&quot;$|&quot;&gt;&lt;/a&gt;')">&lt;a&gt;</button>
                 <button onclick="insertAtCursor(null, 'class=&quot;$|&quot;')">class</button>
                 <button onclick="insertAtCursor(null, 'id=&quot;$|&quot;')">id</button>
+                <button onclick="insertAtCursor(null, '&lt;?php\n$|')" title="PHP open tag">&lt;?php</button>
+                <button onclick="insertAtCursor(null, '$')">$</button>
+                <button onclick="insertAtCursor(null, '-&gt;')">-&gt;</button>
+                <button onclick="insertAtCursor(null, '=&gt;')">=&gt;</button>
                 <button onclick="insertAtCursor(null, '()')">()</button>
                 <button onclick="insertAtCursor(null, '{}')">{}</button>
                 <button onclick="insertAtCursor(null, '[]')">[]</button>
@@ -147,9 +193,13 @@
                     <button class="output-tab" id="btnConsoleTab" onclick="switchOutputTab('console')"><i class="fas fa-terminal"></i> Console <span class="badge" id="consoleBadge">0</span></button>
                 </div>
                 
-                <div class="device-selector">
-                    <button class="device-btn active" id="btnDeviceFull" onclick="setDeviceMode('full')"><i class="fas fa-desktop"></i></button>
-                    <button class="device-btn" id="btnDeviceMobile" onclick="setDeviceMode('mobile')"><i class="fas fa-mobile-alt"></i></button>
+                <div class="output-tools">
+                    <button class="mini-btn on" id="autoRunBtn" onclick="toggleAutoRun()" title="Auto-run preview while typing"><i class="fas fa-bolt"></i><span class="lbl">Auto</span></button>
+                    <div class="device-selector">
+                        <button class="device-btn active" id="btnDeviceFull" onclick="setDeviceMode('full')" title="Full width"><i class="fas fa-desktop"></i></button>
+                        <button class="device-btn" id="btnDeviceTablet" onclick="setDeviceMode('tablet')" title="Tablet"><i class="fas fa-tablet-alt"></i></button>
+                        <button class="device-btn" id="btnDeviceMobile" onclick="setDeviceMode('mobile')" title="Mobile"><i class="fas fa-mobile-alt"></i></button>
+                    </div>
                 </div>
             </div>
 
@@ -162,16 +212,19 @@
             <div class="console-wrapper hidden" id="consoleWrapper">
                 <div class="console-toolbar">
                     <span>Virtual Console Output</span>
-                    <button class="mini-btn" onclick="consoleOutput.innerHTML=''; logCount=0; consoleBadge.innerText='0';">Clear Console</button>
+                    <button class="mini-btn" onclick="clearConsole()">Clear Console</button>
                 </div>
                 <div class="console-output" id="consoleOutput"></div>
+                <div class="console-input-row"><span class="console-prompt">&gt;</span><input id="consoleInput" type="text" placeholder="Type JS here and press Enter..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
             </div>
         </div>
+        <div class="splitter" id="splitter" title="Drag to resize (double-click to reset)"></div>
     </div>
 
     <!-- Bottom Status Bar -->
     <footer class="bottom-bar">
         <span class="auto-save-indicator" id="autoSaveStatus">Auto-Saved</span>
+        <span id="cursorInfo">Ln 1, Col 1</span>
         <span id="editorStats">Lines: 0 | Characters: 0</span>
     </footer>
 
@@ -205,6 +258,74 @@
             <div class="modal-head"><span>My Projects</span><button class="icon-btn" onclick="closeProjects()"><i class="fas fa-times"></i></button></div>
             <div id="projectList" class="project-list"></div>
             <div class="modal-foot"><button class="btn btn-primary" onclick="newProject()"><i class="fas fa-plus"></i> New Project</button></div>
+        </div>
+    </div>
+
+        <!-- Settings Modal -->
+    <div id="settingsModal" class="modal-backdrop hidden" onclick="if(event.target===this)closeSettings()">
+        <div class="modal-card">
+            <div class="modal-head"><span>Settings</span><button class="icon-btn" onclick="closeSettings()"><i class="fas fa-times"></i></button></div>
+            <div class="modal-body">
+                <div class="set-h">Preview</div>
+                <label class="set-row"><span>Auto-run preview<small>Update the preview while you type</small></span><input type="checkbox" id="setAutoRun" onchange="applySettingsFromUI()"></label>
+                <div class="set-row"><span>Auto-run delay</span>
+                    <select id="setDelay" onchange="applySettingsFromUI()">
+                        <option value="400">Fast (0.4s)</option>
+                        <option value="800">Normal (0.8s)</option>
+                        <option value="1500">Slow (1.5s)</option>
+                        <option value="3000">Very slow (3s)</option>
+                    </select>
+                </div>
+                <label class="set-row"><span>Clear console on run</span><input type="checkbox" id="setClearConsole" onchange="applySettingsFromUI()"></label>
+
+                <div class="set-h">Editor</div>
+                <div class="set-row"><span>Font size</span>
+                    <span class="set-stepper">
+                        <button class="mini-btn" onclick="changeFontSize(-1)">A-</button>
+                        <b id="fsVal">14px</b>
+                        <button class="mini-btn" onclick="changeFontSize(1)">A+</button>
+                    </span>
+                </div>
+
+                <div class="set-h">This project: resources</div>
+                <div class="set-row"><span>CSS base</span>
+                    <select id="setBase">
+                        <option value="none">None</option>
+                        <option value="normalize">Normalize.css</option>
+                        <option value="reset">Simple reset</option>
+                    </select>
+                </div>
+                <div class="set-row"><span>Quick add library</span>
+                    <span class="set-stepper">
+                        <select id="quickAdd">
+                            <option value="">Choose...</option>
+                            <option value="bootstrap">Bootstrap 5</option>
+                            <option value="tailwind">Tailwind (Play CDN)</option>
+                            <option value="jquery">jQuery</option>
+                            <option value="react">React 18</option>
+                            <option value="vue">Vue 3</option>
+                            <option value="chartjs">Chart.js</option>
+                            <option value="gsap">GSAP</option>
+                            <option value="three">Three.js</option>
+                            <option value="p5">p5.js</option>
+                            <option value="d3">D3</option>
+                            <option value="axios">Axios</option>
+                            <option value="lodash">Lodash</option>
+                            <option value="fa">Font Awesome 6</option>
+                            <option value="animate">Animate.css</option>
+                        </select>
+                        <button class="mini-btn" onclick="addQuickResource()">Add</button>
+                    </span>
+                </div>
+                <label class="set-label" for="setCss">External CSS (one URL per line)</label>
+                <textarea class="set-input" id="setCss" spellcheck="false" placeholder="https://.../style.css"></textarea>
+                <label class="set-label" for="setJs">External JS (one URL per line, loaded before your JS)</label>
+                <textarea class="set-input" id="setJs" spellcheck="false" placeholder="https://.../library.js"></textarea>
+                <label class="set-label" for="setHead">Stuff for &lt;head&gt; (meta tags, fonts, etc.)</label>
+                <textarea class="set-input" id="setHead" spellcheck="false" placeholder="&lt;link rel=&quot;stylesheet&quot; href=&quot;...&quot;&gt;"></textarea>
+                <div class="set-hint">Resources apply to the preview, ZIP, exported page and share link.</div>
+            </div>
+            <div class="modal-foot"><button class="btn btn-primary" onclick="closeSettings()"><i class="fas fa-check"></i> Done</button></div>
         </div>
     </div>
 
