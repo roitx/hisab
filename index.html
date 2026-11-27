@@ -2,11 +2,14 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#F5F6F2">
   <meta name="description" content="Aasaan Hisaab Enterprise Pro - Ultra Advanced Multi-Lingual AI Khata & Ledger System">
 
   <script>(function(){try{var m=localStorage.getItem('ah_theme_mode')||'light',a=localStorage.getItem('ah_theme_accent')||'hara',d=document.documentElement;if(m==='auto')m=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.setAttribute('data-mode',m);d.setAttribute('data-accent',a);}catch(e){}})();</script>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <title>Aasaan Hisaab AI Pro Enterprise Ledger</title>
 
   <!-- External CDNs: Firebase v10, jsPDF, AutoTable, Chart.js -->
@@ -543,10 +546,119 @@
     .ns-ok { width:100%; min-height:46px; border:0; border-radius:14px; background:var(--soft); color:var(--pos); font-weight:700; cursor:pointer; margin-top:4px; }
     .ns-save { width:100%; min-height:52px; border:0; border-radius:999px; background:var(--pos-solid); color:#fff; font-weight:700; font-size:1rem; margin-top:18px; cursor:pointer; }
     .ns-cancel { display:block; margin:12px auto 0; background:none; border:0; color:var(--text-muted); padding:10px 20px; cursor:pointer; font-size:.9rem; }
+
+    .ai-warn { font-size:.74rem; color:var(--warning); margin-top:4px; line-height:1.4; }
+    .rp-nav { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .rp-nav .ai-x { width:40px; height:40px; font-size:1.2rem; }
+    .rp-hero { background:var(--soft); border-radius:16px; padding:14px; margin-bottom:12px; }
+    .rp-big { font-size:1.8rem; font-weight:700; font-variant-numeric:tabular-nums; }
+    .rp-two { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+    .rp-box { background:var(--surface); border:1px solid var(--card-border); border-radius:14px; padding:10px 12px; }
+    .rp-lbl { font-size:.74rem; color:var(--text-muted); }
+    .rp-row { display:flex; justify-content:space-between; font-size:.82rem; margin:10px 0 4px; }
+    .rp-track { height:8px; background:var(--chip); border-radius:6px; overflow:hidden; }
+    .rp-fill { height:100%; background:var(--primary); border-radius:6px; }
+    .rp-tip { font-size:.82rem; line-height:1.6; margin:6px 0; }
+
+    /* =====================================================================
+       RESPONSIVE LAYER: chhota phone -> phone -> tablet -> laptop/desktop
+       ===================================================================== */
+    :root { --app-max: 520px; --nav-max: 520px; --safe-t: env(safe-area-inset-top, 0px); --safe-b: env(safe-area-inset-bottom, 0px); --safe-l: env(safe-area-inset-left, 0px); --safe-r: env(safe-area-inset-right, 0px); }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    img, svg, canvas, video { max-width: 100%; }
+    body { min-height: 100vh; min-height: 100dvh; padding-left: var(--safe-l); padding-right: var(--safe-r); }
+    #app-container { max-width: var(--app-max); min-width: 0; min-height: 100vh; min-height: 100dvh; padding-bottom: calc(96px + var(--safe-b)); }
+    .layout { flex: 1 0 auto; display: block; min-width: 0; }
+    .col-a, .col-b { min-width: 0; }
+
+    header { padding-top: calc(16px + var(--safe-t)); gap: 10px; }
+    header > div:first-child { min-width: 0; }
+    header .brand-title, header #user-display { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .balance-amount { font-size: clamp(1.75rem, 8vw, 2.5rem); overflow-wrap: anywhere; line-height: 1.15; }
+    .stat-val.in, .stat-val.out { overflow-wrap: anywhere; }
+    .chart-container { height: clamp(200px, 38vw, 300px); }
+    .ai-input { min-width: 0; }
+    .search-input { min-width: 0; width: 100%; }
+    .filter-bar .lang-select { flex: 0 0 auto; max-width: 42%; }
+    .history-item { gap: 10px; }
+    .history-item > div:first-child { min-width: 0; flex: 1; overflow-wrap: anywhere; }
+    .history-item > div:last-child { flex-shrink: 0; }
+
+    .bottom-nav { width: 100%; max-width: min(100%, var(--nav-max)); padding-bottom: calc(6px + var(--safe-b)); }
+    .cookie-banner { max-width: min(100%, var(--nav-max)); bottom: calc(68px + var(--safe-b)); }
+    .app-toast { bottom: calc(92px + var(--safe-b)); }
+    .move-toast { top: calc(12px + var(--safe-t)); max-width: min(496px, calc(100% - 24px)); }
+
+    /* Login: chhoti ya landscape screen par bhi poora scroll ho */
+    .login-screen { overflow-y: auto; justify-content: flex-start; padding: calc(24px + var(--safe-t)) 24px calc(24px + var(--safe-b)); }
+    .login-card { margin: auto 0; }
+
+    /* Modals: screen se bade na hon, andar scroll karein */
+    .modal-overlay { overscroll-behavior: contain; padding: max(16px, var(--safe-t)) max(16px, var(--safe-r)) max(16px, var(--safe-b)) max(16px, var(--safe-l)); }
+    .modal-content { max-height: calc(100vh - 32px) !important; max-height: calc(100dvh - 32px) !important; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+    .ns-card { max-height: 94vh; max-height: 94dvh; padding-bottom: calc(24px + var(--safe-b)); }
+
+    /* iPhone/Android par input focus par zoom na ho: font 16px */
+    @media (max-width: 820px) {
+      .login-input, .modal-input, .search-input, .lang-select, .ai-input, .ai-edit .modal-input, .pin-wrap .login-input { font-size: 16px; }
+    }
+
+    /* Bahut chhote phone (<= 380px) */
+    @media (max-width: 380px) {
+      .dashboard { padding: 12px; }
+      .balance-card { padding: 16px; }
+      .chart-section, .budget-section { margin-left: 12px; margin-right: 12px; padding: 12px; }
+      .munim-card, .insight-card, .action-grid, .filter-bar { margin-left: 12px; margin-right: 12px; }
+      .shortcuts-section, .history-container { padding-left: 12px; padding-right: 12px; }
+      .quick-entry-btns { grid-template-columns: 1fr; }
+      .stats-grid { gap: 8px; }
+      .ai-box { flex-wrap: wrap; padding: 8px; border-radius: 22px; }
+      .ai-input { order: -1; flex: 1 1 100%; padding: 8px 6px; }
+      .ai-box .mic-btn { flex: 1; }
+      .ai-box .btn-action { flex: 2; }
+      .filter-bar { flex-direction: column; }
+      .nav-btn { font-size: 0.62rem; }
+      .modal-content { padding: 18px; }
+      .seg2 button { font-size: 0.78rem; padding: 8px 2px; }
+      .swatches { gap: 10px; }
+      .p-sum { gap: 8px; }
+    }
+
+    /* Phone landscape (height kam) */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .bottom-nav { padding-top: 3px; }
+      .nav-btn { min-height: 44px; flex-direction: row; gap: 8px; }
+      .login-card { padding: 20px 24px; }
+      .modal-content { max-height: calc(100vh - 20px) !important; max-height: calc(100dvh - 20px) !important; }
+      #ai-panel.as-sheet { align-items: center; }
+      .ns-card { border-radius: 20px; }
+    }
+
+    /* Tablet (600px+) */
+    @media (min-width: 600px) {
+      :root { --app-max: 720px; --nav-max: 640px; }
+      .dashboard { padding: 20px; }
+      .modal-content { padding: 28px; }
+      #ai-panel.as-sheet { align-items: center; padding: 20px; }
+      .ns-card { border-radius: 24px; max-width: 560px; }
+    }
+
+    /* Laptop / desktop / badi tablet landscape: do column layout */
+    @media (min-width: 900px) and (min-height: 521px) {
+      :root { --app-max: 1200px; --nav-max: 560px; }
+      .layout { display: grid; grid-template-columns: minmax(340px, 400px) minmax(0, 1fr); column-gap: 12px; align-items: start; }
+      .wallet-selector, .shortcut-chips, .period-bar, .chart-tabs { flex-wrap: wrap; overflow: visible; }
+      .chart-container { height: 300px; }
+      .bottom-nav { border-radius: 18px 18px 0 0; border-left: 1px solid var(--card-border); border-right: 1px solid var(--card-border); }
+      .modal-content { max-width: 480px; }
+      .history-item, .chip, .wallet-chip, .tab-btn, .period-chip, .sheet-btn, .p-row, .nav-btn { cursor: pointer; }
+    }
+    @media (min-width: 1500px) { :root { --app-max: 1280px; } }
   </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M17.94 17.94A10.5 10.5 0 0 1 12 19C5.5 19 2 12 2 12a18 18 0 0 1 5.06-5.94M9.9 4.24A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m2 2 20 20"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="currentColor" stroke="none"/></symbol><symbol id="i-cash" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></symbol><symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 22h18"/><path d="M6 18v-7M10 18v-7M14 18v-7M18 18v-7"/><path d="m12 2 9 5H3z"/></symbol><symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol><symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></symbol><symbol id="i-ledger" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></symbol><symbol id="i-sprout" viewBox="0 0 24 24"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></symbol><symbol id="i-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol><symbol id="i-tractor" viewBox="0 0 24 24"><circle cx="7" cy="16" r="4"/><circle cx="18" cy="18" r="2"/><path d="M3 12V5h7l1.5 7H3"/><path d="M11 12h8a2 2 0 0 1 2 2v2M18 16V8h-4"/></symbol><symbol id="i-box" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></symbol><symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol><symbol id="i-bar" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></symbol><symbol id="i-pie" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></symbol><symbol id="i-trend" viewBox="0 0 24 24"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></symbol><symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l2-5.2A8.4 8.4 0 1 1 21 11.5z"/></symbol><symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol><symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol><symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l8.59-8.59a1 1 0 0 0 0-1.41z"/><path d="M7 7h.01"/></symbol><symbol id="i-down2" viewBox="0 0 24 24"><path d="m22 17-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76V6h6v4.76l2 3.24H7z"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol><symbol id="i-checkc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol><symbol id="i-translate" viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></symbol><symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol></defs></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol><symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M17.94 17.94A10.5 10.5 0 0 1 12 19C5.5 19 2 12 2 12a18 18 0 0 1 5.06-5.94M9.9 4.24A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m2 2 20 20"/></symbol><symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="currentColor" stroke="none"/></symbol><symbol id="i-cash" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></symbol><symbol id="i-bank" viewBox="0 0 24 24"><path d="M3 22h18"/><path d="M6 18v-7M10 18v-7M14 18v-7M18 18v-7"/><path d="m12 2 9 5H3z"/></symbol><symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol><symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></symbol><symbol id="i-ledger" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol><symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></symbol><symbol id="i-sprout" viewBox="0 0 24 24"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></symbol><symbol id="i-cart" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></symbol><symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></symbol><symbol id="i-tractor" viewBox="0 0 24 24"><circle cx="7" cy="16" r="4"/><circle cx="18" cy="18" r="2"/><path d="M3 12V5h7l1.5 7H3"/><path d="M11 12h8a2 2 0 0 1 2 2v2M18 16V8h-4"/></symbol><symbol id="i-box" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/></symbol><symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol><symbol id="i-bar" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></symbol><symbol id="i-pie" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></symbol><symbol id="i-trend" viewBox="0 0 24 24"><path d="m22 7-8.5 8.5-5-5L2 17"/><path d="M16 7h6v6"/></symbol><symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol><symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.8-.9L3 21l2-5.2A8.4 8.4 0 1 1 21 11.5z"/></symbol><symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol><symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82 1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol><symbol id="i-down" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5M12 15V3"/></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/></symbol><symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol><symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4M12 17h.01"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></symbol><symbol id="i-tag" viewBox="0 0 24 24"><path d="M12 2H2v10l9.29 9.29a1 1 0 0 0 1.41 0l8.59-8.59a1 1 0 0 0 0-1.41z"/><path d="M7 7h.01"/></symbol><symbol id="i-down2" viewBox="0 0 24 24"><path d="m22 17-8.5-8.5-5 5L2 7"/><path d="M16 17h6v-6"/></symbol><symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6M10 22h4"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76V6h6v4.76l2 3.24H7z"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol><symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol><symbol id="i-checkc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol><symbol id="i-translate" viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></symbol><symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol><symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></symbol></defs></svg>
 
   <!-- We have moved notification (7 sec baad apne aap hat jata hai) -->
   <div class="move-toast" id="move-toast" role="status" aria-live="polite">
@@ -615,6 +727,8 @@
       </a>
     </header>
 
+    <main class="layout">
+    <div class="col-a">
     <!-- Main Dashboard Section -->
     <div class="dashboard">
       <!-- Period filter -->
@@ -662,6 +776,8 @@
 
       <!-- Advanced Voice & Text AI Input -->
       <div class="ai-box">
+        <button class="mic-btn" type="button" onclick="document.getElementById('bill-input').click()" aria-label="Bill ki photo kheenchein"><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg></button>
+        <input type="file" id="bill-input" accept="image/*" capture="environment" hidden onchange="aiScanBill(this)">
         <button class="mic-btn" id="mic-btn" onclick="toggleVoiceRecording()"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg></button>
         <input type="text" id="ai-input-text" class="ai-input" placeholder="Bolien ya Likhein: '500 ki khad' ya '1000 salary'">
         <button class="btn-action" id="ai-submit-btn" onclick="processGroqAI()">
@@ -697,6 +813,8 @@
       </div>
     </div>
 
+    </div><!-- /col-a -->
+    <div class="col-b">
     <!-- Advanced Visual Charts Section -->
     <div class="chart-section">
       <div class="section-title" style="margin-bottom:8px;">Visual Analytics Chart</div>
@@ -750,6 +868,9 @@
       <div id="history-list"></div>
     </div>
 
+    </div><!-- /col-b -->
+    </main>
+
     <!-- Footer Links & Copyright -->
     <footer>
       <p>© 2026 Aasaan Hisaab AI Pro Enterprise Ledger</p>
@@ -765,9 +886,8 @@
   <nav class="bottom-nav" id="bottom-nav" aria-label="Main navigation">
     <button class="nav-btn" onclick="navHome()" aria-label="Home"><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg><span>Home</span></button>
     <button class="nav-btn" onclick="openPartyModal()" aria-label="Udhar Khata"><svg class="ic" aria-hidden="true"><use href="#i-ledger"/></svg><span>Udhar</span></button>
-    <button class="nav-btn" onclick="openModal('lang-modal')" aria-label="Language badlein"><svg class="ic fill" aria-hidden="true"><use href="#i-translate"/></svg><span>Language</span></button>
+    <button class="nav-btn" onclick="openReport()" aria-label="Report"><svg class="ic" aria-hidden="true"><use href="#i-bar"/></svg><span>Report</span></button>
     <button class="nav-btn" onclick="openModal('settings-modal')" aria-label="Settings"><svg class="ic" aria-hidden="true"><use href="#i-gear"/></svg><span>Settings</span></button>
-    <button class="nav-btn nav-logout" onclick="logoutUser()" aria-label="Logout"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg><span>Logout</span></button>
   </nav>
 
   <!-- Cookie Consent Banner -->
@@ -930,6 +1050,35 @@
       <button class="sheet-btn" onclick="closeModal('settings-modal'); openModal('change-pin-modal')"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg> PIN / Security Question badlein</button>
       <button class="sheet-btn" onclick="closeModal('settings-modal'); openBudgetModal()"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Mahine ka Budget</button>
       <button class="sheet-btn" onclick="closeModal('settings-modal'); backupAndRestoreModal()"><svg class="ic" aria-hidden="true"><use href="#i-save"/></svg> Data Backup / Restore</button>
+      <button class="sheet-btn" onclick="closeModal('settings-modal'); openRec()"><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg> Har mahine ki entries</button>
+      <button class="sheet-btn" id="pwa-install" style="display:none" onclick="pwaInstall()"><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg> App install karein</button>
+      <button class="sheet-btn" onclick="closeModal('settings-modal'); openModal('lang-modal')"><svg class="ic fill" aria-hidden="true"><use href="#i-translate"/></svg> Language badlein</button>
+      <button class="sheet-btn" style="color:var(--danger)" onclick="closeModal('settings-modal'); logoutUser()"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg> Logout</button>
+    </div>
+  </div>
+
+  <!-- Recurring Modal -->
+  <div class="modal-overlay" id="rec-modal" onclick="if(event.target===this)closeModal('rec-modal')">
+    <div class="modal-content" style="max-width:420px;max-height:90vh;overflow-y:auto;">
+      <button class="close-btn" onclick="closeModal('rec-modal')" aria-label="Band karein"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+      <h3 class="sheet-title"><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg> Har mahine ki entries</h3>
+      <div id="rec-list"></div>
+      <div class="theme-lbl" style="margin-top:12px;">Nayi entry (kiraya, EMI, salary...)</div>
+      <input class="modal-input" id="rc-note" placeholder="Naam (jaise Kiraya)" maxlength="60">
+      <div class="ai-g2"><input class="modal-input" id="rc-amt" type="number" inputmode="decimal" placeholder="Amount ₹"><input class="modal-input" id="rc-day" type="number" inputmode="numeric" min="1" max="28" placeholder="Tarikh (1-28)"></div>
+      <div class="ai-g2"><select class="modal-input" id="rc-type"><option value="OUT">Kharcha (-)</option><option value="IN">Jama (+)</option></select><select class="modal-input" id="rc-cat"><option>General</option><option>Rent</option><option>Salary</option><option>Bills</option><option>Farming</option><option>Education</option><option>Health</option></select></div>
+      <button class="ns-ok" onclick="recNew()">Jodein</button>
+      <p style="font-size:.74rem;color:var(--text-muted);margin-top:10px;">Tarikh aate hi Munim yaad dilayega. Entry tabhi banegi jab aap "Add karein" dabayenge. Yeh list sirf isi phone me save hoti hai.</p>
+    </div>
+  </div>
+
+  <!-- Report Modal -->
+  <div class="modal-overlay" id="report-modal" onclick="if(event.target===this)closeModal('report-modal')">
+    <div class="modal-content" style="max-width:420px;max-height:90vh;overflow-y:auto;">
+      <button class="close-btn" onclick="closeModal('report-modal')" aria-label="Band karein"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+      <h3 class="sheet-title"><svg class="ic" aria-hidden="true"><use href="#i-bar"/></svg> Report</h3>
+      <div class="rp-nav"><button class="ai-x" onclick="rpShift(-1)" aria-label="Pichla mahina">‹</button><b id="rp-title"></b><button class="ai-x" onclick="rpShift(1)" aria-label="Agla mahina">›</button></div>
+      <div id="rp-body"></div>
     </div>
   </div>
 
@@ -1692,7 +1841,9 @@
       }
       return best || n.charAt(0).toUpperCase() + n.slice(1);
     }
-    function aiPreview(list, offline) { aiPending = list; aiEditing = -1; aiOffline = !!offline; const inp = document.getElementById('ai-input-text'); aiSaid = (inp && inp.value.trim()) || ''; aiDraw(); }
+    function aiPreview(list, offline) { aiPending = list; aiEditing = -1; aiOffline = !!offline; const inp = document.getElementById('ai-input-text'); aiSaid = (inp && inp.value.trim()) || '';
+      list.forEach(e => { if (!e.party && (!e.category || e.category === 'General')) { const c = aiLearnCat(e.note); if (c) { e.category = c; e.learned = true; } } });
+      aiDraw(); }
     function aiPick(id, val, btn) { document.getElementById(id).value = val; btn.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn)); }
     function aiDraw() {
       const list = aiPending;
@@ -1710,7 +1861,7 @@
           <div class="ai-g2"><select class="modal-input" id="ae-cat" aria-label="Category">${opt(CATS, e.category)}</select><input class="modal-input" id="ae-date" type="date" value="${e.date}" max="${todayISO()}" aria-label="Date"></div>
           <datalist id="ae-parties">${partyGroups().map(g => `<option value="${esc(g.name)}">`).join('')}</datalist>
           <button type="button" class="ns-ok" onclick="aiEditDone()">Theek hai</button></div>`
-        : `<div class="ai-row"><span class="ns-ico"><svg class="ic" aria-hidden="true"><use href="#${iconOf(e)}"/></svg></span><div style="flex:1;min-width:0"><b>${esc(e.note)}</b><div class="ai-sub">${esc(e.category)} • ${esc(e.mode)}${e.party ? ' • ' + esc(e.party) : ''} • ${esc(fmtDateShort(e.date))}</div></div><span style="font-weight:800;color:${e.type === 'IN' ? 'var(--pos)' : 'var(--danger)'}">${e.type === 'IN' ? '+' : '-'}₹${fmt(e.amount)}</span><button class="ai-x" onclick="aiEdit(${i})" aria-label="Edit">✎</button><button class="ai-x" onclick="aiDrop(${i})" aria-label="Hatayein">✕</button></div>`).join('');
+        : `<div class="ai-row"><span class="ns-ico"><svg class="ic" aria-hidden="true"><use href="#${iconOf(e)}"/></svg></span><div style="flex:1;min-width:0"><b>${esc(e.note)}</b><div class="ai-sub">${esc(e.category)} • ${esc(e.mode)}${e.party ? ' • ' + esc(e.party) : ''} • ${esc(fmtDateShort(e.date))}${e.learned ? ' • ✦ aapki list se' : ''}</div>${aiWarns(e, i).map(x => `<div class="ai-warn">⚠ ${x}</div>`).join('')}</div><span style="font-weight:800;color:${e.type === 'IN' ? 'var(--pos)' : 'var(--danger)'}">${e.type === 'IN' ? '+' : '-'}₹${fmt(e.amount)}</span><button class="ai-x" onclick="aiEdit(${i})" aria-label="Edit">✎</button><button class="ai-x" onclick="aiDrop(${i})" aria-label="Hatayein">✕</button></div>`).join('');
       const fixes = [...new Set(list.filter(e => e.fixedFrom && e.fixedFrom.toLowerCase() !== String(e.party || '').toLowerCase()).map(e => esc(e.fixedFrom) + ' → ' + esc(e.party)))];
       aiPanel(`<div class="ns-card" role="dialog" aria-modal="true" aria-label="Nayi entry">
         <div class="ns-head"><h3>Nayi entry</h3><button class="ai-x ns-close" onclick="aiPanel('')" aria-label="Band karein"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button></div>
@@ -1735,8 +1886,9 @@
     async function aiConfirm() {
       if (aiEditing >= 0) { aiEditDone(); if (aiEditing >= 0) return; }
       const list = aiPending.slice(); aiPending = []; aiPanel('');
-      for (const e of list) { createAndSaveEntry(e.type, e.amount, e.note, e.category, e.mode, e.date, e.party); await new Promise(r => setTimeout(r, 4)); }
-      showToast(`${list.length} entry save ho gayi`);
+      const ids = [];
+      for (const e of list) { ids.push(createAndSaveEntry(e.type, e.amount, e.note, e.category, e.mode, e.date, e.party)); await new Promise(r => setTimeout(r, 4)); }
+      showToast(`${list.length} entry save ho gayi`, 'Undo ↩', () => ids.forEach(id => txRemove(id)), 7000);
     }
     function aiAnswer(text) {
       aiLast = text;
@@ -1750,13 +1902,13 @@
     }
     function askMunim(q) { document.getElementById('ai-input-text').value = q; processGroqAI(); }
 
-    async function aiCall(sys, user) {
+    async function aiCall(sys, user, img) {
       let lastMsg = '';
-      for (const model of ['openai/gpt-oss-120b', 'openai/gpt-oss-20b']) {
+      for (const model of (img ? ['meta-llama/llama-4-scout-17b-16e-instruct', 'meta-llama/llama-4-maverick-17b-128e-instruct'] : ['openai/gpt-oss-120b', 'openai/gpt-oss-20b'])) {
         try {
           const r = await fetch("https://my-groq-proxy.xpihu1207.workers.dev", {
             method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ model, messages: [{ role: "system", content: sys }, { role: "user", content: user }], temperature: 0.1 })
+            body: JSON.stringify({ model, messages: [{ role: "system", content: sys }, { role: "user", content: img ? [{ type: "text", text: user }, { type: "image_url", image_url: { url: img } }] : user }], temperature: 0.1 })
           });
           const body = await r.text(); let d = null; try { d = JSON.parse(body); } catch (e) {}
           const c = d && d.choices && d.choices[0], txt = (c && c.message && c.message.content) || (d && ((d.content && d.content[0] && d.content[0].text) || d.response || d.result || d.text));
@@ -1769,7 +1921,7 @@
     }
     async function processGroqAI() {
       const inputEl = document.getElementById('ai-input-text');
-      const promptText = inputEl.value.trim();
+      const promptText = aiHindiNums(inputEl.value.trim());
       if (!promptText) return;
       toggleLoading(true);
       const isQuestion = /\?|kitna|kitne|kitni|kisse|kisko|kaun|batao|bata do|hisab|summary|kyun|kyu|kaise|compare|total|how|what|which|why|report/i.test(promptText);
@@ -1859,10 +2011,11 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
       const proj = cur / Math.max(1, dom) * dim;
       if (prev >= 1000 && dom >= 5 && proj > prev * 1.15) nudges.push({ s: 40, h: `Is raftaar se mahina ~₹${fmt(Math.round(proj))} par jayega (pichle mahine ₹${fmt(prev)}, ${Math.round((proj / prev - 1) * 100)}% zyada)` });
       else if (prev < 1000 && cur > 0 && dom >= 5) nudges.push({ s: 30, h: `Is mahine abhi tak ₹${fmt(cur)} kharcha hua (pichle mahine ka data kam hai, tulna nahi ho sakti)` });
+      munimPlus(nudges);
       nudges.sort((a, b) => b.s - a.s);
       const chips = ['Is mahine ka hisab batao', 'Kisse paisa lena hai?', 'Kharcha kahan kam kar sakta hu?'];
       el.innerHTML = `<div class="section-title" style="margin-bottom:6px;">✦ Munim AI</div>` +
-        (nudges.slice(0, 3).map(n => `<div class="ins-line">• ${n.h}</div>`).join('') || `<div class="ins-line">Sab theek hai. Koi pending alert nahi.</div>`) +
+        (nudges.slice(0, 4).map(n => `<div class="ins-line">• ${n.h}</div>`).join('') || `<div class="ins-line">Sab theek hai. Koi pending alert nahi.</div>`) +
         `<div class="mn-chips">${chips.map(c => `<span class="mn-chip" onclick="askMunim('${c}')">${c}</span>`).join('')}</div>`;
       el.style.display = 'block';
     }
@@ -1888,6 +2041,7 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
       txSave(entry);
       if (party) showToast(`${party} ke khate me entry add ho gayi`);
       else if (type === 'OUT') checkBudgetAfterAdd(category, amount, date, entry.id);
+      return entry.id;
     }
 
     function switchChartType(type, btn) {
@@ -2432,6 +2586,154 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
     if (themeMQ) { const onMQ = () => { if (themeMode === 'auto') applyTheme(true); }; if (themeMQ.addEventListener) themeMQ.addEventListener('change', onMQ); }
     document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && aiEditing < 0 && document.querySelector('#ai-panel.as-sheet')) aiPanel(''); });
     applyTheme(false);
+
+    /* ---------- Munim+: Hindi numbers, duplicate, warnings, learning ---------- */
+    const AI_NUMW = { ek:1, do:2, teen:3, char:4, chaar:4, paanch:5, panch:5, chhe:6, chhah:6, che:6, saat:7, aath:8, nau:9, das:10, gyarah:11, barah:12, terah:13, chaudah:14, pandrah:15, solah:16, satrah:17, atharah:18, unnis:19, bees:20, tees:30, chalis:40, pachas:50, saath:60, sattar:70, assi:80, nabbe:90, 'एक':1, 'दो':2, 'तीन':3, 'चार':4, 'पांच':5, 'पाँच':5, 'छह':6, 'सात':7, 'आठ':8, 'नौ':9, 'दस':10, 'बीस':20, 'तीस':30, 'चालीस':40, 'पचास':50, 'साठ':60, 'सत्तर':70, 'अस्सी':80, 'नब्बे':90 };
+    const AI_NUMM = { sau:100, 'सौ':100, hazaar:1000, hazar:1000, 'हज़ार':1000, 'हजार':1000, lakh:100000, 'लाख':100000 };
+    const AI_NUMF = { dedh:1.5, 'डेढ़':1.5, dhai:2.5, 'ढाई':2.5, sava:1.25, 'सवा':1.25 };
+    const AI_STOP = /^(aaj|kal|parso|diya|liya|diye|liye|rupaye|rupaya|rupees|aur|and|the|ko|se|ka|ki|ke|paise|paisa)$/;
+    const aiHas = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+    function aiHindiNums(text) {
+      const w = String(text || '').split(/\s+/), out = [], isN = x => { x = x.toLowerCase(); return aiHas(AI_NUMW, x) || aiHas(AI_NUMM, x) || aiHas(AI_NUMF, x); };
+      for (let i = 0; i < w.length;) {
+        if (!isN(w[i])) { out.push(w[i++]); continue; }
+        let j = i, cur = 0, tot = 0, mult = false;
+        for (; j < w.length && isN(w[j]); j++) {
+          const x = w[j].toLowerCase();
+          if (aiHas(AI_NUMF, x)) { cur = AI_NUMF[x]; mult = true; }
+          else if (aiHas(AI_NUMM, x)) { mult = true; const m = AI_NUMM[x]; if (m === 100) cur = (cur || 1) * 100; else { tot += (cur || 1) * m; cur = 0; } }
+          else cur += AI_NUMW[x];
+        }
+        if (mult || /^(rs\.?|rupaye|rupaya|rupees|₹|रुपये)$/i.test(w[j] || '')) out.push(String(Math.round(tot + cur))); else out.push(...w.slice(i, j));
+        i = j;
+      }
+      return out.join(' ');
+    }
+    const aiWords = s => (String(s || '').toLowerCase().match(/[a-z\u0900-\u097f]{3,}/g) || []).filter(x => !AI_STOP.test(x));
+    function aiLearnCat(note) {
+      const nw = new Set(aiWords(note)), votes = {}; if (!nw.size) return '';
+      ledgerTx().forEach(t => { const c = t.category; if (!c || c === 'General' || c === 'Udhar') return; if (aiWords(t.note).some(x => nw.has(x))) votes[c] = (votes[c] || 0) + 1; });
+      const best = Object.entries(votes).sort((a, b) => b[1] - a[1])[0]; return best ? best[0] : '';
+    }
+    function aiWarns(e, i) {
+      const w = [], ew = new Set(aiWords(e.note));
+      const dup = transactions.find(t => Number(t.amount) === e.amount && t.type === e.type && entryDateISO(t) === e.date && (e.party ? partyKey(t.party) === partyKey(e.party) : (!t.party && aiWords(t.note).some(x => ew.has(x)))));
+      const dupP = aiPending.some((o, k) => k < i && o.amount === e.amount && o.type === e.type && o.date === e.date && o.party === e.party && aiWords(o.note).some(x => ew.has(x)));
+      if (dup) w.push(`Shayad double entry: ${esc(dup.note || dup.party || '')} ₹${fmt(dup.amount)} ${entryDateISO(dup) === todayISO() ? 'aaj ' : ''}pehle se hai`);
+      else if (dupP) w.push('Yeh entry upar bhi hai, double to nahi?');
+      if (e.type === 'OUT' && !e.party) {
+        const lim = Number(budgets[e.category]);
+        if (lim > 0 && e.date.slice(0, 7) === todayISO().slice(0, 7)) {
+          const pend = aiPending.filter((o, k) => k <= i && o.type === 'OUT' && !o.party && o.category === e.category).reduce((a, o) => a + o.amount, 0);
+          const tot = (monthSpentByCategory()[e.category] || 0) + pend, pct = Math.round(tot / lim * 100);
+          if (pct >= 100) w.push(`${esc(e.category)} budget paar: ₹${fmt(tot)} / ₹${fmt(lim)}`); else if (pct >= 80) w.push(`${esc(e.category)} budget ${pct}% ho jayega`);
+        }
+      }
+      if (e.party && e.type === 'OUT') {
+        const g = partyGroups().find(x => x.key === partyKey(e.party));
+        if (g && g.bal > 0) { const last = g.list.reduce((m, x) => { const d = entryDateISO(x); return d > m ? d : m; }, ''), age = Math.floor((Date.now() - new Date(last).getTime()) / 864e5); if (age >= 30) w.push(`${esc(g.name)} ka ₹${fmt(g.bal)} ${age} din se baaki hai. Aur udhar dena hai?`); }
+      }
+      return w;
+    }
+
+    /* ---------- Report screen ---------- */
+    let rpY = new Date().getFullYear(), rpM = new Date().getMonth();
+    function openReport() { const d = new Date(); rpY = d.getFullYear(); rpM = d.getMonth(); openModal('report-modal'); renderReport(); }
+    function rpShift(n) { rpM += n; if (rpM < 0) { rpM = 11; rpY--; } if (rpM > 11) { rpM = 0; rpY++; } renderReport(); }
+    function rpData(y, m) {
+      const pre = `${y}-${String(m + 1).padStart(2, '0')}`, list = ledgerTx().filter(t => entryDateISO(t).startsWith(pre)), s = sumTx(list), cats = {};
+      list.forEach(t => { if (t.type === 'OUT') { const c = t.category || 'General'; cats[c] = (cats[c] || 0) + (Number(t.amount) || 0); } });
+      return { list, inn: s.inn, out: s.out, cats };
+    }
+    function renderReport() {
+      const MN = ['Janwari', 'Farwari', 'March', 'April', 'May', 'June', 'July', 'August', 'Sitambar', 'Oktobar', 'Navambar', 'Disambar'];
+      document.getElementById('rp-title').textContent = `${MN[rpM]} ${rpY}`;
+      const cur = rpData(rpY, rpM), prev = rpData(rpM ? rpY : rpY - 1, rpM ? rpM - 1 : 11), body = document.getElementById('rp-body');
+      if (!cur.list.length) { body.innerHTML = '<div class="empty-state">Is mahine koi entry nahi hai.</div>'; return; }
+      const now = new Date(), days = (rpY === now.getFullYear() && rpM === now.getMonth()) ? now.getDate() : new Date(rpY, rpM + 1, 0).getDate();
+      const cats = Object.entries(cur.cats).sort((a, b) => b[1] - a[1]).slice(0, 6), top = cats[0], mx = top ? top[1] : 1;
+      const big = cur.list.filter(t => t.type === 'OUT').sort((a, b) => b.amount - a.amount)[0];
+      const pg = partyGroups(), lena = pg.filter(g => g.bal > 0).reduce((a, g) => a + g.bal, 0), dena = pg.filter(g => g.bal < 0).reduce((a, g) => a - g.bal, 0), net = cur.inn - cur.out, tips = [];
+      if (prev.out > 0 && cur.out > 0) { const ch = Math.round((cur.out - prev.out) / prev.out * 100); tips.push(ch >= 0 ? `Kharcha pichle mahine se ${ch}% zyada hai.` : `Kharcha pichle mahine se ${-ch}% kam hai. Badhiya!`); }
+      if (top) tips.push(`Sabse zyada kharcha ${esc(top[0])} par: ₹${fmt(top[1])} (${Math.round(top[1] / cur.out * 100)}%).`);
+      if (cur.out) tips.push(`Roz ka average kharcha ₹${fmt(Math.round(cur.out / days))}.`);
+      if (big) tips.push(`Sabse bada kharcha: ${esc(big.note)} ₹${fmt(big.amount)}.`);
+      body.innerHTML = `<div class="rp-hero"><div class="rp-lbl">Bachat (Jama − Kharcha)</div><div class="rp-big" style="color:${net >= 0 ? 'var(--pos)' : 'var(--danger)'}">${net < 0 ? '-' : ''}₹${fmt(Math.abs(net))}</div></div>
+        <div class="rp-two"><div class="rp-box"><div class="rp-lbl">Jama</div><b style="color:var(--pos)">₹${fmt(cur.inn)}</b></div><div class="rp-box"><div class="rp-lbl">Kharcha</div><b style="color:var(--danger)">₹${fmt(cur.out)}</b></div>
+        <div class="rp-box"><div class="rp-lbl">Lena hai</div><b style="color:var(--pos)">₹${fmt(lena)}</b></div><div class="rp-box"><div class="rp-lbl">Dena hai</div><b style="color:var(--danger)">₹${fmt(dena)}</b></div></div>
+        ${cats.length ? '<div class="section-title" style="margin-bottom:4px;">Kharcha kahan gaya</div>' + cats.map(c => `<div class="rp-row"><span>${esc(c[0])}</span><b>₹${fmt(c[1])}</b></div><div class="rp-track"><div class="rp-fill" style="width:${Math.max(4, Math.round(c[1] / mx * 100))}%"></div></div>`).join('') : ''}
+        <div class="section-title" style="margin:16px 0 4px;">Saaransh</div>${tips.map(t => `<div class="rp-tip">• ${t}</div>`).join('')}
+        <button class="ns-ok" style="margin-top:14px" onclick="closeModal('report-modal'); navHome(); askMunim('Is mahine ka hisab samjhao aur bachat ki salah do')">✦ Munim se salah lein</button>`;
+    }
+
+    /* ---------- Bill scan ---------- */
+    function aiScanBill(inp) {
+      const f = inp.files && inp.files[0]; inp.value = ''; if (!f) return;
+      toggleLoading(true);
+      const img = new Image(), url = URL.createObjectURL(f);
+      img.onerror = () => { URL.revokeObjectURL(url); toggleLoading(false); aiAnswer('Photo khul nahi paayi. Dobara try karein.'); };
+      img.onload = async () => {
+        const sc = Math.min(1, 1024 / Math.max(img.width, img.height)), c = document.createElement('canvas');
+        c.width = Math.round(img.width * sc); c.height = Math.round(img.height * sc);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        try {
+          const sys = `You read shop bills and receipts for an Indian khata app. Today is ${todayISO()}. Reply with ONLY one JSON object, no markdown: {"amount":number (final total payable),"note":"shop name + main item, max 8 words","category":"Farming|Ration|Rent|Fuel|Mandi|Salary|Health|Education|Transport|Bills|Shopping|Dukaan|General","date":"YYYY-MM-DD or empty","type":"OUT"}`;
+          const raw = (await aiCall(sys, 'Read this bill.', c.toDataURL('image/jpeg', 0.8))).trim().replace(/```json|```/g, '');
+          const e = aiNorm(JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1)), 'Bill');
+          if (!e) throw new Error('amount nahi mila');
+          aiPreview([e]); aiSaid = 'Bill ki photo se padha gaya'; aiDraw();
+        } catch (err) { console.warn('Bill scan failed:', err); aiAnswer('Bill padh nahi paaya. Saaf aur seedhi photo lein, ya seedha likhkar entry karein.'); }
+        finally { toggleLoading(false); }
+      };
+      img.src = url;
+    }
+
+    /* ---------- Recurring entries ---------- */
+    let recurring = [];
+    const recKey = () => 'ah_recurring_' + currentUser;
+    function recLoad() { try { recurring = JSON.parse(LS.getItem(recKey()) || '[]') || []; } catch (e) { recurring = []; } }
+    function recSave() { LS.setItem(recKey(), JSON.stringify(recurring)); }
+    function recDue() { recLoad(); const ym = todayISO().slice(0, 7), d = new Date().getDate(); return recurring.filter(r => r.last !== ym && d >= r.day); }
+    function recAdd(id) {
+      recLoad(); const r = recurring.find(x => x.id === id); if (!r) return;
+      const ym = todayISO().slice(0, 7), date = ym + '-' + String(r.day).padStart(2, '0');
+      r.last = ym; recSave();
+      createAndSaveEntry(r.type, r.amount, r.note, r.category, 'Cash', date > todayISO() ? todayISO() : date, '');
+    }
+    function openRec() { recLoad(); openModal('rec-modal'); recDraw(); }
+    function recDraw() {
+      document.getElementById('rec-list').innerHTML = recurring.length ? recurring.map(r => `<div class="ai-row"><div style="flex:1;min-width:0"><b>${esc(r.note)}</b><div class="ai-sub">Har mahine ${r.day} tarikh • ${esc(r.category)}</div></div><span style="font-weight:800;color:${r.type === 'IN' ? 'var(--pos)' : 'var(--danger)'}">${r.type === 'IN' ? '+' : '-'}₹${fmt(r.amount)}</span><button class="ai-x" onclick="recDel('${r.id}')" aria-label="Hatayein">✕</button></div>`).join('') : '<div class="empty-state">Abhi koi entry nahi jodi.</div>';
+    }
+    function recNew() {
+      const v = id => document.getElementById(id).value, amount = parseFloat(v('rc-amt')), day = parseInt(v('rc-day'), 10), note = v('rc-note').trim();
+      if (!note || !(amount > 0) || !(day >= 1 && day <= 28)) return alert('Naam, amount aur tarikh (1-28) sahi daalein.');
+      recLoad(); recurring.push({ id: 'r' + Date.now(), note: note.slice(0, 60), amount, day, type: v('rc-type'), category: v('rc-cat'), last: '' });
+      recSave(); ['rc-note', 'rc-amt', 'rc-day'].forEach(i => document.getElementById(i).value = ''); recDraw(); render();
+    }
+    function recDel(id) { recLoad(); recurring = recurring.filter(r => r.id !== id); recSave(); recDraw(); render(); }
+
+    /* ---------- Forecast + daily tip + due reminders ---------- */
+    function munimPlus(nudges) {
+      recDue().forEach(r => nudges.push({ s: 95, h: `<b>${esc(r.note)}</b> ₹${fmt(r.amount)} is mahine ki baaki hai <button class="mn-btn" onclick="recAdd('${r.id}')">Add karein</button>` }));
+      const now = new Date(), dom = now.getDate(), dim = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(), mr = periodRange('month'), all = ledgerTx();
+      const s = sumTx(all.filter(x => { const d = entryDateISO(x); return d >= mr[0] && d <= mr[1]; }));
+      if (s.out > 0 && dom >= 3) { const po = Math.round(s.out / dom * dim); nudges.push({ s: 35, h: `Forecast: mahine ke end tak kharcha ~₹${fmt(po)}${s.inn ? ', bachat ~₹' + fmt(s.inn - po) : ''}` }); }
+      const tips = [], t = todayISO(), dayMs = 864e5, iso = n => toISO(new Date(Date.now() - n * dayMs));
+      if (all.length && !all.some(x => entryDateISO(x) === t)) tips.push('Aaj ki koi entry nahi hai. Din ka hisab abhi likh lein.');
+      const cats = {}; all.filter(x => x.type === 'OUT' && entryDateISO(x) >= mr[0] && entryDateISO(x) <= mr[1]).forEach(x => { cats[x.category || 'General'] = (cats[x.category || 'General'] || 0) + (Number(x.amount) || 0); });
+      const top = Object.entries(cats).sort((a, b) => b[1] - a[1])[0];
+      if (top && s.out > 0 && top[1] / s.out > 0.4) tips.push(`${esc(top[0])} par kharcha ${Math.round(top[1] / s.out * 100)}% hai. Yahin se bachat ho sakti hai.`);
+      const wk = (a, b) => sumTx(all.filter(x => { const d = entryDateISO(x); return d > iso(b) && d <= iso(a); })).out, w1 = wk(0, 7), w0 = wk(7, 14);
+      if (w0 > 500 && w1 > w0 * 1.2) tips.push(`Is hafte kharcha pichle hafte se ${Math.round((w1 / w0 - 1) * 100)}% zyada hai.`);
+      if (w0 > 500 && w1 < w0 * 0.8) tips.push('Is hafte kharcha kam raha. Aise hi chalta rahe!');
+      if (tips.length) nudges.push({ s: 20, h: `Aaj ki salah: ${tips[Math.floor(now / dayMs) % tips.length]}` });
+    }
+
+    /* ---------- Install-able app (PWA) ---------- */
+    let pwaEvt = null;
+    window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); pwaEvt = e; const b = document.getElementById('pwa-install'); if (b) b.style.display = ''; });
+    function pwaInstall() { if (!pwaEvt) return; pwaEvt.prompt(); pwaEvt = null; const b = document.getElementById('pwa-install'); if (b) b.style.display = 'none'; }
+    if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
     function hideMoveToast() {
       const toast = document.getElementById('move-toast');
       if (!toast) return;
