@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#F5F6F2">
   <meta name="description" content="Aasaan Hisaab Enterprise Pro - Ultra Advanced Multi-Lingual AI Khata & Ledger System">
 
-  <script>(function(){try{var m=localStorage.getItem('ah_theme_mode')||'light',a=localStorage.getItem('ah_theme_accent')||'hara',d=document.documentElement;if(m==='auto')m=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.setAttribute('data-mode',m);d.setAttribute('data-accent',a);}catch(e){}})();</script>
+  <script>(function(){try{var m=localStorage.getItem('ah_theme_mode')||'light',a=localStorage.getItem('ah_theme_accent')||'hara',d=document.documentElement;if(m==='auto')m=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.setAttribute('data-mode',m);d.setAttribute('data-accent',a);d.setAttribute('data-codelab',localStorage.getItem('ah_show_codelab')==='1'?'1':'0');}catch(e){}})();</script>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="icon-192.png">
@@ -656,6 +656,80 @@
       .history-item, .chip, .wallet-chip, .tab-btn, .period-chip, .sheet-btn, .p-row, .nav-btn { cursor: pointer; }
     }
     @media (min-width: 1500px) { :root { --app-max: 1280px; } }
+
+    /* ===== Legal pages: Privacy / Terms / Cookies ===== */
+    footer .legal-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 14px; margin-top: 8px; }
+    footer .legal-links button { background: none; border: 0; color: var(--primary); font-size: 0.8rem; font-weight: 600; padding: 8px 6px; min-height: 40px; cursor: pointer; }
+    footer .legal-links button:hover { text-decoration: underline; }
+    .legal-modal { padding: 0 !important; display: flex; flex-direction: column; overflow: hidden !important; max-width: 640px !important; width: 100%; }
+    .legal-head { padding: 16px 18px 12px; border-bottom: 1px solid var(--card-border); flex-shrink: 0; }
+    .legal-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .legal-ttl { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .legal-ico { width: 42px; height: 42px; border-radius: 12px; background: var(--soft); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .legal-ico .ic { width: 22px; height: 22px; }
+    .legal-ttl h3 { font-size: 1.1rem; color: var(--text-main); margin: 0; line-height: 1.25; }
+    .legal-ttl small { display: block; color: var(--text-muted); font-size: 0.72rem; margin-top: 2px; }
+    .legal-modal .close-btn { float: none; flex-shrink: 0; width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; }
+    .legal-tabs { display: flex; gap: 6px; margin-top: 12px; overflow-x: auto; scrollbar-width: none; }
+    .legal-tabs::-webkit-scrollbar { display: none; }
+    .legal-tabs button { flex: 1; white-space: nowrap; border: 0; background: var(--chip); color: var(--text-muted); padding: 9px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; cursor: pointer; min-height: 40px; }
+    .legal-tabs button.on { background: var(--text-main); color: var(--on-strong); }
+    .legal-body { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; padding: 16px 18px calc(24px + var(--safe-b)); }
+    .legal-sum { background: var(--soft); border-radius: 14px; padding: 12px 14px; }
+    .legal-sum p { margin: 0; font-size: 0.85rem; line-height: 1.6; color: var(--text-main); }
+    .legal-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .legal-chips span { font-size: 0.72rem; font-weight: 600; padding: 5px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--card-border); color: var(--text-main); }
+    .legal-body h4 { font-size: 0.95rem; margin: 20px 0 6px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+    .legal-body h4 i { font-style: normal; width: 24px; height: 24px; border-radius: 8px; background: var(--chip); font-size: 0.72rem; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); flex-shrink: 0; }
+    .legal-body p, .legal-body li { font-size: 0.84rem; line-height: 1.7; color: var(--text-muted); }
+    .legal-body p { margin: 0 0 8px; }
+    .legal-body ul { margin: 0 0 8px; padding-left: 20px; }
+    .legal-body li { margin-bottom: 4px; }
+    .legal-body b { color: var(--text-main); }
+    .legal-note { border-left: 3px solid var(--warning); background: var(--chip); padding: 10px 12px; border-radius: 0 10px 10px 0; margin: 10px 0; font-size: 0.82rem; line-height: 1.6; color: var(--text-main); }
+    .legal-tblwrap { overflow-x: auto; margin: 6px 0 10px; border: 1px solid var(--card-border); border-radius: 12px; }
+    .legal-tbl { width: 100%; min-width: 460px; border-collapse: collapse; font-size: 0.78rem; }
+    .legal-tbl th, .legal-tbl td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--card-border); vertical-align: top; color: var(--text-muted); line-height: 1.5; }
+    .legal-tbl tr:last-child td { border-bottom: 0; }
+    .legal-tbl th { color: var(--text-main); font-weight: 700; background: var(--chip); }
+    .legal-tbl code { font-size: 0.74rem; color: var(--text-main); word-break: break-all; }
+    .legal-foot { margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--card-border); font-size: 0.75rem; line-height: 1.6; color: var(--text-muted); }
+    .legal-done { width: 100%; margin-top: 14px; min-height: 46px; border: 0; border-radius: 14px; background: var(--text-main); color: var(--on-strong); font-weight: 700; cursor: pointer; }
+
+    /* ===== Cookie banner (upgrade) ===== */
+    .cookie-banner { width: calc(100% - 24px); max-width: min(calc(100% - 24px), var(--nav-max)); bottom: calc(76px + var(--safe-b)); border: 1px solid var(--card-border); border-radius: 18px; background: var(--surface); box-shadow: 0 12px 34px rgba(16, 27, 21, .18); padding: 12px 12px 12px 14px; align-items: center; gap: 12px; backdrop-filter: none; animation: ckUp .35s ease-out; }
+    .cookie-banner.ck-out { opacity: 0; transform: translateX(-50%) translateY(16px); transition: opacity .25s ease, transform .25s ease; }
+    @keyframes ckUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } }
+    .ck-ico { width: 38px; height: 38px; border-radius: 12px; background: var(--soft); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ck-ico .ic { width: 20px; height: 20px; }
+    .ck-text { flex: 1; min-width: 0; }
+    .ck-text p { font-size: 0.78rem; line-height: 1.5; color: var(--text-main); margin: 0; }
+    .ck-link { background: none; border: 0; padding: 4px 0 0; margin: 0; color: var(--primary); font-size: 0.78rem; font-weight: 700; text-decoration: underline; cursor: pointer; min-height: 32px; }
+    .ck-btn { flex-shrink: 0; min-height: 44px; padding: 0 20px; border: 0; border-radius: 14px; background: var(--text-main); color: var(--on-strong); font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+    .ck-btn:active { transform: scale(0.96); }
+    @media (max-width: 440px) {
+      .cookie-banner { flex-wrap: wrap; }
+      .ck-text { flex: 1 1 calc(100% - 52px); }
+      .ck-btn { flex: 1 1 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) { .cookie-banner { animation: none; } .cookie-banner.ck-out { transition: none; } }
+
+    /* ===== Code Lab button: Settings se on/off (default off) ===== */
+    html:not([data-codelab="1"]) .code-lab-btn { display: none; }
+    .set-row { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin-bottom: 10px; min-height: 56px; background: var(--surface); border: 1px solid var(--card-border); border-radius: var(--radius-md); }
+    .set-row .ic { width: 22px; height: 22px; color: var(--accent); flex-shrink: 0; }
+    .set-row .set-txt { flex: 1; min-width: 0; }
+    .set-row .set-txt b { display: block; font-size: 0.92rem; color: var(--text-main); font-weight: 600; }
+    .set-row .set-txt small { display: block; font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; line-height: 1.4; }
+    .switch { position: relative; flex-shrink: 0; width: 52px; height: 32px; border: 0; border-radius: 999px; background: var(--chip); cursor: pointer; transition: background .2s ease; padding: 0; }
+    .switch::after { content: ""; position: absolute; top: 4px; left: 4px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .2s ease; }
+    .switch[aria-checked="true"] { background: var(--primary); }
+    .switch[aria-checked="true"]::after { transform: translateX(20px); }
+    @media (prefers-reduced-motion: reduce) { .switch, .switch::after { transition: none; } }
+
+    .dev-tap { text-align: center; font-size: 0.68rem; color: var(--text-muted); opacity: .6; margin-top: 18px; padding: 14px 8px 6px; user-select: none; -webkit-user-select: none; }
+    #dev-row { margin-top: 10px; }
+    #dev-row .set-row { margin-bottom: 0; }
   </style>
 </head>
 <body>
@@ -875,10 +949,10 @@
     <!-- Footer Links & Copyright -->
     <footer>
       <p>© 2026 Aasaan Hisaab AI Pro Enterprise Ledger</p>
-      <div style="margin-top: 8px;">
-        <a href="javascript:void(0)" onclick="openModal('privacy-modal')">Privacy Policy</a> | 
-        <a href="javascript:void(0)" onclick="openModal('terms-modal')">Terms of Service</a> | 
-        <a href="javascript:void(0)" onclick="openModal('cookies-modal')">Cookies Notice</a>
+      <div class="legal-links">
+        <button type="button" onclick="openLegal('privacy-modal')">Privacy Policy</button>
+        <button type="button" onclick="openLegal('terms-modal')">Terms of Service</button>
+        <button type="button" onclick="openLegal('cookies-modal')">Cookies Notice</button>
       </div>
     </footer>
   </div>
@@ -892,9 +966,13 @@
   </nav>
 
   <!-- Cookie Consent Banner -->
-  <div class="cookie-banner" id="cookie-banner">
-    <p id="txt-cookie-msg" style="font-size:0.75rem; color:var(--text-muted);">Hum aapke data ko local storage aur secure cloud sync ke liye process karte hain.</p>
-    <button class="btn-action" style="padding: 8px 16px; font-size:0.78rem; min-height:36px;" onclick="acceptCookies()">Accept</button>
+  <div class="cookie-banner" id="cookie-banner" role="region" aria-label="Cookies aur storage notice">
+    <span class="ck-ico"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg></span>
+    <div class="ck-text">
+      <p id="txt-cookie-msg">App aapke phone me login, khata aur settings yaad rakhne ke liye browser storage use karta hai. Koi ads ya tracking nahi.</p>
+      <button type="button" class="ck-link" id="ck-more" onclick="openLegal('cookies-modal')">Details dekhein</button>
+    </div>
+    <button type="button" class="ck-btn" id="ck-accept" onclick="acceptCookies()">Accept</button>
   </div>
 
   <!-- Edit / View Transaction Modal -->
@@ -1055,6 +1133,14 @@
       <button class="sheet-btn" id="pwa-install" style="display:none" onclick="pwaInstall()"><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg> App install karein</button>
       <button class="sheet-btn" onclick="closeModal('settings-modal'); openModal('lang-modal')"><svg class="ic fill" aria-hidden="true"><use href="#i-translate"/></svg> Language badlein</button>
       <button class="sheet-btn" style="color:var(--danger)" onclick="closeModal('settings-modal'); logoutUser()"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg> Logout</button>
+      <div class="dev-tap" id="dev-tap" onclick="devTap()">Aasaan Hisaab &bull; PM Roitx</div>
+      <div id="dev-row" hidden>
+        <div class="set-row">
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/><line x1="14" y1="4" x2="10" y2="20"/></svg>
+        <div class="set-txt"><b id="codelab-lbl">Code Lab button dikhayein</b><small>Upar header me Code Lab (createfile) ka button</small></div>
+        <button type="button" class="switch" id="codelab-switch" role="switch" aria-checked="false" aria-labelledby="codelab-lbl" onclick="toggleCodeLab()"></button>
+      </div>
+      </div>
     </div>
   </div>
 
@@ -1084,27 +1170,186 @@
   </div>
 
   <!-- Legal Modals -->
-  <div class="modal-overlay" id="privacy-modal">
-    <div class="modal-content">
-      <button class="close-btn" onclick="closeModal('privacy-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
-      <h3 style="color:var(--primary); margin-bottom:10px;">Privacy & Security Standard</h3>
-      <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.5;">Aapka saara financial transaction ledger Firebase Cloud Infrastructure par encrypted format me save hota hai.</p>
+  <div class="modal-overlay" id="privacy-modal" onclick="if(event.target===this)closeModal('privacy-modal')">
+    <div class="modal-content legal-modal" role="dialog" aria-modal="true" aria-label="Privacy Policy">
+      <div class="legal-head">
+        <div class="legal-top">
+          <div class="legal-ttl"><span class="legal-ico"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg></span><div><h3>Privacy Policy</h3><small>Antim badlav: 27 November 2026</small></div></div>
+          <button class="close-btn" onclick="closeModal('privacy-modal')" aria-label="Band karein"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="legal-tabs"><button type="button" class="on" onclick="openLegal('privacy-modal')">Privacy</button><button type="button" class="" onclick="openLegal('terms-modal')">Terms</button><button type="button" class="" onclick="openLegal('cookies-modal')">Cookies</button></div>
+      </div>
+      <div class="legal-body">
+        <div class="legal-sum"><p><b>Ek nazar me:</b> Aapka khata aapka hai. Hum aapka data bechte nahi, aapko ads nahi dikhate aur koi tracking ya analytics nahi chalate. Data sirf app chalane ke liye use hota hai.</p>
+        <div class="legal-chips"><span>Ads nahi</span><span>Data bechte nahi</span><span>PIN hash me save</span><span>Backup aapke haath me</span></div></div>
+
+        <h4><i>1</i>Ye app kya hai</h4>
+        <p>Aasaan Hisaab ek AI khata (ledger) app hai: jama-kharcha, udhar, budget aur reports ke liye. Ye policy batati hai ki hum kaun sa data lete hain, kahan rakhte hain aur aapke paas kya control hai.</p>
+        <h4><i>2</i>Hum kaun sa data lete hain</h4>
+        <ul>
+          <li><b>Account:</b> aapka mobile number, 4-digit PIN (sirf hash ke roop me), aur security question ka jawab (ye bhi hash me).</li>
+          <li><b>Khata data:</b> aapki entries (amount, note, category, Cash/Bank/Udhar, tarikh), udhar wali parties ke naam aur balance, aur aapke budget.</li>
+          <li><b>AI Munim:</b> jo text aap likhte ya bolte hain, bill ki photo, aur sawal poochne par aapke khate ka chhota saaransh (is period ka jama-kharcha, party balance, haal ki kuch entries).</li>
+          <li><b>Aapki pasand:</b> theme, rang, bhasha, balance chhupana, har-mahine ki entries ki list. Ye sirf aapke phone me rehti hain.</li>
+        </ul>
+        <div class="legal-note"><b>Hum ye nahi lete:</b> aapki location, contacts, SMS, bank ka login ya card number, aur advertising ID.</div>
+        <h4><i>3</i>Data kahan save hota hai</h4>
+        <ul>
+          <li><b>Aapke phone ya browser me:</b> khata ki ek copy rehti hai, isliye internet na ho tab bhi app chalta hai.</li>
+          <li><b>Cloud (Google Firebase Firestore):</b> aapke mobile number ke account ke andar entries sync hoti hain, taaki naye phone par bhi khata mile. Net na ho to entry phone me rukti hai aur net aate hi upload hoti hai.</li>
+          <li><b>AI request:</b> aapka text ya photo hamare Cloudflare Worker (proxy) se hote hue Groq ke AI model tak jaata hai. Proxy ka kaam sirf request aage bhejna hai aur hamari API key chhupa kar rakhna. Hamare code me AI messages ko alag se save karne ka koi hissa nahi hai.</li>
+        </ul>
+        <h4><i>4</i>Data ka upyog kisliye</h4>
+        <ul>
+          <li>Aapka khata dikhane, sync karne aur reports/PDF/CSV banane ke liye.</li>
+          <li>AI se entry samajhne, sawalon ke jawab dene aur bill padhne ke liye.</li>
+          <li>Login, PIN reset aur security ke liye.</li>
+        </ul>
+        <p>Hum aapka data bechte nahi, kisi ko kiraye par nahi dete, aur ads ya profiling ke liye use nahi karte.</p>
+        <h4><i>5</i>Doosri services jo app use karta hai</h4>
+        <div class="legal-tblwrap"><table class="legal-tbl"><tr><th>Service</th><th>Kisliye</th><th>Kya jaata hai</th></tr>
+          <tr><td>Google Firebase</td><td>Cloud sync</td><td>Aapka account aur khata data</td></tr>
+          <tr><td>Groq (Cloudflare proxy se)</td><td>AI entry, jawab, bill scan</td><td>Aapka likha text, bill photo, khate ka saaransh</td></tr>
+          <tr><td>Google Fonts, jsDelivr, cdnjs, gstatic</td><td>Font, charts, PDF aur Firebase ki files</td><td>Aapka IP aur browser ki jaankari (jaisa har website ke saath hota hai)</td></tr>
+          <tr><td>Browser ki voice service</td><td>Bolkar entry karna</td><td>Mic ki awaaz. Chrome me ye Google ki speech service se process hoti hai</td></tr>
+          <tr><td>WhatsApp</td><td>Summary aur udhar reminder bhejna</td><td>Sirf tab, jab aap khud button dabate hain</td></tr>
+        </table></div>
+        <p>Inki apni privacy policies lagu hoti hain.</p>
+        <div class="legal-note">AI ko <b>bank password, OTP, Aadhaar ya card number</b> jaisi sensitive cheezein kabhi na likhein ya na dikhayein.</div>
+        <h4><i>6</i>Suraksha</h4>
+        <ul>
+          <li>PIN aur security answer SHA-256 hash me save hote hain, seedhe nahi.</li>
+          <li>5 baar galat PIN par 60 second ka lock lag jaata hai.</li>
+          <li>Cloud se baat HTTPS par hoti hai, aur Google apne servers par data encrypted rakhta hai.</li>
+        </ul>
+        <div class="legal-note"><b>Zaroori baat:</b> khata data end-to-end encrypted nahi hai. Mobile number par OTP verification nahi hota, isliye number aur PIN jis ke paas ho wo account khol sakta hai. PIN kisi ko na batayein, aur shared phone par logout zarur karein.</div>
+        <p>Koi bhi online system 100% surakshit nahi hota, isliye samay-samay par Backup download karte rahein.</p>
+        <h4><i>7</i>Aapke paas kya control hai</h4>
+        <ul>
+          <li><b>Dekhna aur nikalna:</b> PDF, Excel/CSV aur JSON Backup se apna poora data nikaal sakte hain.</li>
+          <li><b>Badalna ya hatana:</b> kisi bhi entry ko edit ya delete kar sakte hain (delete par Undo milta hai).</li>
+          <li><b>PIN badalna:</b> Settings me PIN aur security question badal sakte hain.</li>
+          <li><b>Account ka cloud data hatwana:</b> developer se request karein.</li>
+        </ul>
+        <h4><i>8</i>Data kitne din rehta hai</h4>
+        <p>Jab tak aap entries delete na karein ya hatane ki request na karein. Logout karne se sirf login hat'ta hai, phone me saved khata ki copy nahi hat'ti. Use hatane ke liye browser ka site data clear karein (Cookies Notice dekhein).</p>
+        <h4><i>9</i>Udhar wali parties ka data</h4>
+        <p>Udhar khata me aap doosre logon ke naam aur lena-dena likhte hain. Ye aapki zimmedari hai ki aap sirf zaroori jaankari likhein. WhatsApp reminder bhejne se pehle samne wale ka dhyan rakhein.</p>
+        <h4><i>10</i>Bachche</h4>
+        <p>Ye app 18 saal se kam umr ke bachchon ke liye nahi banaya gaya hai.</p>
+        <h4><i>11</i>Is policy me badlav</h4>
+        <p>Hum zaroorat padne par ise badal sakte hain. Naya version app me yahin dikhega aur upar likhi tarikh badal jaayegi. App chalate rehna naya version maanna hai.</p>
+        <div class="legal-foot">Sawal ya shikayat ho to is app ke developer (Roitx) se sampark karein. Hum jald se jald jawab dene ki koshish karenge.<br>© 2026 Aasaan Hisaab</div>
+        <button type="button" class="legal-done" onclick="closeModal('privacy-modal')">Samajh gaya, band karein</button>
+      </div>
     </div>
   </div>
+  <div class="modal-overlay" id="terms-modal" onclick="if(event.target===this)closeModal('terms-modal')">
+    <div class="modal-content legal-modal" role="dialog" aria-modal="true" aria-label="Terms of Service">
+      <div class="legal-head">
+        <div class="legal-top">
+          <div class="legal-ttl"><span class="legal-ico"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg></span><div><h3>Terms of Service</h3><small>Antim badlav: 27 November 2026</small></div></div>
+          <button class="close-btn" onclick="closeModal('terms-modal')" aria-label="Band karein"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="legal-tabs"><button type="button" class="" onclick="openLegal('privacy-modal')">Privacy</button><button type="button" class="on" onclick="openLegal('terms-modal')">Terms</button><button type="button" class="" onclick="openLegal('cookies-modal')">Cookies</button></div>
+      </div>
+      <div class="legal-body">
+        <div class="legal-sum"><p><b>Ek nazar me:</b> Ye app apna hisaab likhne ke liye hai. AI galti kar sakta hai, isliye save karne se pehle check karein. Ye koi financial, tax ya legal salah nahi hai.</p>
+        <div class="legal-chips"><span>Personal khata</span><span>AI check karke save karein</span><span>PIN aapki zimmedari</span><span>Backup lete rahein</span></div></div>
 
-  <div class="modal-overlay" id="terms-modal">
-    <div class="modal-content">
-      <button class="close-btn" onclick="closeModal('terms-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
-      <h3 style="color:var(--primary); margin-bottom:10px;">Terms of Service</h3>
-      <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.5;">Yeh application kheti, vyapar, dukaan, aur personal daily expense ledger tracking ke liye design ki gayi hai.</p>
+        <h4><i>1</i>Sweekruti</h4>
+        <p>Aasaan Hisaab chalane ka matlab hai ki aap in shartein ko maante hain. Agar sahmat nahi hain to app ka use na karein.</p>
+        <h4><i>2</i>Seva kya hai</h4>
+        <p>Kheti, dukaan, vyapar aur ghar ke jama-kharcha, udhar, budget aur reports likhne aur dekhne ka ek khata. Iske saath AI Munim (entry samajhna, sawalon ke jawab, bill padhna) aur WhatsApp/PDF/CSV share karne ki suvidha milti hai.</p>
+        <h4><i>3</i>Account aur PIN</h4>
+        <ul>
+          <li>Account aapke mobile number aur 4-digit PIN se chalta hai.</li>
+          <li>PIN aur security answer gupt rakhna aapki zimmedari hai. Unke galat use se hui haani ke liye hum zimmedar nahi.</li>
+          <li>Mobile number par OTP verification nahi hota. Number aur PIN jis ke paas ho, wo account khol sakta hai.</li>
+          <li>Sirf apna number use karein. Kisi aur ke account me ghusne ki koshish na karein.</li>
+        </ul>
+        <h4><i>4</i>Sahi upyog</h4>
+        <p>Aap in kaamon ke liye app use nahi karenge:</p>
+        <ul>
+          <li>Kisi aur ka account ya data dekhna, badalna ya todna.</li>
+          <li>Galat, dhokhadhadi ya gair-kanooni hisaab ke liye.</li>
+          <li>AI ya proxy par zyada automatic requests bhejna, ya use kisi aur kaam me lagana.</li>
+          <li>App me virus, bug ya kuch bhi nuksan wala daalna, ya iski suraksha todna.</li>
+          <li>Kisi ko bina bataye ya pareshan karne ke liye baar-baar reminder bhejna.</li>
+        </ul>
+        <h4><i>5</i>AI Munim ke baare me</h4>
+        <div class="legal-note">AI aur voice se galti ho sakti hai (galat amount, naam ya category).</div>
+        <ul>
+          <li>Entry save karne se pehle dikhaye gaye preview ko dekh lein aur zarurat ho to edit karein.</li>
+          <li>AI ke jawab aur salah sirf madad ke liye hain. Ye financial, tax, investment ya legal salah nahi hai.</li>
+          <li>Zaroori faisle lene se pehle apne hisaab ko khud jaanch lein.</li>
+        </ul>
+        <h4><i>6</i>Aapka data</h4>
+        <p>Aapka khata data aapka hai. Aap hamen sirf app chalane ke liye use karne ki anumati dete hain (kaise, ye Privacy Policy me hai). Doosron ka data (jaise udhar wali parties) sirf jaayaz kaam ke liye likhein.</p>
+        <h4><i>7</i>Backup aur data ka nuksan</h4>
+        <p>Phone kharab hona, browser data clear hona, internet ya cloud ki dikkat se data ghat ya kho sakta hai. Isliye Settings se Backup download karte rahein. Restore ki suvidha usi file se milti hai.</p>
+        <h4><i>8</i>Uplabdhta aur badlav</h4>
+        <ul>
+          <li>App "jaisa hai waisa" diya jaata hai. Hum ye guarantee nahi dete ki ye hamesha bina rukawat ya bina galti ke chalega.</li>
+          <li>Hum kisi suvidha ko badal, seemit ya band kar sakte hain (jaise AI ki limit).</li>
+          <li>Hum ye shartein badal sakte hain. Naya version yahin dikhega aur upar ki tarikh badlegi.</li>
+        </ul>
+        <h4><i>9</i>Zimmedari ki seema</h4>
+        <p>Jahan tak kanoon anumati de, galat hisaab, data ke nuksan, AI ki galti, service band rehne ya aapke PIN ke galat use se hone wale kisi bhi nuksan (nafa ghata ya anya parokshya nuksan) ke liye hum zimmedar nahi honge.</p>
+        <h4><i>10</i>App ka adhikar</h4>
+        <p>App ka design, code, naam aur logo Roitx ke hain. Bina anumati inki copy ya vyavsayik upyog na karein.</p>
+        <h4><i>11</i>Account band karna</h4>
+        <p>Aap kabhi bhi app chhod sakte hain. In shartein ko todne par hum aapki pahunch rok sakte hain.</p>
+        <h4><i>12</i>Lagu kanoon</h4>
+        <p>In shartein par Bharat ke kanoon lagu honge.</p>
+        <div class="legal-foot">Sawal ya shikayat ho to is app ke developer (Roitx) se sampark karein. Hum jald se jald jawab dene ki koshish karenge.<br>© 2026 Aasaan Hisaab</div>
+        <button type="button" class="legal-done" onclick="closeModal('terms-modal')">Samajh gaya, band karein</button>
+      </div>
     </div>
   </div>
+  <div class="modal-overlay" id="cookies-modal" onclick="if(event.target===this)closeModal('cookies-modal')">
+    <div class="modal-content legal-modal" role="dialog" aria-modal="true" aria-label="Cookies & Storage Notice">
+      <div class="legal-head">
+        <div class="legal-top">
+          <div class="legal-ttl"><span class="legal-ico"><svg class="ic" aria-hidden="true"><use href="#i-box"/></svg></span><div><h3>Cookies & Storage Notice</h3><small>Antim badlav: 27 November 2026</small></div></div>
+          <button class="close-btn" onclick="closeModal('cookies-modal')" aria-label="Band karein"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="legal-tabs"><button type="button" class="" onclick="openLegal('privacy-modal')">Privacy</button><button type="button" class="" onclick="openLegal('terms-modal')">Terms</button><button type="button" class="on" onclick="openLegal('cookies-modal')">Cookies</button></div>
+      </div>
+      <div class="legal-body">
+        <div class="legal-sum"><p><b>Ek nazar me:</b> Hum koi advertising ya tracking cookie nahi lagate. App aapke browser ki storage (localStorage, IndexedDB, cache) use karta hai, jo login, offline chalne aur aapki pasand yaad rakhne ke liye zaroori hai.</p>
+        <div class="legal-chips"><span>Ads cookie nahi</span><span>Analytics nahi</span><span>Sab zaroori storage</span><span>Aap hata sakte hain</span></div></div>
 
-  <div class="modal-overlay" id="cookies-modal">
-    <div class="modal-content">
-      <button class="close-btn" onclick="closeModal('cookies-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
-      <h3 style="color:var(--primary); margin-bottom:10px;">Cookies & Storage Policy</h3>
-      <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.5;">Browser storage aur essential session cookies ka upyog aapke authentication state aur fast offline rendering ke liye kiya jata hai.</p>
+        <h4><i>1</i>Ye kya hota hai</h4>
+        <p>Cookies aur browser storage chhoti files hoti hain jo aapke phone ya browser me save hoti hain. Inse website aapko aur aapki settings ko yaad rakh paati hai.</p>
+        <h4><i>2</i>Hum kya save karte hain</h4>
+        <div class="legal-tblwrap"><table class="legal-tbl"><tr><th>Naam</th><th>Kisliye</th><th>Kab tak</th></tr>
+          <tr><td><code>ah_user_phone</code>, <code>ah_last_phone</code></td><td>Login yaad rakhna</td><td>Logout tak (last number alag rehta hai)</td></tr>
+          <tr><td><code>ah_pin_*</code>, <code>ah_sec_q_*</code>, <code>ah_sec_ans_*</code></td><td>PIN aur security answer ka hash (offline login)</td><td>Jab tak browser data clear na ho</td></tr>
+          <tr><td><code>ah_fail_*</code>, <code>ah_lock_*</code></td><td>Galat PIN ginti aur 60 second ka lock</td><td>Chhota samay</td></tr>
+          <tr><td><code>ah_tx_*</code>, <code>ah_pend_*</code></td><td>Khata ki copy aur jo entries sync hona baaki hain</td><td>Jab tak browser data clear na ho</td></tr>
+          <tr><td><code>ah_budgets_*</code>, <code>ah_recurring_*</code></td><td>Budget aur har-mahine ki entries</td><td>Jab tak browser data clear na ho</td></tr>
+          <tr><td><code>ah_theme_*</code>, <code>ah_app_lang</code>, <code>ah_period</code>, <code>ah_hide_balance</code></td><td>Theme, rang, bhasha, period aur balance chhupana</td><td>Jab tak browser data clear na ho</td></tr>
+          <tr><td><code>ah_cookies_accepted</code>, <code>moveNoticeSeen</code></td><td>Ye notice aur naye domain ka sandesh dobara na dikhana</td><td>Jab tak browser data clear na ho</td></tr>
+          <tr><td>Firebase (IndexedDB)</td><td>Cloud khata ki offline copy</td><td>Jab tak browser data clear na ho</td></tr>
+          <tr><td>Service Worker aur Cache</td><td>App ko offline aur tezi se kholna</td><td>App update hone tak</td></tr>
+        </table></div>
+        <h4><i>3</i>Zaroori ya optional</h4>
+        <p>Upar ki sabhi cheezein app ke chalne ya aapki pasand yaad rakhne ke liye hain. Hum inka use ads dikhane, aapka peecha karne ya aapki profile banane ke liye nahi karte. Banner ka <b>Accept</b> dabane se bas ye yaad rehta hai ki aapne notice dekh liya hai.</p>
+        <h4><i>4</i>Doosri services</h4>
+        <p>Firebase, Google Fonts aur CDN (jsDelivr, cdnjs, gstatic) se files load hoti hain. Unke apne servers aapka IP aur browser ki jaankari dekh sakte hain. Bolkar entry karne par browser ki voice service lagti hai. In sab ki apni policies hain. Details ke liye Privacy Policy dekhein.</p>
+        <h4><i>5</i>Ise kaise hataye</h4>
+        <ul>
+          <li><b>Chrome (Android):</b> ⋮ menu, phir Settings, Site settings, All sites, apni site chunein, aur <b>Clear &amp; reset</b> dabayein.</li>
+          <li><b>Doosre browser:</b> Settings me Privacy, phir Site data ya Clear browsing data.</li>
+          <li>Sirf <b>Logout</b> karne se login hat'ta hai, par khata ki copy phone me rehti hai.</li>
+        </ul>
+        <div class="legal-note">Data clear karne se pehle <b>Backup download</b> kar lein. Jo entries abhi cloud tak nahi pahunchi (pending), wo hat sakti hain. Cloud me pahunch chuka data naye login par wapas aa jaata hai.</div>
+        <h4><i>6</i>Is notice me badlav</h4>
+        <p>Naya storage jodne par hum ise badal sakte hain. Naya version yahin dikhega.</p>
+        <div class="legal-foot">Sawal ya shikayat ho to is app ke developer (Roitx) se sampark karein. Hum jald se jald jawab dene ki koshish karenge.<br>© 2026 Aasaan Hisaab</div>
+        <button type="button" class="legal-done" onclick="closeModal('cookies-modal')">Samajh gaya, band karein</button>
+      </div>
     </div>
   </div>
 
@@ -1144,9 +1389,9 @@
     const PERIOD_LABELS = { today: 'Aaj', week: 'Pichle 7 Din', month: 'Is Mahina', lastmonth: 'Pichla Mahina', year: 'Is Saal', all: 'Sab Time' };
 
     const translations = {
-      hinglish: { totalBal: "Total Net Balance", inc: "Total Jama (Income)", exp: "Total Kharcha (Expense)", placeholderAI: "Bolien ya Likhein: '500 ki khad' ya '1000 salary'", addBtn: "Add AI", pdfBtn: "PDF Report", waBtn: "WA Summary", shortcutsTitle: "Quick Category Shortcuts", cookieMsg: "Hum local storage/cookies use karte hain data sync ke liye.", loginSub: "Mobile Account & Security PIN Login" },
-      hi: { totalBal: "कुल शुद्ध शेष", inc: "कुल जमा (आय)", exp: "कुल खर्च (व्यय)", placeholderAI: "बोलें या लिखें: '500 की खाद' या '1000 किराया'", addBtn: "जोड़ें", pdfBtn: "पीडीएफ रिपोर्ट", waBtn: "व्हाट्सएप सारांश", shortcutsTitle: "त्वरित श्रेणी शॉर्टकट", cookieMsg: "हम डेटा सिंक के लिए लोकल स्टोरेज/कुकीज़ का उपयोग करते हैं।", loginSub: "मोबाइल और सुरक्षा पिन लॉगिन" },
-      en: { totalBal: "Total Net Balance", inc: "Total Income", exp: "Total Expense", placeholderAI: "Speak or type: '500 fertilizer' or '1000 rent'", addBtn: "Add AI", pdfBtn: "PDF Report", waBtn: "WA Summary", shortcutsTitle: "Quick Category Shortcuts", cookieMsg: "We use local storage/cookies for data synchronization.", loginSub: "Mobile & Security PIN Login" }
+      hinglish: { totalBal: "Total Net Balance", inc: "Total Jama (Income)", exp: "Total Kharcha (Expense)", placeholderAI: "Bolien ya Likhein: '500 ki khad' ya '1000 salary'", addBtn: "Add AI", pdfBtn: "PDF Report", waBtn: "WA Summary", shortcutsTitle: "Quick Category Shortcuts", cookieMsg: "App aapke phone me login, khata aur settings yaad rakhne ke liye browser storage use karta hai. Koi ads ya tracking nahi.", ckAccept: "Accept", ckMore: "Details dekhein", loginSub: "Mobile Account & Security PIN Login" },
+      hi: { totalBal: "कुल शुद्ध शेष", inc: "कुल जमा (आय)", exp: "कुल खर्च (व्यय)", placeholderAI: "बोलें या लिखें: '500 की खाद' या '1000 किराया'", addBtn: "जोड़ें", pdfBtn: "पीडीएफ रिपोर्ट", waBtn: "व्हाट्सएप सारांश", shortcutsTitle: "त्वरित श्रेणी शॉर्टकट", cookieMsg: "ऐप आपके फ़ोन में लॉगिन, खाता और सेटिंग्स याद रखने के लिए ब्राउज़र स्टोरेज इस्तेमाल करता है। कोई विज्ञापन या ट्रैकिंग नहीं।", ckAccept: "ठीक है", ckMore: "विवरण देखें", loginSub: "मोबाइल और सुरक्षा पिन लॉगिन" },
+      en: { totalBal: "Total Net Balance", inc: "Total Income", exp: "Total Expense", placeholderAI: "Speak or type: '500 fertilizer' or '1000 rent'", addBtn: "Add AI", pdfBtn: "PDF Report", waBtn: "WA Summary", shortcutsTitle: "Quick Category Shortcuts", cookieMsg: "This app uses browser storage to remember your login, ledger and settings. No ads or tracking.", ckAccept: "Accept", ckMore: "See details", loginSub: "Mobile & Security PIN Login" }
     };
 
     try {
@@ -1158,6 +1403,7 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       showMoveToast();
+      applyCodeLab();
       changeLanguage(currentLang);
 
       gid('login-screen').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); submitAuth(); } });
@@ -1178,16 +1424,51 @@
       document.getElementById('btn-wa-txt').innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-chat"/></svg> ' + dict.waBtn;
       document.getElementById('lbl-shortcuts').innerText = dict.shortcutsTitle;
       document.getElementById('txt-cookie-msg').innerText = dict.cookieMsg;
+      document.getElementById('ck-accept').innerText = dict.ckAccept;
+      document.getElementById('ck-more').innerText = dict.ckMore;
       document.getElementById('login-sub-text').innerText = dict.loginSub;
       document.querySelectorAll('#lang-modal .sheet-btn').forEach(b => b.classList.toggle('sel', b.dataset.lang === lang));
       document.documentElement.lang = lang === 'en' ? 'en' : 'hi';
+    }
+    /* Code Lab button on/off (default: off) */
+    function applyCodeLab() {
+      const on = LS.getItem('ah_show_codelab') === '1';
+      document.documentElement.setAttribute('data-codelab', on ? '1' : '0');
+      const sw = document.getElementById('codelab-switch');
+      if (sw) sw.setAttribute('aria-checked', on ? 'true' : 'false');
+      const row = document.getElementById('dev-row');
+      if (row) row.hidden = !(on || LS.getItem('ah_dev_unlocked') === '1');
+    }
+    function toggleCodeLab() {
+      LS.setItem('ah_show_codelab', LS.getItem('ah_show_codelab') === '1' ? '0' : '1');
+      applyCodeLab();
+    }
+    /* Neeche ke naam par 5 baar tap karne se hi ye switch khulta hai */
+    let devTaps = 0, devTimer = null;
+    function devTap() {
+      const row = document.getElementById('dev-row');
+      if (row && !row.hidden) return;
+      devTaps++;
+      clearTimeout(devTimer);
+      devTimer = setTimeout(() => { devTaps = 0; }, 1800);
+      if (devTaps >= 5) {
+        devTaps = 0;
+        LS.setItem('ah_dev_unlocked', '1');
+        applyCodeLab();
+        showToast('Extra option khul gaya');
+        if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else if (devTaps >= 3) {
+        showToast('Bas ' + (5 - devTaps) + ' tap aur...', null, null, 1200);
+      }
     }
     function pickLanguage(lang) { changeLanguage(lang); closeModal('lang-modal'); render(); }
     function navHome() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
     function acceptCookies() {
       LS.setItem('ah_cookies_accepted', 'true');
-      document.getElementById('cookie-banner').style.display = 'none';
+      const b = document.getElementById('cookie-banner');
+      b.classList.add('ck-out');
+      setTimeout(() => { b.style.display = 'none'; b.classList.remove('ck-out'); }, 260);
     }
 
 /* =====================================================================
@@ -2527,6 +2808,7 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
     }
 
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function openLegal(id) { ['privacy-modal', 'terms-modal', 'cookies-modal'].forEach(closeModal); openModal(id); const b = document.querySelector('#' + id + ' .legal-body'); if (b) b.scrollTop = 0; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
     /* ---------- "We have moved" notification: 7 sec baad apne aap gayab ---------- */
