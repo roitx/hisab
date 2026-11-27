@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0F172A">
+  <meta name="theme-color" content="#F5F6F2">
   <meta name="description" content="Aasaan Hisaab Enterprise Pro - Ultra Advanced Multi-Lingual AI Khata & Ledger System">
 
+  <script>(function(){try{var m=localStorage.getItem('ah_theme_mode')||'light',a=localStorage.getItem('ah_theme_accent')||'hara',d=document.documentElement;if(m==='auto')m=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';d.setAttribute('data-mode',m);d.setAttribute('data-accent',a);}catch(e){}})();</script>
   <title>Aasaan Hisaab AI Pro Enterprise Ledger</title>
 
   <!-- External CDNs: Firebase v10, jsPDF, AutoTable, Chart.js -->
@@ -15,6 +16,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <style>
     :root {
       --bg-dark: #030712;
@@ -82,6 +84,9 @@
     .mn-chip { white-space: nowrap; font-size: .74rem; padding: 6px 12px; border-radius: 30px; border: 1px solid rgba(139,92,246,.5); color: #C4B5FD; cursor: pointer; background: rgba(139,92,246,.1); }
     .mn-btn { margin-left: 6px; background: rgba(37,211,102,.15); border: 1px solid var(--wa-color); color: var(--wa-color); border-radius: 6px; padding: 2px 8px; font-size: .72rem; cursor: pointer; }
 
+    .ai-edit { padding: 8px 0; border-bottom: 1px dashed var(--card-border); }
+    .ai-edit .modal-input { margin: 0 0 8px 0; padding: 10px 12px; font-size: .85rem; }
+    .ai-g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     /* Navigation Header */
     header {
       background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px);
@@ -116,7 +121,7 @@
       margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--card-border); 
     }
     .stat-box { text-align: center; }
-    .stat-val.in { color: var(--primary); font-weight: 800; font-size: 1.15rem; }
+    .stat-val.in { color: var(--pos); font-weight: 800; font-size: 1.15rem; }
     .stat-val.out { color: var(--danger); font-weight: 800; font-size: 1.15rem; }
 
     button {
@@ -360,7 +365,7 @@
       margin-top: 14px; display: flex; justify-content: space-between; align-items: center; gap: 8px; cursor: pointer;
       background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.4); border-radius: var(--radius-md); padding: 12px 14px; font-size: 0.82rem;
     }
-    .party-strip b.get { color: var(--primary); } .party-strip b.give { color: var(--danger); }
+    .party-strip b.get { color: var(--pos); } .party-strip b.give { color: var(--danger); }
     .insight-card { margin: 14px 16px 0 16px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 14px 16px; display: none; }
     .insight-card .ins-line { font-size: 0.82rem; line-height: 1.7; color: var(--text-main); }
     .budget-section { margin: 0 16px 6px 16px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 14px 16px; }
@@ -434,6 +439,110 @@
     .sheet-btn .tick { margin-left: auto; color: var(--primary); display: none; }
     .sheet-btn.sel .tick { display: block; }
     @media (prefers-reduced-motion: reduce) { .move-toast { transition: none; } .move-toast .mt-bar { animation-duration: 7s; } }
+  
+    /* ===== Redesign: clean light theme (override layer) ===== */
+    :root { --bg-dark:#F5F6F2; --panel-bg:#fff; --card-bg:#fff; --card-border:#E4E7E0; --primary:#0B7A55; --primary-glow:transparent; --accent:#5B3FD9; --accent-glow:transparent; --danger:#B42318; --warning:#B54708; --info:#1D4ED8; --text-main:#101B15; --text-muted:#5B665F; --radius-lg:20px; --radius-md:14px; --radius-sm:10px; --soft:#EAF3EE; --ai-soft:#EEEAFE; --chip:#E9ECE5; }
+    * { font-family: 'Inter','Segoe UI',system-ui,-apple-system,sans-serif; }
+    body { background: var(--bg-dark); color: var(--text-main); }
+    #app-container { background: var(--bg-dark); box-shadow: none; border-color: var(--card-border); }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .login-screen { background: var(--bg-dark); }
+    .login-card { background: var(--surface); backdrop-filter: none; box-shadow: 0 8px 30px rgba(16,27,21,.08); }
+    .login-input, .modal-input, .search-input, .lang-select { background: var(--surface); color: var(--text-main); border: 1px solid var(--card-border); backdrop-filter: none; }
+    .login-input:focus { box-shadow: none; border-color: var(--primary); }
+    select option { color: var(--text-main); background: var(--surface); }
+    header { background: var(--header-bg); backdrop-filter: blur(12px); }
+    .brand-title { background: none; -webkit-text-fill-color: var(--text-main); color: var(--text-main); font-weight: 700; letter-spacing: -.2px; }
+    .balance-card { background: var(--surface); backdrop-filter: none; box-shadow: none; text-align: left; }
+    .balance-amount { text-shadow: none; font-weight: 700; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+    .stat-box { text-align: left; } .stat-val.in, .stat-val.out { font-weight: 600; }
+    .eye-btn { background: var(--chip); color: var(--text-main); border: 0; }
+    .btn-quick { box-shadow: none; border: 0; border-radius: 24px; }
+    .btn-jama { background: var(--pos-solid); } .btn-kharcha { background: var(--neg-solid); }
+    .btn-jama:hover, .btn-kharcha:hover { box-shadow: none; filter: brightness(1.08); }
+    .wallet-chip, .chip, .tab-btn, .period-chip { background: var(--chip); border: 0; color: var(--text-muted); backdrop-filter: none; }
+    .chip { color: var(--text-main); }
+    .wallet-chip:hover, .chip:hover { background: var(--chip-hover); color: var(--text-main); border: 0; }
+    .wallet-chip.active, .tab-btn.active, .period-chip.active { background: var(--text-main); color: var(--on-strong); box-shadow: none; border: 0; }
+    .ai-box { background: var(--surface); border: 1px solid #B9A9FF; box-shadow: none; animation: none; border-radius: 28px; backdrop-filter: none; }
+    .ai-input { color: var(--text-main); }
+    .btn-action { background: var(--text-main); box-shadow: none; border: 0; color: var(--on-strong); }
+    .btn-action:hover { box-shadow: none; filter: brightness(1.25); }
+    .mic-btn { background: var(--ai-soft); color: var(--accent); box-shadow: none; border: 0; }
+    .mic-btn.recording { background: var(--danger); color: #fff; }
+    .action-grid .btn-action, .pdf-btn, .wa-btn, .csv-btn, .backup-btn { background: var(--surface); color: var(--text-main); border: 1px solid var(--card-border); box-shadow: none; }
+    #ai-panel, .munim-card { background: var(--ai-soft); border-color: #B9A9FF; backdrop-filter: none; }
+    .insight-card, .budget-section, .chart-section, .party-strip, .history-item { background: var(--surface); backdrop-filter: none; box-shadow: none; }
+    .party-strip { border: 1px solid var(--card-border); }
+    .history-item:hover { border-color: var(--primary); transform: none; }
+    .ai-x { background: var(--surface); } .mn-chip { background: var(--surface); color: var(--accent); border-color: #B9A9FF; }
+    .ai-btn-soft, .mn-btn { background: var(--soft); }
+    .category-badge { background: var(--chip); color: var(--text-muted); }
+    .mode-cash { background: #FEF0C7; color: #93370D; border-color: #FEDF89; }
+    .mode-online { background: #DBEAFE; color: #1D4ED8; border-color: #BFDBFE; }
+    .mode-udhar { background: #FEE4E2; color: #B42318; border-color: #FECDCA; }
+    .modal-overlay { background: rgba(16,27,21,.45); backdrop-filter: blur(4px); }
+    .modal-content { background: var(--surface); box-shadow: 0 20px 50px rgba(16,27,21,.18); }
+    .close-btn { background: #FEE4E2; }
+    .cookie-banner, .bottom-nav { background: var(--nav-bg); }
+    .nav-btn:hover { color: var(--text-main); } .nav-btn:active { background: var(--chip); }
+    .sheet-btn, .p-box, .p-row { background: var(--surface); color: var(--text-main); }
+    .p-tab { background: var(--surface); color: var(--text-main); }
+    .sheet-btn.sel { background: var(--soft); }
+    .budget-track { background: var(--chip); }
+    footer { color: var(--text-muted); }
+  
+    /* ===== Theme changer: tokens ===== */
+    :root { --surface:#fff; --on-strong:#fff; --header-bg:rgba(245,246,242,.94); --nav-bg:rgba(255,255,255,.97); --chip-hover:#DFE3D9; --pos:#0B7A55; --pos-solid:#0B7A55; --neg-solid:#B42318; --chart-text:#5B665F; --chart-grid:rgba(16,27,21,.08); color-scheme:light; }
+    :root[data-accent="neela"]  { --primary:#1D4ED8; --soft:#E6EEFD; }
+    :root[data-accent="kesari"] { --primary:#B45309; --soft:#FDF0DC; }
+    :root[data-accent="gulabi"] { --primary:#BE185D; --soft:#FCE7F1; }
+    :root[data-mode="dark"] { color-scheme:dark; --bg-dark:#0D1411; --surface:#151F1A; --panel-bg:#151F1A; --card-bg:#151F1A; --card-border:#26352D; --text-main:#EAF1EC; --text-muted:#9AA9A0; --primary:#34D399; --soft:#16281F; --ai-soft:#221D3F; --chip:#212D26; --chip-hover:#2B3931; --on-strong:#0D1411; --header-bg:rgba(13,20,17,.94); --nav-bg:rgba(21,31,26,.97); --danger:#F87171; --warning:#FBBF24; --info:#60A5FA; --accent:#A394FF; --pos:#34D399; --chart-text:#9AA9A0; --chart-grid:rgba(234,241,236,.1); }
+    :root[data-mode="dark"][data-accent="neela"]  { --primary:#7AA2FF; --soft:#16233F; }
+    :root[data-mode="dark"][data-accent="kesari"] { --primary:#FBA94B; --soft:#2E2214; }
+    :root[data-mode="dark"][data-accent="gulabi"] { --primary:#F472B6; --soft:#331A27; }
+    :root[data-mode="dark"] .mode-cash { background:#3A2E0F; color:#FDE68A; border-color:#5A4515; }
+    :root[data-mode="dark"] .mode-online { background:#16294F; color:#BFD4FF; border-color:#24407A; }
+    :root[data-mode="dark"] .mode-udhar { background:#3A1A18; color:#FCA5A5; border-color:#5C2724; }
+    :root[data-mode="dark"] .close-btn { background:#3A1A18; }
+
+    /* theme picker (Settings) */
+    .theme-lbl { font-size:.78rem; color:var(--text-muted); margin:6px 0 8px; }
+    .seg2 { display:flex; gap:2px; background:var(--chip); border-radius:14px; padding:4px; }
+    .seg2 button { flex:1; min-height:44px; border:0; background:transparent; border-radius:10px; padding:8px 4px; font-size:.85rem; white-space:nowrap; font-weight:600; color:var(--text-muted); cursor:pointer; }
+    .seg2 button.on { background:var(--surface); color:var(--text-main); box-shadow:0 1px 2px rgba(0,0,0,.14); }
+    .swatches { display:flex; gap:16px; margin:0 0 16px; }
+    .sw-item { display:flex; flex-direction:column; align-items:center; gap:6px; font-size:.72rem; color:var(--text-muted); }
+    .swatches button { width:44px; height:44px; border-radius:50%; border:2px solid transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#fff; }
+    .swatches button .ic { display:none; width:18px; height:18px; }
+    .swatches button.on { border-color:var(--text-main); box-shadow:inset 0 0 0 2px var(--surface); }
+    .swatches button.on .ic { display:block; }
+
+    /* ===== Munim: "Nayi entry" sheet ===== */
+    #ai-panel.as-sheet { display:flex; position:fixed; inset:0; z-index:800; margin:0; padding:0; border:0; border-radius:0; background:rgba(16,27,21,.45); align-items:flex-end; justify-content:center; animation:nsFade .18s ease-out; }
+    .ns-card { width:100%; max-width:520px; max-height:94vh; overflow-y:auto; background:var(--bg-dark); border-radius:24px 24px 0 0; padding:20px 16px 24px; animation:nsUp .22s ease-out; }
+    @keyframes nsFade { from { opacity:0; } }
+    @keyframes nsUp { from { transform:translateY(24px); opacity:.6; } }
+    @media (prefers-reduced-motion: reduce) { #ai-panel.as-sheet, .ns-card { animation:none; } }
+    .ns-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+    .ns-head h3 { font-size:1.1rem; font-weight:600; color:var(--text-main); }
+    .ns-close { width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; }
+    .ns-say { background:var(--surface); border:1px solid #B9A9FF; border-radius:20px; padding:14px 16px; }
+    .ns-said { font-size:1rem; line-height:1.5; color:var(--text-main); margin-bottom:8px; }
+    .ns-say .ai-tag { margin:0; text-align:right; font-size:.8rem; }
+    .ns-fix { background:var(--soft); color:var(--pos); border-radius:12px; padding:10px 14px; font-size:.8rem; margin-top:10px; }
+    .ns-card .ai-row { background:var(--surface); border:1px solid var(--card-border); border-radius:16px; padding:12px 14px; margin-top:10px; }
+    .ns-ico { width:40px; height:40px; border-radius:12px; background:var(--soft); color:var(--pos); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .ns-card .ai-edit { background:var(--surface); border:1.5px solid var(--pos); border-radius:16px; padding:14px; margin-top:10px; }
+    .ns-edhead { display:flex; justify-content:space-between; font-size:.78rem; color:var(--text-muted); margin-bottom:10px; }
+    .ns-edhead b { color:var(--pos); }
+    .ns-card .seg2 { align-self:stretch; }
+    .mchips { display:flex; gap:8px; flex-wrap:wrap; margin:0 0 8px; }
+    .mchip { border:1px solid var(--card-border); background:var(--surface); color:var(--text-main); border-radius:999px; padding:9px 12px; font-size:.82rem; cursor:pointer; min-height:40px; }
+    .mchip.on { background:var(--text-main); color:var(--on-strong); border-color:var(--text-main); }
+    .ns-ok { width:100%; min-height:46px; border:0; border-radius:14px; background:var(--soft); color:var(--pos); font-weight:700; cursor:pointer; margin-top:4px; }
+    .ns-save { width:100%; min-height:52px; border:0; border-radius:999px; background:var(--pos-solid); color:#fff; font-weight:700; font-size:1rem; margin-top:18px; cursor:pointer; }
+    .ns-cancel { display:block; margin:12px auto 0; background:none; border:0; color:var(--text-muted); padding:10px 20px; cursor:pointer; font-size:.9rem; }
   </style>
 </head>
 <body>
@@ -805,6 +914,19 @@
       <button class="close-btn" onclick="closeModal('settings-modal')" aria-label="Band karein"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
       <h3 class="sheet-title"><svg class="ic" aria-hidden="true"><use href="#i-gear"/></svg> Settings</h3>
       <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:14px;" id="settings-phone"></p>
+      <div class="theme-lbl">Theme</div>
+      <div class="seg2" id="mode-seg" role="group" aria-label="Theme">
+        <button type="button" data-m="light" onclick="setThemeMode('light')">Saaf</button>
+        <button type="button" data-m="dark" onclick="setThemeMode('dark')">Raat</button>
+        <button type="button" data-m="auto" onclick="setThemeMode('auto')">Auto</button>
+      </div>
+      <div class="theme-lbl" style="margin-top:14px;">Rang</div>
+      <div class="swatches" id="accent-sw" role="group" aria-label="Rang">
+        <div class="sw-item"><button type="button" data-a="hara" style="background:#0B7A55" aria-label="Hara" onclick="setThemeAccent('hara')"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></button>Hara</div>
+        <div class="sw-item"><button type="button" data-a="neela" style="background:#1D4ED8" aria-label="Neela" onclick="setThemeAccent('neela')"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></button>Neela</div>
+        <div class="sw-item"><button type="button" data-a="kesari" style="background:#B45309" aria-label="Kesari" onclick="setThemeAccent('kesari')"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></button>Kesari</div>
+        <div class="sw-item"><button type="button" data-a="gulabi" style="background:#BE185D" aria-label="Gulabi" onclick="setThemeAccent('gulabi')"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg></button>Gulabi</div>
+      </div>
       <button class="sheet-btn" onclick="closeModal('settings-modal'); openModal('change-pin-modal')"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg> PIN / Security Question badlein</button>
       <button class="sheet-btn" onclick="closeModal('settings-modal'); openBudgetModal()"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> Mahine ka Budget</button>
       <button class="sheet-btn" onclick="closeModal('settings-modal'); backupAndRestoreModal()"><svg class="ic" aria-hidden="true"><use href="#i-save"/></svg> Data Backup / Restore</button>
@@ -879,6 +1001,7 @@
 
     try {
       firebase.initializeApp(firebaseConfig);
+      firebase.firestore.setLogLevel('error'); // deprecation warning chhupane ke liye
       db = firebase.firestore();
       db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
     } catch (e) { console.log("Offline mode or Firebase fallback initialized."); }
@@ -1531,9 +1654,16 @@
     }
 
     /* ================= AI MUNIM: smart add + ask + remind ================= */
-    let aiPending = [];
+    let aiPending = [], aiErr = '', aiLast = '', aiEditing = -1, aiOffline = false, aiSaid = '';
     const AI_CAT_MAP = [[/khad|beej|seed|spray|fertili|kisan|khet/i,'Farming'],[/petrol|diesel|fuel|gas/i,'Fuel'],[/ration|atta|dal|chawal|sabzi|doodh/i,'Ration'],[/kiraya|kiraye|rent/i,'Rent'],[/dawa|doctor|hospital|medicine/i,'Health'],[/fees|school|college|book/i,'Education'],[/bijli|bill|recharge|wifi/i,'Bills'],[/bus|auto|train|ticket|cab/i,'Transport'],[/mandi|fasal|crop/i,'Mandi'],[/salary|tankhwah|vetan/i,'Salary']];
-    function aiPanel(html) { const el = document.getElementById('ai-panel'); if (!el) return; el.innerHTML = html; el.style.display = html ? 'block' : 'none'; }
+    function aiPanel(html, sheet) {
+      const el = document.getElementById('ai-panel'); if (!el) return;
+      const sh = !!(html && sheet);
+      el.className = sh ? 'as-sheet' : ''; el.innerHTML = html || '';
+      el.style.display = html ? (sh ? 'flex' : 'block') : 'none';
+      el.onclick = sh ? (ev => { if (ev.target === el && aiEditing < 0) aiPanel(''); }) : null;
+      document.body.style.overflow = sh ? 'hidden' : '';
+    }
     function aiContext() {
       const t = sumTx(periodTx()), r = periodRange('lastmonth');
       const lm = sumTx(ledgerTx().filter(x => { const d = entryDateISO(x); return d >= r[0] && d <= r[1]; }));
@@ -1547,28 +1677,96 @@
     function aiNorm(o, fallbackNote) {
       const amount = Number(o && o.amount); if (!Number.isFinite(amount) || amount <= 0) return null;
       const mode = ['Cash', 'Bank', 'Credit', 'Udhar'].includes(o.mode) ? o.mode : 'Cash';
-      const party = (mode === 'Udhar' && o.party) ? String(o.party).trim().slice(0, 40) : '';
+      const rawP = (mode === 'Udhar' && o.party) ? String(o.party).trim().slice(0, 40) : '', party = aiFixName(rawP);
       const date = isISODate(o.date) && o.date <= todayISO() ? o.date : todayISO();
-      return { type: o.type === 'IN' ? 'IN' : 'OUT', amount, note: String(o.note || fallbackNote || '').slice(0, 200), category: String(o.category || 'General'), mode, date, party };
+      return { type: o.type === 'IN' ? 'IN' : 'OUT', amount, note: (rawP && party !== rawP ? String(o.note || fallbackNote || '').split(rawP).join(party) : String(o.note || fallbackNote || '')).slice(0, 200), category: String(o.category || 'General'), mode, date, party, fixedFrom: (rawP && party.toLowerCase() !== rawP.toLowerCase()) ? rawP : '' };
     }
-    function aiPreview(list, offline) {
-      aiPending = list;
+    function aiLev(a, b) { const d = Array.from({ length: a.length + 1 }, (_, i) => [i]); for (let j = 1; j <= b.length; j++) d[0][j] = j; for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[a.length][b.length]; }
+    function aiFixName(n) {
+      n = String(n || '').trim(); if (!n) return n;
+      const sk = x => x.toLowerCase().replace(/[aeiouh\u093e-\u094c]/g, '');
+      let best = null;
+      for (const g of partyGroups()) {
+        if (g.key === partyKey(n)) return g.name;
+        if (!best && sk(g.name) && aiLev(sk(g.name), sk(n)) <= (sk(n).length > 3 ? 1 : 0)) best = g.name;
+      }
+      return best || n.charAt(0).toUpperCase() + n.slice(1);
+    }
+    function aiPreview(list, offline) { aiPending = list; aiEditing = -1; aiOffline = !!offline; const inp = document.getElementById('ai-input-text'); aiSaid = (inp && inp.value.trim()) || ''; aiDraw(); }
+    function aiPick(id, val, btn) { document.getElementById(id).value = val; btn.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn)); }
+    function aiDraw() {
+      const list = aiPending;
       if (!list.length) return aiPanel('');
-      aiPanel(`<div class="ai-tag">✦ Munim ne ${list.length} entry samjhi${offline ? ' (offline mode)' : ''} — check karke save karein</div>` +
-        list.map((e, i) => `<div class="ai-row"><div style="flex:1;min-width:0"><b>${esc(e.note)}</b><div class="ai-sub">${esc(e.category)} • ${esc(e.mode)}${e.party ? ' • ' + esc(e.party) : ''} • ${esc(fmtDateShort(e.date))}</div></div><span style="font-weight:800;color:${e.type === 'IN' ? 'var(--primary)' : 'var(--danger)'}">${e.type === 'IN' ? '+' : '-'}₹${fmt(e.amount)}</span><button class="ai-x" onclick="aiDrop(${i})">✕</button></div>`).join('') +
-        `<div class="ai-actions"><button class="btn-action" onclick="aiConfirm()">Save karein</button><button class="ai-ghost" onclick="aiPanel('')">Cancel</button></div>`);
+      const CATS = ['Farming', 'Ration', 'Rent', 'Fuel', 'Mandi', 'Salary', 'Health', 'Education', 'Transport', 'Bills', 'Shopping', 'Dukaan', 'General', 'Udhar'];
+      const opt = (arr, v) => arr.map(x => `<option${x === v ? ' selected' : ''}>${x}</option>`).join('');
+      const iconOf = e => e.party ? 'i-user' : (e.type === 'IN' ? 'i-wallet' : 'i-tag');
+      const rows = list.map((e, i) => i === aiEditing ? `<div class="ai-edit">
+          <div class="ns-edhead"><b>Edit ho rahi hai</b><span>Entry ${i + 1}</span></div>
+          <input class="modal-input" id="ae-note" value="${esc(e.note)}" maxlength="200" placeholder="Note" aria-label="Note">
+          <div class="ai-g2"><input class="modal-input" id="ae-amount" type="number" inputmode="decimal" value="${e.amount}" aria-label="Amount">
+            <div class="seg2" role="group" aria-label="Type"><input type="hidden" id="ae-type" value="${e.type}"><button type="button" class="${e.type === 'OUT' ? 'on' : ''}" onclick="aiPick('ae-type','OUT',this)">Kharcha −</button><button type="button" class="${e.type === 'IN' ? 'on' : ''}" onclick="aiPick('ae-type','IN',this)">Jama +</button></div></div>
+          <div class="mchips"><input type="hidden" id="ae-mode" value="${e.mode}">${[['Cash', 'Cash'], ['Bank', 'Bank/UPI'], ['Credit', 'Credit'], ['Udhar', 'Udhar']].map(m => `<button type="button" class="mchip${e.mode === m[0] ? ' on' : ''}" onclick="aiPick('ae-mode','${m[0]}',this)">${m[1]}</button>`).join('')}</div>
+          <input class="modal-input" id="ae-party" list="ae-parties" value="${esc(e.party)}" maxlength="40" placeholder="Party / naam (udhar ke liye)" aria-label="Party">
+          <div class="ai-g2"><select class="modal-input" id="ae-cat" aria-label="Category">${opt(CATS, e.category)}</select><input class="modal-input" id="ae-date" type="date" value="${e.date}" max="${todayISO()}" aria-label="Date"></div>
+          <datalist id="ae-parties">${partyGroups().map(g => `<option value="${esc(g.name)}">`).join('')}</datalist>
+          <button type="button" class="ns-ok" onclick="aiEditDone()">Theek hai</button></div>`
+        : `<div class="ai-row"><span class="ns-ico"><svg class="ic" aria-hidden="true"><use href="#${iconOf(e)}"/></svg></span><div style="flex:1;min-width:0"><b>${esc(e.note)}</b><div class="ai-sub">${esc(e.category)} • ${esc(e.mode)}${e.party ? ' • ' + esc(e.party) : ''} • ${esc(fmtDateShort(e.date))}</div></div><span style="font-weight:800;color:${e.type === 'IN' ? 'var(--pos)' : 'var(--danger)'}">${e.type === 'IN' ? '+' : '-'}₹${fmt(e.amount)}</span><button class="ai-x" onclick="aiEdit(${i})" aria-label="Edit">✎</button><button class="ai-x" onclick="aiDrop(${i})" aria-label="Hatayein">✕</button></div>`).join('');
+      const fixes = [...new Set(list.filter(e => e.fixedFrom && e.fixedFrom.toLowerCase() !== String(e.party || '').toLowerCase()).map(e => esc(e.fixedFrom) + ' → ' + esc(e.party)))];
+      aiPanel(`<div class="ns-card" role="dialog" aria-modal="true" aria-label="Nayi entry">
+        <div class="ns-head"><h3>Nayi entry</h3><button class="ai-x ns-close" onclick="aiPanel('')" aria-label="Band karein"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+        <div class="ns-say">${aiSaid ? `<div class="ns-said">${esc(aiSaid)}</div>` : ''}<div class="ai-tag">✦ Munim ne ${list.length} entry samjhi${aiOffline ? ' (offline: ' + esc(aiErr.slice(0, 90)) + ')' : ''}</div></div>
+        ${fixes.length ? `<div class="ns-fix">✓ Naam sudhara gaya: ${fixes.join(', ')} (aapki list se)</div>` : ''}
+        ${rows}
+        <button class="ns-save" onclick="aiConfirm()">Save karein (${list.length})</button>
+        <button class="ns-cancel" onclick="aiPanel('')">Cancel</button></div>`, true);
     }
-    function aiDrop(i) { aiPending.splice(i, 1); aiPreview(aiPending); }
+    function aiEdit(i) { aiEditing = i; aiDraw(); }
+    function aiEditDone() {
+      const e = aiPending[aiEditing]; if (!e) return;
+      const v = id => document.getElementById(id).value;
+      const amt = parseFloat(v('ae-amount')); if (!(amt > 0)) return alert('Sahi amount daalein.');
+      let d = v('ae-date'); if (!isISODate(d) || d > todayISO()) d = todayISO();
+      const party = v('ae-party').trim().slice(0, 40);
+      if (party.toLowerCase() !== String(e.party || '').toLowerCase()) e.fixedFrom = '';
+      Object.assign(e, { note: v('ae-note').trim().slice(0, 200) || e.note, amount: amt, type: v('ae-type'), category: v('ae-cat'), date: d, party, mode: party ? 'Udhar' : v('ae-mode') });
+      aiEditing = -1; aiDraw();
+    }
+    function aiDrop(i) { aiPending.splice(i, 1); aiEditing = -1; aiDraw(); }
     async function aiConfirm() {
+      if (aiEditing >= 0) { aiEditDone(); if (aiEditing >= 0) return; }
       const list = aiPending.slice(); aiPending = []; aiPanel('');
       for (const e of list) { createAndSaveEntry(e.type, e.amount, e.note, e.category, e.mode, e.date, e.party); await new Promise(r => setTimeout(r, 4)); }
       showToast(`${list.length} entry save ho gayi`);
     }
     function aiAnswer(text) {
-      aiPanel(`<div class="ai-tag">✦ Munim</div><div class="ai-ans">${esc(text).replace(/\n/g, '<br>')}</div><div class="ai-actions"><button class="ai-ghost" onclick="aiPanel('')">Band karein</button></div>`);
+      aiLast = text;
+      aiPanel(`<div class="ai-tag">✦ Munim</div><div class="ai-ans">${esc(text).replace(/\n/g, '<br>')}</div><div class="ai-actions"><button class="btn-action" onclick="aiSpeak()">🔊 Suniye</button><button class="ai-ghost" onclick="aiPanel('')">Band karein</button></div>`);
+    }
+    function aiSpeak() {
+      if (!('speechSynthesis' in window)) return alert('Is browser me awaaz support nahi hai.');
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(aiLast.replace(/₹/g, ' rupaye ').replace(/\n/g, '. '));
+      u.lang = 'hi-IN'; u.rate = 0.95; speechSynthesis.speak(u);
     }
     function askMunim(q) { document.getElementById('ai-input-text').value = q; processGroqAI(); }
 
+    async function aiCall(sys, user) {
+      let lastMsg = '';
+      for (const model of ['openai/gpt-oss-120b', 'openai/gpt-oss-20b']) {
+        try {
+          const r = await fetch("https://my-groq-proxy.xpihu1207.workers.dev", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ model, messages: [{ role: "system", content: sys }, { role: "user", content: user }], temperature: 0.1 })
+          });
+          const body = await r.text(); let d = null; try { d = JSON.parse(body); } catch (e) {}
+          const c = d && d.choices && d.choices[0], txt = (c && c.message && c.message.content) || (d && ((d.content && d.content[0] && d.content[0].text) || d.response || d.result || d.text));
+          if (r.ok && txt) return String(txt);
+          lastMsg = 'HTTP ' + r.status + ' - ' + ((d && ((d.error && (d.error.message || d.error)) || d.message)) || body.slice(0, 150));
+          console.warn('Munim AI server reply (' + model + '):', body.slice(0, 500));
+        } catch (e) { lastMsg = e.message; console.warn('Munim AI fetch error (' + model + '):', e); }
+      }
+      throw new Error(lastMsg);
+    }
     async function processGroqAI() {
       const inputEl = document.getElementById('ai-input-text');
       const promptText = inputEl.value.trim();
@@ -1580,16 +1778,10 @@ Pick an intent:
 - "add": user states one or MORE transactions. Put each in entries[]. Resolve kal/parso/weekday/dates to YYYY-MM-DD.
 - "ask": user asks about their money. Answer ONLY from LEDGER, in the user's own language (default Hinglish), max 4 short lines, use ₹. Never invent numbers; if data is missing say so. Add one practical tip when useful.
 - "remind": user wants to remind a person about pending money; set party.
-Entry fields: amount (number), type "IN" (received/jama/salary/sale/money got back) or "OUT" (spent/gave), note, category (Farming, Ration, Rent, Fuel, Mandi, Salary, Health, Education, Transport, Bills, Shopping, Dukaan, General), mode (Cash, Bank, Credit, Udhar), date, party (person's name only for udhar/loan e.g. "Ramesh ko 500 udhar diya", else "").
-JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","category":"General","mode":"Cash","date":"YYYY-MM-DD","party":""}],"answer":"","party":""}` + (isQuestion ? `\nLEDGER: ${JSON.stringify(aiContext())}` : '');
+Entry fields: amount (number), type "IN" (received/jama/salary/sale/money got back) or "OUT" (spent/gave), note, category (Farming, Ration, Rent, Fuel, Mandi, Salary, Health, Education, Transport, Bills, Shopping, Dukaan, General), mode (Cash, Bank, Credit, Udhar), date, party (a person's name when money is given to / taken from a person, e.g. "Ramesh ko 500 diya", "Suresh se 1000 liye" -> mode "Udhar"; else ""). Names often arrive misspelled from voice input: fix the spelling (Rmu->Ramu, Kmlesh->Kamlesh) in BOTH party and note, and if a name is close to one in KNOWN_PARTIES, reuse that exact spelling.
+JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","category":"General","mode":"Cash","date":"YYYY-MM-DD","party":""}],"answer":"","party":""}` + `\nKNOWN_PARTIES: ${JSON.stringify(partyGroups().map(g => g.name).slice(0, 40))}` + (isQuestion ? `\nLEDGER: ${JSON.stringify(aiContext())}` : '');
       try {
-        const response = await fetch("https://my-groq-proxy.xpihu1207.workers.dev", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: [{ role: "system", content: sys }, { role: "user", content: promptText }], temperature: 0.1 })
-        });
-        if (!response.ok) throw new Error("AI HTTP " + response.status);
-        const data = await response.json();
-        const raw = data.choices[0].message.content.trim().replace(/```json|```/g, "");
+        const raw = (await aiCall(sys, promptText)).trim().replace(/```json|```/g, "");
         const parsed = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
         if (parsed.intent === 'ask' && parsed.answer) aiAnswer(parsed.answer);
         else if (parsed.intent === 'remind') {
@@ -1603,6 +1795,7 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
         }
         inputEl.value = '';
       } catch (err) {
+        console.warn('Munim AI failed:', err); aiErr = String((err && err.message) || err);
         fallbackLocalAI(promptText, isQuestion);
         inputEl.value = '';
       } finally { toggleLoading(false); }
@@ -1612,12 +1805,26 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
       document.getElementById('ai-loader').style.display = isLoading ? 'inline-block' : 'none';
     }
 
+    function localAsk(q) {
+      const t = sumTx(periodTx()), gs = partyGroups(), per = PERIOD_LABELS[selectedPeriod];
+      const why = /Failed to fetch|NetworkError|Load failed/i.test(aiErr) ? 'AI server tak request nahi pahunchi (internet ya proxy ka origin/CORS block)' : /HTTP/.test(aiErr) ? 'AI server ne error diya (' + aiErr + ')' : 'AI ka jawab samajh nahi aaya';
+      const line = g => `${g.name}: ₹${fmt(Math.abs(g.bal))}`;
+      let out;
+      if (/lena|kisse|kisko|udhar|baaki|dena/i.test(q)) {
+        const owe = gs.filter(g => g.bal > 0).sort((a, b) => b.bal - a.bal).slice(0, 5).map(line);
+        const give = gs.filter(g => g.bal < 0).sort((a, b) => a.bal - b.bal).slice(0, 5).map(line);
+        out = owe.length ? 'Ye log aapko dene hain:\n' + owe.join('\n') : 'Kisi se paisa lena baaki nahi hai.';
+        if (give.length) out += '\n\nAapko inhe dena hai:\n' + give.join('\n');
+      } else if (/kharcha|kam|bachat|save/i.test(q)) {
+        const cat = {}; periodTx().forEach(x => { if (x.type === 'OUT') cat[x.category || 'General'] = (cat[x.category || 'General'] || 0) + (Number(x.amount) || 0); });
+        const top = Object.entries(cat).sort((a, b) => b[1] - a[1]).slice(0, 3);
+        out = top.length ? `${per} me sabse zyada kharcha:\n` + top.map(([c, v]) => `${c}: ₹${fmt(v)} (${Math.round(v / t.out * 100)}%)`).join('\n') + `\nSabse upar wali category par pehle kami try karein.` : 'Is period me koi kharcha nahi hai.';
+      } else out = `${per}: jama ₹${fmt(t.inn)}, kharcha ₹${fmt(t.out)}, bachat ₹${fmt(t.inn - t.out)}.`;
+      aiAnswer(out + `\n\n⚠ Offline jawab — ${why}.`);
+    }
     function fallbackLocalAI(prompt, isQuestion) {
       const hasNum = /\d/.test(prompt);
-      if (isQuestion && !hasNum) {
-        const t = sumTx(periodTx()), pt = partyTotals(partyGroups());
-        return aiAnswer(`(Offline) ${PERIOD_LABELS[selectedPeriod]}: jama ₹${fmt(t.inn)}, kharcha ₹${fmt(t.out)}.\nUdhar: lena ₹${fmt(pt.lena)}, dena ₹${fmt(pt.dena)}.`);
-      }
+      if (isQuestion && !hasNum) return localAsk(prompt);
       const list = [];
       prompt.split(/\s*(?:,|\+|\baur\b|\band\b)\s*/i).forEach(chunk => {
         const n = chunk.match(/\d+(?:\.\d+)?/); if (!n) return;
@@ -1627,7 +1834,7 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
         let party = '';
         if (pm && mode === 'Udhar') { party = pm[1]; type = pm[2].toLowerCase() === 'ko' ? 'OUT' : 'IN'; }
         const cat = (AI_CAT_MAP.find(c => c[0].test(chunk)) || [0, 'General'])[1];
-        list.push({ type, amount: parseFloat(n[0]), note: chunk.trim(), category: cat, mode, date: todayISO(), party });
+        list.push({ type, amount: parseFloat(n[0]), note: chunk.trim(), category: cat, mode, date: todayISO(), party: aiFixName(party), fixedFrom: party });
       });
       if (!list.length) return alert("Koi valid amount nahi mila.");
       aiPreview(list, true);
@@ -1650,7 +1857,8 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
       const prev = sumTx(ledgerTx().filter(x => { const d = entryDateISO(x); return d >= lr[0] && d <= lr[1]; })).out;
       const dom = new Date().getDate(), dim = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
       const proj = cur / Math.max(1, dom) * dim;
-      if (prev > 0 && dom >= 5 && proj > prev * 1.15) nudges.push({ s: 40, h: `Is raftaar se mahina ~₹${fmt(Math.round(proj))} par jayega, pichle mahine se ${Math.round((proj / prev - 1) * 100)}% zyada` });
+      if (prev >= 1000 && dom >= 5 && proj > prev * 1.15) nudges.push({ s: 40, h: `Is raftaar se mahina ~₹${fmt(Math.round(proj))} par jayega (pichle mahine ₹${fmt(prev)}, ${Math.round((proj / prev - 1) * 100)}% zyada)` });
+      else if (prev < 1000 && cur > 0 && dom >= 5) nudges.push({ s: 30, h: `Is mahine abhi tak ₹${fmt(cur)} kharcha hua (pichle mahine ka data kam hai, tulna nahi ho sakti)` });
       nudges.sort((a, b) => b.s - a.s);
       const chips = ['Is mahine ka hisab batao', 'Kisse paisa lena hai?', 'Kharcha kahan kam kar sakta hu?'];
       el.innerHTML = `<div class="section-title" style="margin-bottom:6px;">✦ Munim AI</div>` +
@@ -1699,8 +1907,9 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
 
       const pTx = periodTx();
       const tot = sumTx(pTx);
-      const legend = { labels: { color: '#cbd5e1' } };
-      const axes = { x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.06)' } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.06)' } } };
+      const cssv = getComputedStyle(document.documentElement), tc = cssv.getPropertyValue('--chart-text').trim() || '#5B665F', gc = cssv.getPropertyValue('--chart-grid').trim() || 'rgba(16,27,21,0.08)';
+      const legend = { labels: { color: tc } };
+      const axes = { x: { ticks: { color: tc }, grid: { color: gc } }, y: { ticks: { color: tc }, grid: { color: gc } } };
 
       if (selectedChartType === 'pie') {
         const cat = {};
@@ -2152,7 +2361,7 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
           </div>
           <div style="display:flex; align-items:center; gap:8px;">
             ${isUdhar ? `<button style="background:rgba(239, 68, 68, 0.15); border:1px solid var(--danger); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); sendUdharReminderById(${itemId})" title="WhatsApp Reminder"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg></button>` : ''}
-            <span style="font-weight:900; color:${item.type === 'IN' ? 'var(--primary)' : 'var(--danger)'}">
+            <span style="font-weight:900; color:${item.type === 'IN' ? 'var(--pos)' : 'var(--danger)'}">
               ${item.type === 'IN' ? '+' : '-'}₹${fmt(item.amount)}
             </span>
             <button style="background:rgba(255,255,255,0.05); border:1px solid var(--card-border); padding:4px 8px; border-radius:6px; cursor:pointer;" onclick="event.stopPropagation(); deleteEntry(${itemId})"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg></button>
@@ -2203,6 +2412,26 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
       requestAnimationFrame(() => requestAnimationFrame(() => toast.classList.add('show')));
       moveToastTimer = setTimeout(hideMoveToast, 7000);
     }
+
+    /* ---------- Theme changer: Saaf / Raat / Auto + rang ---------- */
+    const THEME_BG = { light: '#F5F6F2', dark: '#0D1411' };
+    let themeMode = LS.getItem('ah_theme_mode') || 'light';
+    let themeAccent = LS.getItem('ah_theme_accent') || 'hara';
+    const themeMQ = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    function themeResolved() { return themeMode === 'auto' ? (themeMQ && themeMQ.matches ? 'dark' : 'light') : themeMode; }
+    function applyTheme(redraw) {
+      const root = document.documentElement, m = themeResolved();
+      root.setAttribute('data-mode', m); root.setAttribute('data-accent', themeAccent);
+      const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute('content', THEME_BG[m]);
+      document.querySelectorAll('#mode-seg button').forEach(b => { const on = b.dataset.m === themeMode; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+      document.querySelectorAll('#accent-sw button').forEach(b => { const on = b.dataset.a === themeAccent; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+      if (redraw) { try { renderChart(); } catch (e) {} }
+    }
+    function setThemeMode(m) { themeMode = m; LS.setItem('ah_theme_mode', m); applyTheme(true); }
+    function setThemeAccent(a) { themeAccent = a; LS.setItem('ah_theme_accent', a); applyTheme(true); }
+    if (themeMQ) { const onMQ = () => { if (themeMode === 'auto') applyTheme(true); }; if (themeMQ.addEventListener) themeMQ.addEventListener('change', onMQ); }
+    document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && aiEditing < 0 && document.querySelector('#ai-panel.as-sheet')) aiPanel(''); });
+    applyTheme(false);
     function hideMoveToast() {
       const toast = document.getElementById('move-toast');
       if (!toast) return;
