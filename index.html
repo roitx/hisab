@@ -64,6 +64,24 @@
     .login-input:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
     .forgot-link { font-size: 0.8rem; color: var(--accent); cursor: pointer; text-decoration: underline; }
 
+    /* AI Munim */
+    .ai-box { box-shadow: 0 0 0 1px rgba(139,92,246,.35), 0 0 22px var(--accent-glow); animation: aiPulse 3.2s ease-in-out infinite; }
+    @keyframes aiPulse { 50% { box-shadow: 0 0 0 1px rgba(16,185,129,.5), 0 0 30px var(--primary-glow); } }
+    #ai-panel, .munim-card { margin-top: 12px; background: linear-gradient(135deg, rgba(139,92,246,.14), rgba(16,185,129,.08)); border: 1px solid rgba(139,92,246,.35); border-radius: var(--radius-lg); padding: 12px 14px; backdrop-filter: blur(15px); }
+    #ai-panel { display: none; }
+    .munim-card { display: none; margin: 14px 16px 0 16px; }
+    .munim-card .ins-line { font-size: .82rem; line-height: 1.7; }
+    .ai-tag { font-size: .72rem; color: var(--accent); font-weight: 800; letter-spacing: .3px; margin-bottom: 6px; }
+    .ai-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px dashed var(--card-border); font-size: .85rem; }
+    .ai-sub { font-size: .7rem; color: var(--text-muted); margin-top: 2px; }
+    .ai-x { background: rgba(255,255,255,.06); border: 1px solid var(--card-border); color: var(--text-muted); border-radius: 6px; padding: 2px 8px; cursor: pointer; }
+    .ai-ans { font-size: .88rem; line-height: 1.6; }
+    .ai-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .ai-ghost { background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); padding: 10px 16px; border-radius: var(--radius-md); cursor: pointer; font-size: .85rem; }
+    .mn-chips { display: flex; gap: 6px; overflow-x: auto; margin-top: 8px; scrollbar-width: none; }
+    .mn-chip { white-space: nowrap; font-size: .74rem; padding: 6px 12px; border-radius: 30px; border: 1px solid rgba(139,92,246,.5); color: #C4B5FD; cursor: pointer; background: rgba(139,92,246,.1); }
+    .mn-btn { margin-left: 6px; background: rgba(37,211,102,.15); border: 1px solid var(--wa-color); color: var(--wa-color); border-radius: 6px; padding: 2px 8px; font-size: .72rem; cursor: pointer; }
+
     /* Navigation Header */
     header {
       background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px);
@@ -542,6 +560,7 @@
           <span class="loader" id="ai-loader"></span>
         </button>
       </div>
+      <div id="ai-panel"></div>
     </div>
 
     <!-- Party udhar summary strip -->
@@ -553,6 +572,7 @@
     </div>
 
     <!-- Smart insights -->
+    <div class="munim-card" id="munim-card"></div>
     <div class="insight-card" id="insight-card"></div>
 
     <!-- Quick Shortcuts Grid Section -->
@@ -1510,70 +1530,133 @@
       document.getElementById('mic-btn').classList.remove('recording');
     }
 
+    /* ================= AI MUNIM: smart add + ask + remind ================= */
+    let aiPending = [];
+    const AI_CAT_MAP = [[/khad|beej|seed|spray|fertili|kisan|khet/i,'Farming'],[/petrol|diesel|fuel|gas/i,'Fuel'],[/ration|atta|dal|chawal|sabzi|doodh/i,'Ration'],[/kiraya|kiraye|rent/i,'Rent'],[/dawa|doctor|hospital|medicine/i,'Health'],[/fees|school|college|book/i,'Education'],[/bijli|bill|recharge|wifi/i,'Bills'],[/bus|auto|train|ticket|cab/i,'Transport'],[/mandi|fasal|crop/i,'Mandi'],[/salary|tankhwah|vetan/i,'Salary']];
+    function aiPanel(html) { const el = document.getElementById('ai-panel'); if (!el) return; el.innerHTML = html; el.style.display = html ? 'block' : 'none'; }
+    function aiContext() {
+      const t = sumTx(periodTx()), r = periodRange('lastmonth');
+      const lm = sumTx(ledgerTx().filter(x => { const d = entryDateISO(x); return d >= r[0] && d <= r[1]; }));
+      return {
+        today: todayISO(), period: PERIOD_LABELS[selectedPeriod], period_in: t.inn, period_out: t.out,
+        last_month_in: lm.inn, last_month_out: lm.out, this_month_spend_by_category: monthSpentByCategory(), budgets,
+        parties_balance_positive_means_they_owe_user: partyGroups().map(g => ({ name: g.name, balance: g.bal, last_entry: g.list.reduce((m, x) => { const d = entryDateISO(x); return d > m ? d : m; }, '') })).sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance)).slice(0, 12),
+        recent: ledgerTx().slice().sort((a, b) => entryDateISO(b).localeCompare(entryDateISO(a))).slice(0, 20).map(x => ({ d: entryDateISO(x), type: x.type, amt: x.amount, note: x.note, cat: x.category, mode: x.mode }))
+      };
+    }
+    function aiNorm(o, fallbackNote) {
+      const amount = Number(o && o.amount); if (!Number.isFinite(amount) || amount <= 0) return null;
+      const mode = ['Cash', 'Bank', 'Credit', 'Udhar'].includes(o.mode) ? o.mode : 'Cash';
+      const party = (mode === 'Udhar' && o.party) ? String(o.party).trim().slice(0, 40) : '';
+      const date = isISODate(o.date) && o.date <= todayISO() ? o.date : todayISO();
+      return { type: o.type === 'IN' ? 'IN' : 'OUT', amount, note: String(o.note || fallbackNote || '').slice(0, 200), category: String(o.category || 'General'), mode, date, party };
+    }
+    function aiPreview(list, offline) {
+      aiPending = list;
+      if (!list.length) return aiPanel('');
+      aiPanel(`<div class="ai-tag">✦ Munim ne ${list.length} entry samjhi${offline ? ' (offline mode)' : ''} — check karke save karein</div>` +
+        list.map((e, i) => `<div class="ai-row"><div style="flex:1;min-width:0"><b>${esc(e.note)}</b><div class="ai-sub">${esc(e.category)} • ${esc(e.mode)}${e.party ? ' • ' + esc(e.party) : ''} • ${esc(fmtDateShort(e.date))}</div></div><span style="font-weight:800;color:${e.type === 'IN' ? 'var(--primary)' : 'var(--danger)'}">${e.type === 'IN' ? '+' : '-'}₹${fmt(e.amount)}</span><button class="ai-x" onclick="aiDrop(${i})">✕</button></div>`).join('') +
+        `<div class="ai-actions"><button class="btn-action" onclick="aiConfirm()">Save karein</button><button class="ai-ghost" onclick="aiPanel('')">Cancel</button></div>`);
+    }
+    function aiDrop(i) { aiPending.splice(i, 1); aiPreview(aiPending); }
+    async function aiConfirm() {
+      const list = aiPending.slice(); aiPending = []; aiPanel('');
+      for (const e of list) { createAndSaveEntry(e.type, e.amount, e.note, e.category, e.mode, e.date, e.party); await new Promise(r => setTimeout(r, 4)); }
+      showToast(`${list.length} entry save ho gayi`);
+    }
+    function aiAnswer(text) {
+      aiPanel(`<div class="ai-tag">✦ Munim</div><div class="ai-ans">${esc(text).replace(/\n/g, '<br>')}</div><div class="ai-actions"><button class="ai-ghost" onclick="aiPanel('')">Band karein</button></div>`);
+    }
+    function askMunim(q) { document.getElementById('ai-input-text').value = q; processGroqAI(); }
+
     async function processGroqAI() {
       const inputEl = document.getElementById('ai-input-text');
       const promptText = inputEl.value.trim();
       if (!promptText) return;
-
       toggleLoading(true);
-
-      const systemPrompt = `You are an expert multi-lingual Indian accounting ledger AI. Today's date is ${todayISO()}.
-Parse input strings into JSON.
-1. Sum all numeric values.
-2. Detect TYPE: "IN" (Received, Jama, Salary, Crop sales, money got back) or "OUT" (Spent, Expense, Khad, Rent, Petrol, money given to someone).
-3. Detect MODE: "Cash", "Bank", "Credit", "Udhar".
-4. CATEGORIES: "Farming", "Ration", "Rent", "Fuel", "Mandi", "Salary", "Health", "Education", "Transport", "Bills", "Shopping", "Dukaan", "General".
-5. DATE: if the user says kal/parso/yesterday/a weekday/a date, resolve it to YYYY-MM-DD, else use today's date.
-6. PARTY: if a person's name is involved in a udhar/loan (e.g. "Ramesh ko 500 udhar diya", "Suresh se 1000 liye", "Ramesh ne 200 wapas kiye"), set MODE "Udhar" and PARTY to that person's name; otherwise PARTY is "".
-
-OUTPUT ONLY JSON:
-{"amount": number, "type": "IN" | "OUT", "note": "Description", "category": "Category", "mode": "Cash" | "Bank" | "Credit" | "Udhar", "date": "YYYY-MM-DD", "party": "Name or empty"}`;
-
+      const isQuestion = /\?|kitna|kitne|kitni|kisse|kisko|kaun|batao|bata do|hisab|summary|kyun|kyu|kaise|compare|total|how|what|which|why|report/i.test(promptText);
+      const sys = `You are "Munim", the AI assistant inside an Indian khata/ledger app. Today is ${todayISO()}. Reply with ONLY one JSON object, no markdown.
+Pick an intent:
+- "add": user states one or MORE transactions. Put each in entries[]. Resolve kal/parso/weekday/dates to YYYY-MM-DD.
+- "ask": user asks about their money. Answer ONLY from LEDGER, in the user's own language (default Hinglish), max 4 short lines, use ₹. Never invent numbers; if data is missing say so. Add one practical tip when useful.
+- "remind": user wants to remind a person about pending money; set party.
+Entry fields: amount (number), type "IN" (received/jama/salary/sale/money got back) or "OUT" (spent/gave), note, category (Farming, Ration, Rent, Fuel, Mandi, Salary, Health, Education, Transport, Bills, Shopping, Dukaan, General), mode (Cash, Bank, Credit, Udhar), date, party (person's name only for udhar/loan e.g. "Ramesh ko 500 udhar diya", else "").
+JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","category":"General","mode":"Cash","date":"YYYY-MM-DD","party":""}],"answer":"","party":""}` + (isQuestion ? `\nLEDGER: ${JSON.stringify(aiContext())}` : '');
       try {
         const response = await fetch("https://my-groq-proxy.xpihu1207.workers.dev", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "llama-3.3-70b-versatile",
-            messages: [{ role: "system", content: systemPrompt }, { role: "user", content: promptText }],
-            temperature: 0.1
-          })
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: [{ role: "system", content: sys }, { role: "user", content: promptText }], temperature: 0.1 })
         });
         if (!response.ok) throw new Error("AI HTTP " + response.status);
-
         const data = await response.json();
-        const cleanJson = data.choices[0].message.content.trim().replace(/```json|```/g, "");
-        const parsed = JSON.parse(cleanJson);
-
-        const amount = Number(parsed.amount);
-        if (!Number.isFinite(amount) || amount <= 0) throw new Error("Invalid amount from AI");
-        const type = parsed.type === 'IN' ? 'IN' : 'OUT';
-        const mode = ['Cash', 'Bank', 'Credit', 'Udhar'].includes(parsed.mode) ? parsed.mode : 'Cash';
-
-        const party = (mode === 'Udhar' && parsed.party) ? String(parsed.party).trim().slice(0, 40) : '';
-        const pdate = isISODate(parsed.date) && parsed.date <= todayISO() ? parsed.date : todayISO();
-        createAndSaveEntry(type, amount, String(parsed.note || promptText).slice(0, 200), String(parsed.category || "General"), mode, pdate, party);
+        const raw = data.choices[0].message.content.trim().replace(/```json|```/g, "");
+        const parsed = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
+        if (parsed.intent === 'ask' && parsed.answer) aiAnswer(parsed.answer);
+        else if (parsed.intent === 'remind') {
+          const g = partyGroups().find(x => parsed.party && (x.key === partyKey(parsed.party) || x.key.includes(partyKey(parsed.party))));
+          if (g && g.bal > 0) { aiAnswer(`${g.name} ka ₹${fmt(g.bal)} baaki hai. WhatsApp reminder khul raha hai...`); sendPartyReminder(g.key); }
+          else aiAnswer(g ? `${g.name} ka koi paisa baaki nahi hai.` : 'Is naam ki party nahi mili. Udhar Khata me naam check karein.');
+        } else {
+          const list = (Array.isArray(parsed.entries) ? parsed.entries : [parsed]).map(e => aiNorm(e, promptText)).filter(Boolean);
+          if (!list.length) throw new Error("No entries");
+          aiPreview(list);
+        }
         inputEl.value = '';
       } catch (err) {
-        fallbackLocalAI(promptText);
+        fallbackLocalAI(promptText, isQuestion);
         inputEl.value = '';
-      } finally {
-        toggleLoading(false);
-      }
+      } finally { toggleLoading(false); }
     }
-
     function toggleLoading(isLoading) {
       document.getElementById('btn-text').style.display = isLoading ? 'none' : 'inline';
       document.getElementById('ai-loader').style.display = isLoading ? 'inline-block' : 'none';
     }
 
-    function fallbackLocalAI(prompt) {
-      const numbers = prompt.match(/\d+/g);
-      if (!numbers) return alert("Koi valid amount nahi mila.");
-      const totalAmount = numbers.reduce((sum, num) => sum + parseFloat(num), 0);
-      let type = /aaye|mila|salary|jama|becha|received/i.test(prompt) ? 'IN' : 'OUT';
-      let mode = /bank|upi|online/i.test(prompt) ? 'Bank' : (/udhar/i.test(prompt) ? 'Udhar' : 'Cash');
-      createAndSaveEntry(type, totalAmount, prompt, "General", mode);
+    function fallbackLocalAI(prompt, isQuestion) {
+      const hasNum = /\d/.test(prompt);
+      if (isQuestion && !hasNum) {
+        const t = sumTx(periodTx()), pt = partyTotals(partyGroups());
+        return aiAnswer(`(Offline) ${PERIOD_LABELS[selectedPeriod]}: jama ₹${fmt(t.inn)}, kharcha ₹${fmt(t.out)}.\nUdhar: lena ₹${fmt(pt.lena)}, dena ₹${fmt(pt.dena)}.`);
+      }
+      const list = [];
+      prompt.split(/\s*(?:,|\+|\baur\b|\band\b)\s*/i).forEach(chunk => {
+        const n = chunk.match(/\d+(?:\.\d+)?/); if (!n) return;
+        const pm = chunk.match(/([A-Za-z\u0900-\u097F]{2,})\s+(ko|se|ne)\b/i);
+        let type = /aaye|mila|mile|salary|jama|becha|received|wapas|liye|se\s/i.test(chunk) ? 'IN' : 'OUT';
+        let mode = /bank|upi|online/i.test(chunk) ? 'Bank' : (/udhar|loan/i.test(chunk) || pm ? 'Udhar' : 'Cash');
+        let party = '';
+        if (pm && mode === 'Udhar') { party = pm[1]; type = pm[2].toLowerCase() === 'ko' ? 'OUT' : 'IN'; }
+        const cat = (AI_CAT_MAP.find(c => c[0].test(chunk)) || [0, 'General'])[1];
+        list.push({ type, amount: parseFloat(n[0]), note: chunk.trim(), category: cat, mode, date: todayISO(), party });
+      });
+      if (!list.length) return alert("Koi valid amount nahi mila.");
+      aiPreview(list, true);
+    }
+
+    /* ---------- Proactive Munim nudges (local, no data leaves device) ---------- */
+    function renderMunim() {
+      const el = document.getElementById('munim-card'); if (!el) return;
+      if (!ledgerTx().length && !partyGroups().length) { el.style.display = 'none'; return; }
+      const nudges = [], today = todayISO();
+      partyGroups().filter(g => g.bal > 0).forEach(g => {
+        const last = g.list.reduce((m, x) => { const d = entryDateISO(x); return d > m ? d : m; }, '');
+        const days = Math.round((new Date(today) - new Date(last)) / 86400000);
+        if (days >= 30) nudges.push({ s: days, h: `<b>${esc(g.name)}</b> ka ₹${fmt(g.bal)} ${days} din se baaki hai <button class="mn-btn" onclick="sendPartyReminder('${esc(g.key)}')">Reminder</button>` });
+      });
+      const spent = monthSpentByCategory();
+      Object.keys(budgets).forEach(c => { const b = Number(budgets[c]) || 0, s = spent[c] || 0; if (b > 0 && s / b >= 0.8) nudges.push({ s: 50 + s / b * 10, h: `${esc(c)} budget ${Math.round(s / b * 100)}% use ho chuka (₹${fmt(s)}/₹${fmt(b)})` }); });
+      const mr = periodRange('month'), lr = periodRange('lastmonth');
+      const cur = sumTx(ledgerTx().filter(x => { const d = entryDateISO(x); return d >= mr[0] && d <= mr[1]; })).out;
+      const prev = sumTx(ledgerTx().filter(x => { const d = entryDateISO(x); return d >= lr[0] && d <= lr[1]; })).out;
+      const dom = new Date().getDate(), dim = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+      const proj = cur / Math.max(1, dom) * dim;
+      if (prev > 0 && dom >= 5 && proj > prev * 1.15) nudges.push({ s: 40, h: `Is raftaar se mahina ~₹${fmt(Math.round(proj))} par jayega, pichle mahine se ${Math.round((proj / prev - 1) * 100)}% zyada` });
+      nudges.sort((a, b) => b.s - a.s);
+      const chips = ['Is mahine ka hisab batao', 'Kisse paisa lena hai?', 'Kharcha kahan kam kar sakta hu?'];
+      el.innerHTML = `<div class="section-title" style="margin-bottom:6px;">✦ Munim AI</div>` +
+        (nudges.slice(0, 3).map(n => `<div class="ins-line">• ${n.h}</div>`).join('') || `<div class="ins-line">Sab theek hai. Koi pending alert nahi.</div>`) +
+        `<div class="mn-chips">${chips.map(c => `<span class="mn-chip" onclick="askMunim('${c}')">${c}</span>`).join('')}</div>`;
+      el.style.display = 'block';
     }
 
     function quickAdd(note, type, category, defaultMode) {
@@ -2030,6 +2113,7 @@ OUTPUT ONLY JSON:
 
       renderChart();
       renderInsights(pTx);
+      renderMunim();
       renderBudgets();
       updatePartyStrip();
       if (document.getElementById('party-modal').style.display === 'flex') renderParty();
