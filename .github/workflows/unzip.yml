@@ -1,0 +1,60 @@
+# Repo ke root me koi .zip upload karo, ye apne aap unzip karke files rakh dega
+# aur zip ko hata dega. Phone se bahut saari files ek saath daalne ke liye.
+#
+# Is file ko yahan rakhein:  .github/workflows/unzip.yml
+name: Unzip uploaded zip
+
+on:
+  push:
+    paths:
+      - '*.zip'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo download
+        uses: actions/checkout@v4
+
+      - name: Zip nikalo
+        run: |
+          shopt -s nullglob
+          zips=(./*.zip)
+          if [ ${#zips[@]} -eq 0 ]; then
+            echo "Root me koi zip nahi mili. Kuch karna nahi."
+            exit 0
+          fi
+
+          for z in "${zips[@]}"; do
+            echo "== $z =="
+            tmp=$(mktemp -d)
+            unzip -q -o "$z" -x "__MACOSX/*" "*.DS_Store" ".github/*" -d "$tmp"
+
+            # Agar zip ke andar sirf ek folder hai to uske andar ki files seedhi root me rakho
+            entries=("$tmp"/* "$tmp"/.[!.]*)
+            if [ ${#entries[@]} -eq 1 ] && [ -d "${entries[0]}" ]; then
+              src="${entries[0]}"
+            else
+              src="$tmp"
+            fi
+
+            cp -a "$src"/. .
+            rm -f "$z"
+            rm -rf "$tmp"
+          done
+
+      - name: Commit aur push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Koi badlav nahi."
+          else
+            git commit -m "Unzip: zip ki files add ki [skip ci]"
+            git push
+          fi
