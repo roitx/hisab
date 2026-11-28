@@ -379,12 +379,14 @@
     .budget-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; }
     .app-toast {
       position: fixed; left: 50%; bottom: 92px; transform: translate(-50%, 30px); opacity: 0; pointer-events: none;
-      z-index: 1500; width: calc(100% - 28px); max-width: 480px; background: #111827; border: 1px solid var(--card-border);
-      border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
-      box-shadow: 0 12px 36px rgba(0,0,0,0.6); font-size: 0.85rem; transition: all 0.35s ease;
+      z-index: 1500; width: calc(100% - 28px); max-width: 480px;
+      background: var(--surface); color: var(--text-main);
+      border: 1px solid var(--card-border); border-radius: 14px;
+      padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      box-shadow: 0 12px 34px rgba(16, 27, 21, 0.18); font-size: 0.85rem; transition: all 0.35s ease;
     }
     .app-toast.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
-    .app-toast .at-act { background: none; border: 0; color: #F5B83D; font-weight: 800; cursor: pointer; font-size: 0.85rem; padding: 4px 8px; }
+    .app-toast .at-act { background: none; border: 0; color: var(--warning); font-weight: 800; cursor: pointer; font-size: 0.85rem; padding: 4px 8px; }
     .p-sum { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
     .p-box { border-radius: 12px; padding: 12px; text-align: center; border: 1px solid var(--card-border); background: rgba(255,255,255,0.04); }
     .p-box .v { font-size: 1.15rem; font-weight: 800; margin-top: 3px; }
