@@ -762,9 +762,9 @@
         <div class="auth-hint" id="auth-hint"></div>
 
         <div id="pin-group">
-          <label class="login-label" for="user-pin-input" id="pin-label">4-digit PIN</label>
+          <label class="login-label" for="user-pin-input" id="pin-label">PIN</label>
           <div class="pin-wrap">
-            <input type="password" id="user-pin-input" class="login-input" placeholder="4-digit PIN" maxlength="4" inputmode="numeric" autocomplete="off"
+            <input type="password" id="user-pin-input" class="login-input" placeholder="PIN" maxlength="6" inputmode="numeric" autocomplete="off"
                    oninput="this.value=this.value.replace(/\D/g,'')">
             <button type="button" class="pin-eye" id="pin-eye" onclick="togglePinVisibility()" aria-label="PIN dikhayein / chhupayein"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg></button>
           </div>
@@ -1041,10 +1041,10 @@
       <button class="close-btn" onclick="closeModal('change-pin-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
       <h3 style="color:var(--primary); margin-bottom:10px;">Update Security PIN & Question</h3>
       <label style="font-size:0.75rem; color:var(--text-muted);">Current PIN</label>
-      <input type="password" id="settings-old-pin" class="modal-input" placeholder="Enter Old PIN" maxlength="4">
+      <input type="password" id="settings-old-pin" class="modal-input" placeholder="Enter Old PIN" maxlength="6" inputmode="numeric">
       
-      <label style="font-size:0.75rem; color:var(--text-muted);">New 4-Digit PIN</label>
-      <input type="password" id="settings-new-pin" class="modal-input" placeholder="Enter New PIN" maxlength="4">
+      <label style="font-size:0.75rem; color:var(--text-muted);">New 6-Digit PIN</label>
+      <input type="password" id="settings-new-pin" class="modal-input" placeholder="Enter New PIN (6 digit)" maxlength="6" inputmode="numeric">
 
       <label style="font-size:0.75rem; color:var(--text-muted);">New Security Question</label>
       <select id="settings-new-q" class="modal-input">
@@ -1119,7 +1119,7 @@
       <label style="display:flex; gap:8px; align-items:center; font-size:0.85rem; margin:10px 0;">
         <input type="checkbox" id="dg-backup" checked style="width:18px;height:18px;"> Hatane se pehle backup file download karein
       </label>
-      <input type="password" id="dg-pin" class="modal-input" placeholder="Confirm ke liye apna 4-digit PIN" maxlength="4" inputmode="numeric" autocomplete="off">
+      <input type="password" id="dg-pin" class="modal-input" placeholder="Confirm ke liye apna PIN" maxlength="6" inputmode="numeric" autocomplete="off">
       <button class="btn-action" id="dg-btn" style="width:100%; margin-top:10px; background:var(--danger); box-shadow:none;" onclick="confirmDanger()"></button>
     </div>
   </div>
@@ -1214,7 +1214,7 @@
         <p>Aasaan Hisaab ek AI khata (ledger) app hai: jama-kharcha, udhar, budget aur reports ke liye. Ye policy batati hai ki hum kaun sa data lete hain, kahan rakhte hain aur aapke paas kya control hai.</p>
         <h4><i>2</i>Hum kaun sa data lete hain</h4>
         <ul>
-          <li><b>Account:</b> aapka mobile number, 4-digit PIN (sirf hash ke roop me), aur security question ka jawab (ye bhi hash me).</li>
+          <li><b>Account:</b> aapka mobile number, PIN (4 ya 6 digit, sirf hash ke roop me), aur security question ka jawab (ye bhi hash me).</li>
           <li><b>Khata data:</b> aapki entries (amount, note, category, Cash/Bank/Udhar, tarikh), udhar wali parties ke naam aur balance, aur aapke budget.</li>
           <li><b>AI Munim:</b> jo text aap likhte ya bolte hain, bill ki photo, aur sawal poochne par aapke khate ka chhota saaransh (is period ka jama-kharcha, pichle 6 mahine ka mahine-wise total, category-wise kharcha, sabse bade kharche, party balance, haal ki kuch entries aur isi session ke pichle 3 sawal-jawab).</li>
           <li><b>Aapki pasand:</b> theme, rang, bhasha, balance chhupana, har-mahine ki entries ki list. Ye sirf aapke phone me rehti hain.</li>
@@ -1290,7 +1290,7 @@
         <p>Kheti, dukaan, vyapar aur ghar ke jama-kharcha, udhar, budget aur reports likhne aur dekhne ka ek khata. Iske saath AI Munim (entry samajhna, sawalon ke jawab, bill padhna) aur WhatsApp/PDF/CSV share karne ki suvidha milti hai.</p>
         <h4><i>3</i>Account aur PIN</h4>
         <ul>
-          <li>Account aapke mobile number aur 4-digit PIN se chalta hai.</li>
+          <li>Account aapke mobile number aur PIN se chalta hai. Naya PIN 6 digit ka hona chahiye (purane 4-digit PIN abhi bhi chalte hain).</li>
           <li>PIN aur security answer gupt rakhna aapki zimmedari hai. Unke galat use se hui haani ke liye hum zimmedar nahi.</li>
           <li>Mobile number par OTP verification nahi hota. Number aur PIN jis ke paas ho, wo account khol sakta hai.</li>
           <li>Sirf apna number use karein. Kisi aur ke account me ghusne ki koshish na karein.</li>
@@ -1567,7 +1567,7 @@
       if (authMode === 'forgot') {
         forgot.style.display = 'inline'; forgot.textContent = '← Wapas Login';
         btn.textContent = 'PIN reset karein';
-        pinLabel.textContent = 'Naya 4-digit PIN'; pin.placeholder = 'Naya PIN';
+        pinLabel.textContent = 'Naya 6-digit PIN'; pin.placeholder = 'Naya PIN (6 digit)';
         if (acctState === 'existing') {
           hint.textContent = 'Security question ka sahi jawab dein, phir naya PIN set ho jayega.';
           setup.style.display = 'block';
@@ -1585,19 +1585,19 @@
       }
 
       qLabel.textContent = 'Security question (PIN bhoolne par kaam aayega)';
-      pinLabel.textContent = '4-digit PIN';
+      pinLabel.textContent = 'PIN';
       if (acctState === 'new') {
         hint.textContent = 'Naya account banega. PIN aur security question set karein.';
         hint.classList.add('good');
         setup.style.display = 'block';
         btn.textContent = 'Account banayein';
-        pinLabel.textContent = 'Naya 4-digit PIN banayein'; pin.placeholder = 'Naya PIN';
+        pinLabel.textContent = 'Naya 6-digit PIN banayein'; pin.placeholder = 'Naya PIN (6 digit)';
         forgot.style.display = 'none';
       } else if (acctState === 'existing') {
         hint.textContent = 'Account mil gaya. Apna PIN daalein.';
         hint.classList.add('good');
         btn.textContent = 'Login';
-        pin.placeholder = '4-digit PIN';
+        pin.placeholder = 'PIN';
         forgot.style.display = 'inline'; forgot.textContent = 'PIN bhool gaye?';
       } else if (acctState === 'offline') {
         hint.textContent = 'Internet nahi mil raha. Internet chalu karke dobara try karein.';
@@ -1610,7 +1610,7 @@
       } else {
         hint.textContent = 'Apna 10 digit mobile number daalein. Naya number hoga to account ban jayega.';
         btn.textContent = 'Login';
-        pin.placeholder = '4-digit PIN';
+        pin.placeholder = 'PIN';
         forgot.style.display = 'none';
       }
     }
@@ -1708,7 +1708,7 @@
         const q = gid('security-question-select').value;
         const ans = gid('security-answer-input').value.trim().toLowerCase();
         gid('security-setup-container').style.display = 'block';
-        if (!/^\d{4}$/.test(pin)) return setAuthMsg('4 digit ka PIN set karein.');
+        if (!/^\d{6}$/.test(pin)) return setAuthMsg('6 digit ka PIN set karein.');
         if (!ans) return setAuthMsg('Security question ka jawab bharein.');
         const acct = { pin: await hashSecret(phone, 'pin', pin), q, ans: await hashSecret(phone, 'ans', ans) };
         saveLocalAcct(phone, acct);
@@ -1716,7 +1716,7 @@
         return enterAppFor(phone, 'Account ban gaya! Swagat hai.');
       }
 
-      if (!/^\d{4}$/.test(pin)) return setAuthMsg('Apna 4 digit PIN daalein.');
+      if (!/^(\d{4}|\d{6})$/.test(pin)) return setAuthMsg('Apna PIN daalein.');
       if (!(await secretMatches(phone, 'pin', r.acct.pin, pin))) {
         registerFail(phone);
         return setAuthMsg('Galat PIN. Bhool gaye ho to neeche "PIN bhool gaye?" dabayein.');
@@ -1729,6 +1729,15 @@
       if (upd.ans && !isHashed(upd.ans)) { upd.ans = await hashSecret(phone, 'ans', upd.ans); changed = true; }
       if (changed) { saveLocalAcct(phone, upd); pushAcct(phone, upd); }
       enterAppFor(phone);
+      if (pin.length === 4) setTimeout(pinUpgradeNag, 1500);
+    }
+    // 4-digit PIN wale purane users ko din me ek baar 6-digit PIN par jaane ko kaho
+    function pinUpgradeNag() {
+      if (!currentUser) return;
+      const k = 'ah_pin_nag_' + currentUser, last = parseInt(LS.getItem(k) || '0', 10);
+      if (Date.now() - last < 864e5) return;
+      LS.setItem(k, String(Date.now()));
+      showToast('Aapka PIN 4 digit ka hai. Surakshit rehne ke liye 6 digit karein.', 'PIN badlo', () => openModal('change-pin-modal'), 10000);
     }
 
     async function doReset(phone) {
@@ -1738,7 +1747,7 @@
       if (!r.acct) return setAuthMsg(r.reach ? 'Is number se koi account nahi mila.' : 'Internet check karein, phir dobara try karein.');
       acctCache = r.acct; acctState = 'existing'; applyAuthUI();
       if (!ans) return setAuthMsg('Security question ka jawab daalein.');
-      if (!/^\d{4}$/.test(newPin)) return setAuthMsg('Naya 4 digit PIN daalein.');
+      if (!/^\d{6}$/.test(newPin)) return setAuthMsg('Naya 6 digit PIN daalein.');
       if (!(await secretMatches(phone, 'ans', r.acct.ans, ans))) {
         registerFail(phone);
         return setAuthMsg('Jawab galat hai. PIN reset nahi ho sakta.');
@@ -1759,7 +1768,7 @@
 
       const cur = localAcct(currentUser);
       if (!cur || !(await secretMatches(currentUser, 'pin', cur.pin, oldPin))) return alert("Purana PIN galat hai!");
-      if (!/^\d{4}$/.test(newPin)) return alert("Naya PIN 4 digits ka hona chahiye.");
+      if (!/^\d{6}$/.test(newPin)) return alert("Naya PIN 6 digits ka hona chahiye.");
       if (!newAns) return alert("Security answer bharna anivarya hai.");
 
       const acct = { pin: await hashSecret(currentUser, 'pin', newPin), q: newQ, ans: await hashSecret(currentUser, 'ans', newAns) };
@@ -1864,10 +1873,23 @@
         refs.slice(i, i + 400).forEach(r => b.delete(r));
         await withTimeout(b.commit(), 20000);
       }
-      if (withUserDoc) await withTimeout(db.collection('users').doc(user).delete(), 10000);
+      if (withUserDoc) {
+        const ref = db.collection('users').doc(user);
+        try {
+          await withTimeout(ref.delete(), 10000);
+        } catch (e1) {
+          // Rules delete rok rahe ho to document ko khaali karke account hata do (PIN/answer/budget sab mit jate hain)
+          try {
+            await withTimeout(ref.set({}), 10000);
+          } catch (e2) {
+            const FV = firebase.firestore.FieldValue;
+            await withTimeout(ref.set({ auth: FV.delete(), budgets: FV.delete() }, { merge: true }), 10000);
+          }
+        }
+      }
     }
     function wipeLocalAccount(user) {
-      ['ah_pin_', 'ah_sec_q_', 'ah_sec_ans_', 'ah_tx_', 'ah_pend_', 'ah_budgets_', 'ah_recurring_', 'ah_fail_', 'ah_lock_', 'ah_last_backup_', 'ah_backup_nag_']
+      ['ah_pin_nag_', 'ah_pin_', 'ah_sec_q_', 'ah_sec_ans_', 'ah_tx_', 'ah_pend_', 'ah_budgets_', 'ah_recurring_', 'ah_fail_', 'ah_lock_', 'ah_last_backup_', 'ah_backup_nag_']
         .forEach(k => LS.removeItem(k + user));
       LS.removeItem('ah_user_phone');
       if (LS.getItem('ah_last_phone') === user) LS.removeItem('ah_last_phone');
@@ -1877,7 +1899,7 @@
       const user = currentUser, acc = dangerMode === 'account';
       const pin = gid('dg-pin').value.trim();
       const cur = localAcct(user);
-      if (!/^\d{4}$/.test(pin) || !cur || !(await secretMatches(user, 'pin', cur.pin, pin))) return alert('PIN galat hai!');
+      if (!/^(\d{4}|\d{6})$/.test(pin) || !cur || !(await secretMatches(user, 'pin', cur.pin, pin))) return alert('PIN galat hai!');
       if (!confirm(acc ? 'Akhri baar pooch rahe hain: account hamesha ke liye delete kar dein?' : 'Akhri baar pooch rahe hain: poora khata saaf kar dein?')) return;
 
       dangerBusy = true;
@@ -1894,7 +1916,7 @@
         dangerBusy = false; btn.disabled = false;
         btn.textContent = acc ? 'Haan, account delete karo' : 'Haan, poora khata saaf karo';
         syncFromFirebase();
-        return alert('Cloud se data nahi hat paya. Internet check karke dobara koshish karein. Aapka data abhi safe hai.');
+        return alert('Cloud se data nahi hat paya. Internet check karke dobara koshish karein. Aapka data abhi safe hai.\n\nError: ' + String((e && (e.code || e.message)) || e).slice(0, 120));
       }
 
       closeModal('danger-modal');
@@ -2494,10 +2516,21 @@ JSON: {"intent":"add|ask|remind|budget|delete_last","entries":[{"amount":0,"type
       const el = document.getElementById('munim-card'); if (!el) return;
       if (!ledgerTx().length && !partyGroups().length) { el.style.display = 'none'; return; }
       const nudges = [], today = todayISO();
-      partyGroups().filter(g => g.bal > 0).forEach(g => {
+      partyGroups().filter(g => g.bal > 0 && !partyDue(g)).forEach(g => {
         const last = g.list.reduce((m, x) => { const d = entryDateISO(x); return d > m ? d : m; }, '');
         const days = Math.round((new Date(today) - new Date(last)) / 86400000);
         if (days >= 30) nudges.push({ s: days, h: `<b>${esc(g.name)}</b> ka ₹${fmt(g.bal)} ${days} din se baaki hai <button class="mn-btn" onclick="sendPartyReminder('${esc(g.key)}')">Reminder</button>` });
+      });
+      partyGroups().forEach(g => {
+        const d = partyDue(g); if (!d) return;
+        const amt = fmt(Math.abs(g.bal)), nm = esc(g.name);
+        if (g.bal > 0) {
+          const btn = ` <button class="mn-btn" onclick="sendPartyReminder('${esc(g.key)}')">Reminder</button>`;
+          if (d.days > 0) nudges.push({ s: 100 + d.days, h: `<b>${nm}</b> ka ₹${amt} <b>${d.days} din late</b> hai (due ${fmtDateShort(d.due)})${btn}` });
+          else if (d.days >= -3) nudges.push({ s: 75, h: `<b>${nm}</b> ka ₹${amt} ${d.days === 0 ? 'aaj' : (-d.days) + ' din me'} due hai${btn}` });
+        } else if (d.days >= -3) {
+          nudges.push({ s: d.days > 0 ? 100 + d.days : 75, h: `Aapko <b>${nm}</b> ko ₹${amt} ${d.days > 0 ? d.days + ' din late' : d.days === 0 ? 'aaj' : (-d.days) + ' din me'} dena hai` });
+        }
       });
       const spent = monthSpentByCategory();
       Object.keys(budgets).forEach(c => { const b = Number(budgets[c]) || 0, s = spent[c] || 0; if (b > 0 && s / b >= 0.8) nudges.push({ s: 50 + s / b * 10, h: `${esc(c)} budget ${Math.round(s / b * 100)}% use ho chuka (₹${fmt(s)}/₹${fmt(b)})` }); });
@@ -2725,7 +2758,7 @@ JSON: {"intent":"add|ask|remind|budget|delete_last","entries":[{"amount":0,"type
               mode: modes.includes(i.mode) ? i.mode : 'Cash',
               timestamp: String(i.timestamp || '').slice(0, 40),
               date: isISODate(i.date) ? i.date : toISO(new Date(Number(i.id) || Date.now())),
-              ...(i.kind === 'party' ? { kind: 'party', party: String(i.party || '').trim().slice(0, 40), dir: i.dir === 'GOT' ? 'GOT' : 'GAVE' } : {})
+              ...(i.kind === 'party' ? { kind: 'party', party: String(i.party || '').trim().slice(0, 40), dir: i.dir === 'GOT' ? 'GOT' : 'GAVE', ...(isISODate(i.due) ? { due: i.due } : {}) } : {})
             }));
 
           if (!valid.length && !(extras && (extras.budgets || extras.recurring))) return alert("Is file me koi valid entry nahi mili.");
@@ -2862,7 +2895,8 @@ JSON: {"intent":"add|ask|remind|budget|delete_last","entries":[{"amount":0,"type
       const el = document.getElementById('party-strip-text');
       if (!el) return;
       const t = partyTotals(partyGroups());
-      el.innerHTML = `Lena hai <b class="get">₹${fmt(t.lena)}</b> • Dena hai <b class="give">₹${fmt(t.dena)}</b> ›`;
+      const late = partyGroups().filter(g => { const d = partyDue(g); return g.bal > 0 && d && d.days > 0; }).length;
+      el.innerHTML = `Lena hai <b class="get">₹${fmt(t.lena)}</b> • Dena hai <b class="give">₹${fmt(t.dena)}</b>${late ? ` • <b class="give">${late} late</b>` : ''} ›`;
     }
     function openPartyModal() { partyView = 'list'; partyCurrent = null; partyQuery = ''; openModal('party-modal'); renderParty(); }
     function partyBack() { partyView = 'list'; partyCurrent = null; renderParty(); }
@@ -2874,6 +2908,7 @@ JSON: {"intent":"add|ask|remind|budget|delete_last","entries":[{"amount":0,"type
       partyFormDir = dir;
       document.getElementById('pf-give').className = 'p-tab' + (dir === 'GAVE' ? ' sel-give' : '');
       document.getElementById('pf-get').className = 'p-tab' + (dir === 'GOT' ? ' sel-get' : '');
+      const l = document.getElementById('pf-due-lbl'); if (l) l.textContent = dir === 'GAVE' ? 'Wapas kab tak chahiye? (optional)' : 'Aapko kab tak chukana hai? (optional)';
     }
 
     function renderParty() {
@@ -2918,6 +2953,8 @@ JSON: {"intent":"add|ask|remind|budget|delete_last","entries":[{"amount":0,"type
             <button class="p-tab sel-get" onclick="openPartyForm('GOT')"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Mila (mujhe mila)</button>
           </div>
           ${g.bal > 0 ? `<button class="btn-action wa-btn" style="width:100%; margin-bottom:12px;" data-k="${esc(g.key)}" onclick="sendPartyReminder(this.dataset.k)"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg> WhatsApp Reminder Bhejein</button>` : ''}
+          <button class="btn-action" style="width:100%; margin-bottom:12px;" data-k="${esc(g.key)}" onclick="partyStatementPDF(this.dataset.k)"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg> Statement PDF bhejein</button>
+          ${g.bal !== 0 ? `<div class="p-row" style="cursor:default; flex-wrap:wrap; gap:8px;"><div style="font-size:0.8rem;">⏰ Due date${partyDue(g) ? ': <b>' + esc(fmtDateShort(partyDue(g).due)) + '</b>' : ' (nahi lagayi)'}</div><div style="display:flex; gap:6px;"><input type="date" class="modal-input" id="pd-due" style="margin:0; padding:6px 8px; width:auto;" value="${partyDue(g) ? esc(partyDue(g).due) : ''}"><button class="ai-ghost" style="padding:6px 12px;" onclick="savePartyDue()">Save</button></div></div>` : ''}
           <div class="section-title">Hisaab ki history</div>
           ${rows}`;
         return;
@@ -2941,6 +2978,8 @@ JSON: {"intent":"add|ask|remind|budget|delete_last","entries":[{"amount":0,"type
           <input type="text" class="modal-input" id="pf-note" maxlength="100" placeholder="Jaise: Khad ka udhar">
           <label style="font-size:0.75rem; color:var(--text-muted);">Date</label>
           <input type="date" class="modal-input" id="pf-date" value="${todayISO()}">
+          <label style="font-size:0.75rem; color:var(--text-muted);" id="pf-due-lbl">${partyFormDir === 'GAVE' ? 'Wapas kab tak chahiye? (optional)' : 'Aapko kab tak chukana hai? (optional)'}</label>
+          <input type="date" class="modal-input" id="pf-due" min="${todayISO()}">
           <button class="btn-action" style="width:100%; background:var(--primary); color:black; font-weight:800;" onclick="saveParty()">Save Entry</button>`;
       }
     }
@@ -2956,7 +2995,7 @@ JSON: {"intent":"add|ask|remind|budget|delete_last","entries":[{"amount":0,"type
       }
       el.innerHTML = groups.map(g => `
         <div class="p-row" data-k="${esc(g.key)}" onclick="openPartyDetail(this.dataset.k)">
-          <div style="font-weight:700;">${esc(g.name)}</div>
+          <div><div style="font-weight:700;">${esc(g.name)}</div>${partyDueBadge(g)}</div>
           <div class="${g.bal > 0 ? 'p-get' : g.bal < 0 ? 'p-give' : ''}" style="text-align:right; font-size:0.85rem;">
             ${g.bal > 0 ? 'Lena hai<br>₹' + fmt(g.bal) : g.bal < 0 ? 'Dena hai<br>₹' + fmt(-g.bal) : '<span style="color:var(--text-muted);">Barabar</span>'}
           </div>
@@ -2972,11 +3011,14 @@ JSON: {"intent":"add|ask|remind|budget|delete_last","entries":[{"amount":0,"type
       if (!Number.isFinite(amount) || amount <= 0) return alert("Sahi amount daalein.");
       if (!isISODate(date)) date = todayISO();
       if (date > todayISO()) return alert("Aane wali date ki entry nahi ho sakti.");
+      const dueEl = document.getElementById('pf-due'), due = dueEl && isISODate(dueEl.value) ? dueEl.value : '';
+      if (due && due < date) return alert("Due date entry ki date se pehle ki nahi ho sakti.");
 
       const entry = {
         id: Date.now(), kind: 'party', party: name, dir: partyFormDir,
         type: partyFormDir === 'GAVE' ? 'OUT' : 'IN', amount, note,
-        category: 'Udhar', mode: 'Udhar', date, timestamp: stampFor(date)
+        category: 'Udhar', mode: 'Udhar', date, timestamp: stampFor(date),
+        ...(due ? { due } : {})
       };
       txSave(entry);
       partyCurrent = partyKey(name);
@@ -2985,10 +3027,101 @@ JSON: {"intent":"add|ask|remind|budget|delete_last","entries":[{"amount":0,"type
       showToast("Udhar entry save ho gayi");
     }
 
+
+    /* ---------- Udhar due date ---------- */
+    // Lena hai (bal>0): GAVE entries ki due date. Dena hai (bal<0): GOT entries ki. Sabse nayi due date maani jati hai.
+    function partyDue(g) {
+      const dir = g.bal > 0 ? 'GAVE' : g.bal < 0 ? 'GOT' : null;
+      if (!dir) return null;
+      const e = g.list.filter(t => t.dir === dir && isISODate(t.due)).sort((a, b) => Number(b.id) - Number(a.id))[0];
+      if (!e) return null;
+      return { due: e.due, days: Math.round((new Date(todayISO()) - new Date(e.due)) / 86400000) }; // days > 0 matlab late
+    }
+    function partyDueBadge(g) {
+      const d = partyDue(g);
+      if (!d) return '';
+      const late = d.days > 0 && g.bal > 0;
+      const txt = d.days > 0 ? `${d.days} din late` : d.days === 0 ? 'Aaj due' : `Due ${fmtDateShort(d.due)}`;
+      return `<div style="font-size:0.7rem; margin-top:2px; color:${late ? 'var(--danger)' : 'var(--warning)'};">⏰ ${esc(txt)}</div>`;
+    }
+    function savePartyDue() {
+      const g = partyGroups().find(x => x.key === partyCurrent);
+      if (!g) return;
+      const dir = g.bal > 0 ? 'GAVE' : g.bal < 0 ? 'GOT' : null;
+      if (!dir) return showToast('Hisaab barabar hai, due date ki zaroorat nahi.');
+      const v = document.getElementById('pd-due').value;
+      const mine = g.list.filter(t => t.dir === dir).sort((a, b) => Number(b.id) - Number(a.id));
+      if (v && isISODate(v)) {
+        const ne = Object.assign({}, mine[0], { due: v });
+        txSave(ne);
+      } else {
+        mine.filter(t => isISODate(t.due)).forEach(t => { const ne = Object.assign({}, t); delete ne.due; txSave(ne); });
+      }
+      renderParty();
+      showToast(v ? 'Due date save ho gayi' : 'Due date hata di');
+    }
+
+    /* ---------- Party statement PDF (WhatsApp par share ho sakta hai) ---------- */
+    const pdfNeedsImg = t => /[^\u0000-\u00ff]/.test(String(t));
+    function pdfTextImg(text, pt, bold) {
+      const k = 4, px = pt * k, c = document.createElement('canvas'), x = c.getContext('2d');
+      const font = (bold ? '700 ' : '') + px + 'px "Noto Sans Devanagari","Segoe UI",system-ui,sans-serif';
+      x.font = font;
+      c.width = Math.ceil(x.measureText(text).width) + 8; c.height = Math.ceil(px * 1.5);
+      x.font = font; x.fillStyle = '#000'; x.textBaseline = 'middle'; x.fillText(text, 4, c.height / 2);
+      return { data: c.toDataURL('image/png'), w: c.width / k * 0.3528, h: c.height / k * 0.3528 };
+    }
+    async function partyStatementPDF(key) {
+      const g = partyGroups().find(x => x.key === key);
+      if (!g) return;
+      if (!(window.jspdf && window.jspdf.jsPDF)) return alert('PDF library load nahi hui. Internet check karke dobara try karein.');
+      const doc = new window.jspdf.jsPDF();
+      doc.setFontSize(18); doc.setTextColor(16, 185, 129); doc.text('Udhar Statement', 14, 18);
+      doc.setFontSize(10); doc.setTextColor(90); doc.text('Aasaan Hisaab Khata   |   Generated: ' + new Date().toLocaleDateString('en-IN'), 14, 25);
+      doc.setTextColor(0);
+      if (pdfNeedsImg(g.name)) { const im = pdfTextImg('Party: ' + g.name, 13, true); doc.addImage(im.data, 'PNG', 14, 29, Math.min(im.w, 180), im.h); }
+      else { doc.setFontSize(13); doc.text('Party: ' + g.name, 14, 35); }
+
+      const rowsSrc = g.list.slice().sort((a, b) => entryDateISO(a).localeCompare(entryDateISO(b)) || Number(a.id) - Number(b.id));
+      let run = 0;
+      const body = rowsSrc.map(t => {
+        const a = Number(t.amount) || 0; run += t.dir === 'GOT' ? -a : a;
+        return [fmtDateShort(entryDateISO(t)), String(t.note || (t.dir === 'GOT' ? 'Mila' : 'Diya')), t.dir === 'GOT' ? '' : 'Rs. ' + fmt(a), t.dir === 'GOT' ? 'Rs. ' + fmt(a) : '', 'Rs. ' + fmt(Math.abs(run)) + (run > 0 ? ' (Lena)' : run < 0 ? ' (Dena)' : '')];
+      });
+      doc.autoTable({
+        head: [['Date', 'Note', 'Diya', 'Mila', 'Balance']], body, startY: 42, theme: 'striped',
+        headStyles: { fillColor: [16, 185, 129] },
+        columnStyles: { 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' } },
+        didParseCell: d => { if (d.section === 'body' && pdfNeedsImg(d.cell.raw)) { d.cell.customText = String(d.cell.raw); d.cell.text = ['']; d.cell.styles.minCellHeight = 7; } },
+        didDrawCell: d => {
+          if (!d.cell.customText) return;
+          const im = pdfTextImg(d.cell.customText, 9, false), maxW = d.cell.width - 4, sc = Math.min(1, maxW / im.w);
+          doc.addImage(im.data, 'PNG', d.cell.x + 2, d.cell.y + (d.cell.height - im.h * sc) / 2, im.w * sc, im.h * sc);
+        }
+      });
+      let y = (doc.lastAutoTable && doc.lastAutoTable.finalY || 60) + 10;
+      if (y > 270) { doc.addPage(); y = 20; }
+      doc.setFontSize(11);
+      doc.text('Total Diya: Rs. ' + fmt(g.gave) + '    Total Mila: Rs. ' + fmt(g.got), 14, y);
+      doc.setFontSize(13);
+      doc.text(g.bal > 0 ? 'Party se lena hai: Rs. ' + fmt(g.bal) : g.bal < 0 ? 'Party ko dena hai: Rs. ' + fmt(-g.bal) : 'Hisaab barabar hai', 14, y + 8);
+      const d = partyDue(g);
+      if (d) { doc.setFontSize(10); doc.setTextColor(90); doc.text('Due date: ' + fmtDateShort(d.due) + (d.days > 0 ? '  (' + d.days + ' din late)' : ''), 14, y + 15); }
+
+      const fname = 'Udhar_' + (g.name.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '') || 'party') + '.pdf';
+      const file = new File([doc.output('blob')], fname, { type: 'application/pdf' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try { await navigator.share({ files: [file], title: 'Udhar Statement - ' + g.name }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+      }
+      doc.save(fname);
+      showToast('Statement PDF download ho gayi');
+    }
+
     function sendPartyReminder(key) {
       const g = partyGroups().find(x => x.key === key);
       if (!g || g.bal <= 0) return;
-      const text = `🔔 *Udhar Reminder*\nNamaste ${g.name}, aapka ₹${fmt(g.bal)} baaki hai. Kripya jald chukayein. 🙏\n\n_Aasaan Hisaab Khata_`;
+      const pd = partyDue(g), dueTxt = pd && pd.days > 0 ? ` (due date ${fmtDateShort(pd.due)} thi)` : '';
+      const text = `🔔 *Udhar Reminder*\nNamaste ${g.name}, aapka ₹${fmt(g.bal)} baaki hai${dueTxt}. Kripya jald chukayein. 🙏\n\n_Aasaan Hisaab Khata_`;
       window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(text), '_blank');
     }
 
