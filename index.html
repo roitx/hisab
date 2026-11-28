@@ -1065,7 +1065,8 @@
     <div class="modal-content">
       <button class="close-btn" onclick="closeModal('backup-modal')"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
       <h3 style="color:var(--primary); margin-bottom:10px;">Data Backup & Restore</h3>
-      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Apne saare khata data ka offline JSON backup download karein ya restore karein.</p>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:6px;">Apne khata, budget aur har-mahine ki entries ka offline JSON backup download karein ya restore karein.</p>
+      <p id="bk-last" style="font-size:0.75rem; color:var(--warning); margin-bottom:12px;"></p>
       <button class="btn-action" style="width:100%; margin-bottom:10px;" onclick="downloadBackupJSON()"><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg> Download Backup File</button>
       <input type="file" id="restore-file-input" style="display:none;" onchange="restoreBackupJSON(event)">
       <button class="btn-action wa-btn" style="width:100%;" onclick="document.getElementById('restore-file-input').click()"><svg class="ic" aria-hidden="true"><use href="#i-up"/></svg> Restore Backup File</button>
@@ -1109,6 +1110,20 @@
     </div>
   </div>
 
+  <!-- Danger Modal: Account delete / Khata saaf -->
+  <div class="modal-overlay" id="danger-modal">
+    <div class="modal-content" style="max-width:380px;">
+      <button class="close-btn" onclick="closeModal('danger-modal')" aria-label="Band karein"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+      <h3 id="dg-title" style="color:var(--danger); margin-bottom:8px;"></h3>
+      <div class="legal-note" id="dg-desc" style="margin-top:0"></div>
+      <label style="display:flex; gap:8px; align-items:center; font-size:0.85rem; margin:10px 0;">
+        <input type="checkbox" id="dg-backup" checked style="width:18px;height:18px;"> Hatane se pehle backup file download karein
+      </label>
+      <input type="password" id="dg-pin" class="modal-input" placeholder="Confirm ke liye apna 4-digit PIN" maxlength="4" inputmode="numeric" autocomplete="off">
+      <button class="btn-action" id="dg-btn" style="width:100%; margin-top:10px; background:var(--danger); box-shadow:none;" onclick="confirmDanger()"></button>
+    </div>
+  </div>
+
   <!-- Settings Modal -->
   <div class="modal-overlay" id="settings-modal" onclick="if(event.target===this)closeModal('settings-modal')">
     <div class="modal-content" style="max-width:380px;">
@@ -1134,6 +1149,16 @@
       <button class="sheet-btn" onclick="closeModal('settings-modal'); openRec()"><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg> Har mahine ki entries</button>
       <button class="sheet-btn" id="pwa-install" style="display:none" onclick="pwaInstall()"><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg> App install karein</button>
       <button class="sheet-btn" onclick="closeModal('settings-modal'); openModal('lang-modal')"><svg class="ic fill" aria-hidden="true"><use href="#i-translate"/></svg> Language badlein</button>
+      <div class="theme-lbl" style="margin-top:14px;">Auto-logout (app use na ho to)</div>
+      <select id="autologout-sel" class="modal-input" style="margin-bottom:8px;" onchange="setAutoLogout(this.value)">
+        <option value="0">Band</option>
+        <option value="5">5 minute baad</option>
+        <option value="15">15 minute baad</option>
+        <option value="30">30 minute baad</option>
+      </select>
+      <div class="theme-lbl" style="margin-top:16px;color:var(--danger)">Danger Zone</div>
+      <button class="sheet-btn" style="color:var(--danger)" onclick="closeModal('settings-modal'); openDangerModal('data')"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg> Sirf poora khata saaf karein</button>
+      <button class="sheet-btn" style="color:var(--danger)" onclick="closeModal('settings-modal'); openDangerModal('account')"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg> Account hamesha ke liye delete karein</button>
       <button class="sheet-btn" style="color:var(--danger)" onclick="closeModal('settings-modal'); logoutUser()"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg> Logout</button>
       <div class="dev-tap" id="dev-tap" onclick="devTap()">Aasaan Hisaab &bull; PM Roitx</div>
       <div id="dev-row" hidden>
@@ -1191,7 +1216,7 @@
         <ul>
           <li><b>Account:</b> aapka mobile number, 4-digit PIN (sirf hash ke roop me), aur security question ka jawab (ye bhi hash me).</li>
           <li><b>Khata data:</b> aapki entries (amount, note, category, Cash/Bank/Udhar, tarikh), udhar wali parties ke naam aur balance, aur aapke budget.</li>
-          <li><b>AI Munim:</b> jo text aap likhte ya bolte hain, bill ki photo, aur sawal poochne par aapke khate ka chhota saaransh (is period ka jama-kharcha, party balance, haal ki kuch entries).</li>
+          <li><b>AI Munim:</b> jo text aap likhte ya bolte hain, bill ki photo, aur sawal poochne par aapke khate ka chhota saaransh (is period ka jama-kharcha, pichle 6 mahine ka mahine-wise total, category-wise kharcha, sabse bade kharche, party balance, haal ki kuch entries aur isi session ke pichle 3 sawal-jawab).</li>
           <li><b>Aapki pasand:</b> theme, rang, bhasha, balance chhupana, har-mahine ki entries ki list. Ye sirf aapke phone me rehti hain.</li>
         </ul>
         <div class="legal-note"><b>Hum ye nahi lete:</b> aapki location, contacts, SMS, bank ka login ya card number, aur advertising ID.</div>
@@ -1231,10 +1256,10 @@
           <li><b>Dekhna aur nikalna:</b> PDF, Excel/CSV aur JSON Backup se apna poora data nikaal sakte hain.</li>
           <li><b>Badalna ya hatana:</b> kisi bhi entry ko edit ya delete kar sakte hain (delete par Undo milta hai).</li>
           <li><b>PIN badalna:</b> Settings me PIN aur security question badal sakte hain.</li>
-          <li><b>Account ka cloud data hatwana:</b> developer se request karein.</li>
+          <li><b>Account aur data hatana:</b> Settings me <i>Account hamesha ke liye delete karein</i> dabayein. PIN se confirm karne par aapka account aur saari entries phone aur cloud se hat jati hain. Sirf khata saaf karne ka option bhi wahin hai.</li>
         </ul>
         <h4><i>8</i>Data kitne din rehta hai</h4>
-        <p>Jab tak aap entries delete na karein ya hatane ki request na karein. Logout karne se sirf login hat'ta hai, phone me saved khata ki copy nahi hat'ti. Use hatane ke liye browser ka site data clear karein (Cookies Notice dekhein).</p>
+        <p>Jab tak aap entries ya apna account delete na karein. Logout karne se sirf login hat'ta hai, phone me saved khata ki copy nahi hat'ti. Use hatane ke liye browser ka site data clear karein (Cookies Notice dekhein).</p>
         <h4><i>9</i>Udhar wali parties ka data</h4>
         <p>Udhar khata me aap doosre logon ke naam aur lena-dena likhte hain. Ye aapki zimmedari hai ki aap sirf zaroori jaankari likhein. WhatsApp reminder bhejne se pehle samne wale ka dhyan rakhein.</p>
         <h4><i>10</i>Bachche</h4>
@@ -1328,6 +1353,7 @@
         <div class="legal-tblwrap"><table class="legal-tbl"><tr><th>Naam</th><th>Kisliye</th><th>Kab tak</th></tr>
           <tr><td><code>ah_user_phone</code>, <code>ah_last_phone</code></td><td>Login yaad rakhna</td><td>Logout tak (last number alag rehta hai)</td></tr>
           <tr><td><code>ah_pin_*</code>, <code>ah_sec_q_*</code>, <code>ah_sec_ans_*</code></td><td>PIN aur security answer ka hash (offline login)</td><td>Jab tak browser data clear na ho</td></tr>
+          <tr><td><code>ah_autologout</code>, <code>ah_last_backup_*</code>, <code>ah_backup_nag_*</code></td><td>Auto-logout ka samay aur backup yaad dilane ki tarikh</td><td>Jab tak browser data clear na ho</td></tr>
           <tr><td><code>ah_fail_*</code>, <code>ah_lock_*</code></td><td>Galat PIN ginti aur 60 second ka lock</td><td>Chhota samay</td></tr>
           <tr><td><code>ah_tx_*</code>, <code>ah_pend_*</code></td><td>Khata ki copy aur jo entries sync hona baaki hain</td><td>Jab tak browser data clear na ho</td></tr>
           <tr><td><code>ah_budgets_*</code>, <code>ah_recurring_*</code></td><td>Budget aur har-mahine ki entries</td><td>Jab tak browser data clear na ho</td></tr>
@@ -1768,18 +1794,125 @@
       syncFromFirebase();
       render();
       window.scrollTo(0, 0);
+      try { const sel = gid('autologout-sel'); if (sel) sel.value = String(autoLogoutMin()); } catch (e) {}
+      setTimeout(backupNag, 5000);
     }
 
     function logoutUser() {
       if (!confirm('Kya aap logout karna chahte hain?')) return;
+      doLogout();
+    }
+    function doLogout() {
       if (unsubTx) { unsubTx(); unsubTx = null; }
       LS.removeItem('ah_user_phone');
       currentUser = null;
       transactions = [];
       budgets = {};
+      aiHist = []; aiAct = null; try { aiPanel(''); } catch (e) {}
       gid('cookie-banner').style.display = 'none';
       document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
       showLoginUI();
+    }
+
+    /* ---------- Auto-logout: kuch der app use na ho to khud logout ---------- */
+    let lastActive = Date.now();
+    ['touchstart', 'click', 'keydown', 'scroll'].forEach(ev => window.addEventListener(ev, () => { lastActive = Date.now(); }, { passive: true, capture: true }));
+    function autoLogoutMin() { return parseInt(LS.getItem('ah_autologout') || '0', 10) || 0; }
+    function setAutoLogout(v) {
+      LS.setItem('ah_autologout', String(parseInt(v, 10) || 0));
+      lastActive = Date.now();
+      showToast(autoLogoutMin() ? `${autoLogoutMin()} minute baad auto-logout hoga.` : 'Auto-logout band hai.');
+    }
+    function checkIdle() {
+      const m = autoLogoutMin();
+      if (!m || !currentUser) return;
+      if (Date.now() - lastActive > m * 60000) {
+        doLogout();
+        showToast('Kuch der app use nahi hui, isliye logout ho gaye.', null, null, 6000);
+      }
+    }
+    setInterval(checkIdle, 15000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) checkIdle(); });
+
+    /* =====================================================================
+       DANGER ZONE: Account delete / Poora khata saaf
+       - PIN se confirm, optional backup download
+       - Pehle cloud se hatata hai; cloud fail ho to phone ka data nahi chhedta
+       ===================================================================== */
+    let dangerMode = 'account', dangerBusy = false;
+    function openDangerModal(mode) {
+      dangerMode = mode;
+      const acc = mode === 'account';
+      gid('dg-title').textContent = acc ? 'Account delete karein' : 'Poora khata saaf karein';
+      gid('dg-desc').innerHTML = acc
+        ? '<b>Ye wapas nahi hoga.</b> Aapka account, PIN, saari entries, udhar parties, budget aur har mahine ki entries phone aur cloud dono se hamesha ke liye hat jayengi.'
+        : '<b>Ye wapas nahi hoga.</b> Aapki saari entries aur udhar parties phone aur cloud se hat jayengi. Account, PIN aur budget bane rahenge.';
+      gid('dg-btn').textContent = acc ? 'Haan, account delete karo' : 'Haan, poora khata saaf karo';
+      gid('dg-btn').disabled = false;
+      gid('dg-pin').value = '';
+      gid('dg-backup').checked = true;
+      dangerBusy = false;
+      openModal('danger-modal');
+    }
+    async function wipeCloud(user, withUserDoc) {
+      if (!db) return;
+      const snap = await withTimeout(txCol(user).get({ source: 'server' }), 15000);
+      const refs = [];
+      snap.forEach(d => refs.push(d.ref));
+      for (let i = 0; i < refs.length; i += 400) {
+        const b = db.batch();
+        refs.slice(i, i + 400).forEach(r => b.delete(r));
+        await withTimeout(b.commit(), 20000);
+      }
+      if (withUserDoc) await withTimeout(db.collection('users').doc(user).delete(), 10000);
+    }
+    function wipeLocalAccount(user) {
+      ['ah_pin_', 'ah_sec_q_', 'ah_sec_ans_', 'ah_tx_', 'ah_pend_', 'ah_budgets_', 'ah_recurring_', 'ah_fail_', 'ah_lock_', 'ah_last_backup_', 'ah_backup_nag_']
+        .forEach(k => LS.removeItem(k + user));
+      LS.removeItem('ah_user_phone');
+      if (LS.getItem('ah_last_phone') === user) LS.removeItem('ah_last_phone');
+    }
+    async function confirmDanger() {
+      if (dangerBusy || !currentUser) return;
+      const user = currentUser, acc = dangerMode === 'account';
+      const pin = gid('dg-pin').value.trim();
+      const cur = localAcct(user);
+      if (!/^\d{4}$/.test(pin) || !cur || !(await secretMatches(user, 'pin', cur.pin, pin))) return alert('PIN galat hai!');
+      if (!confirm(acc ? 'Akhri baar pooch rahe hain: account hamesha ke liye delete kar dein?' : 'Akhri baar pooch rahe hain: poora khata saaf kar dein?')) return;
+
+      dangerBusy = true;
+      const btn = gid('dg-btn'); btn.disabled = true; btn.textContent = 'Ho raha hai...';
+      if (gid('dg-backup').checked && transactions.length) { try { downloadBackupJSON(); } catch (e) {} }
+
+      if (unsubTx) { unsubTx(); unsubTx = null; }
+      const savedPending = pendRead(user);
+      pendWrite(user, []);
+      try {
+        await wipeCloud(user, acc);
+      } catch (e) {
+        pendWrite(user, savedPending);
+        dangerBusy = false; btn.disabled = false;
+        btn.textContent = acc ? 'Haan, account delete karo' : 'Haan, poora khata saaf karo';
+        syncFromFirebase();
+        return alert('Cloud se data nahi hat paya. Internet check karke dobara koshish karein. Aapka data abhi safe hai.');
+      }
+
+      closeModal('danger-modal');
+      if (acc) {
+        wipeLocalAccount(user);
+        currentUser = null; transactions = []; budgets = {}; aiHist = []; aiAct = null; try { aiPanel(''); } catch (e) {}
+        gid('cookie-banner').style.display = 'none';
+        document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+        showLoginUI();
+        showToast('Account delete ho gaya.', null, null, 5000);
+      } else {
+        transactions = [];
+        txCacheWrite();
+        render();
+        syncFromFirebase();
+        showToast('Poora khata saaf ho gaya.', null, null, 5000);
+      }
+      dangerBusy = false;
     }
 
     /* =====================================================================
@@ -1938,7 +2071,7 @@
       });
       budgets = nb;
       LS.setItem('ah_budgets_' + currentUser, JSON.stringify(budgets));
-      if (db && currentUser) db.collection("users").doc(currentUser).set({ budgets: budgets }, { merge: true });
+      if (db && currentUser) db.collection("users").doc(currentUser).set({ budgets: budgets }, { mergeFields: ['budgets'] });
       closeModal('budget-modal');
       renderBudgets();
       showToast("Budget save ho gaya");
@@ -2097,7 +2230,7 @@
       el.onclick = sh ? (ev => { if (ev.target === el && aiEditing < 0) aiPanel(''); }) : null;
       document.body.style.overflow = sh ? 'hidden' : '';
     }
-    function aiContext() {
+    function aiContextBase() {
       const t = sumTx(periodTx()), r = periodRange('lastmonth');
       const lm = sumTx(ledgerTx().filter(x => { const d = entryDateISO(x); return d >= r[0] && d <= r[1]; }));
       return {
@@ -2106,6 +2239,65 @@
         parties_balance_positive_means_they_owe_user: partyGroups().map(g => ({ name: g.name, balance: g.bal, last_entry: g.list.reduce((m, x) => { const d = entryDateISO(x); return d > m ? d : m; }, '') })).sort((a, b) => Math.abs(b.balance) - Math.abs(a.balance)).slice(0, 12),
         recent: ledgerTx().slice().sort((a, b) => entryDateISO(b).localeCompare(entryDateISO(a))).slice(0, 20).map(x => ({ d: entryDateISO(x), type: x.type, amt: x.amount, note: x.note, cat: x.category, mode: x.mode }))
       };
+    }
+    function aiContext() { const c = aiContextBase(); try { Object.assign(c, aiContextExtra()); } catch (e) {} return c; }
+    function aiMonthRange(back) { const n = new Date(), y = n.getFullYear(), m = n.getMonth() - back; return [toISO(new Date(y, m, 1)), toISO(new Date(y, m + 1, 0))]; }
+    function aiCatTotals(r) {
+      const o = {};
+      ledgerTx().forEach(t => { if (t.type !== 'OUT') return; const d = entryDateISO(t); if (d < r[0] || d > r[1]) return; const c = t.category || 'General'; o[c] = (o[c] || 0) + (Number(t.amount) || 0); });
+      return o;
+    }
+    function aiContextExtra() {
+      const all = ledgerTx(), trend = [];
+      for (let b = 5; b >= 0; b--) {
+        const r = aiMonthRange(b), sm = sumTx(all.filter(x => { const d = entryDateISO(x); return d >= r[0] && d <= r[1]; }));
+        trend.push({ month: r[0].slice(0, 7), in: sm.inn, out: sm.out });
+      }
+      const mr = periodRange('month');
+      const top = all.filter(x => x.type === 'OUT' && entryDateISO(x) >= mr[0] && entryDateISO(x) <= mr[1])
+        .sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0)).slice(0, 5)
+        .map(x => ({ d: entryDateISO(x), amt: x.amount, note: String(x.note || '').slice(0, 40), cat: x.category }));
+      const bal = {}; all.forEach(x => { const m = x.mode || 'Cash'; bal[m] = (bal[m] || 0) + (x.type === 'IN' ? 1 : -1) * (Number(x.amount) || 0); });
+      return { monthly_trend_last_6: trend, last_month_spend_by_category: aiCatTotals(aiMonthRange(1)), biggest_expenses_this_month: top, net_by_payment_mode_all_time: bal, total_entries: all.length };
+    }
+
+    /* ---------- Munim yaaddasht: pichle 3 sawal-jawab (10 minute, sirf is session me) ---------- */
+    let aiHist = [], aiAct = null;
+    function aiHistFresh() { const now = Date.now(); aiHist = aiHist.filter(h => now - h.t < 10 * 60000); return aiHist; }
+    function aiHistText() { const h = aiHistFresh(); return h.length ? '\nPREVIOUS_CONVERSATION (new message may be a follow-up): ' + JSON.stringify(h.map(x => ({ q: x.q, a: x.a }))) : ''; }
+    function aiRemember(q, a) { aiHist.push({ q: String(q).slice(0, 200), a: String(a).slice(0, 400), t: Date.now() }); aiHist = aiHist.slice(-3); }
+
+    /* ---------- Munim se budget set karna / last entry hatana (pehle poochta hai) ---------- */
+    function aiBudgetAsk(p) {
+      const raw = String(p.budget_category || '').trim().toLowerCase();
+      const cat = BUDGET_CATS.find(c => c.toLowerCase() === raw), amt = Number(p.budget_amount);
+      if (!cat || !Number.isFinite(amt) || amt < 0) return aiAnswer('Kaunsi category ka budget aur kitna? Jaise: "Ration ka budget 3000 kar do". Categories: ' + BUDGET_CATS.join(', ') + '.');
+      aiAct = { t: 'budget', cat, amt };
+      const spent = monthSpentByCategory()[cat] || 0;
+      aiPanel(`<div class="ai-tag">✦ Munim</div><div class="ai-ans">${amt > 0 ? `<b>${esc(cat)}</b> ka mahine ka budget <b>₹${fmt(amt)}</b> set karein?<br><small>Is mahine abhi tak ₹${fmt(spent)} kharcha hua hai.</small>` : `<b>${esc(cat)}</b> ka budget hata dein?`}</div><div class="ai-actions"><button class="btn-action" onclick="aiActDo()">Haan</button><button class="ai-ghost" onclick="aiPanel('')">Nahi</button></div>`);
+    }
+    function aiDeleteAsk() {
+      const last = transactions.slice().sort((a, b) => Number(b.id) - Number(a.id))[0];
+      if (!last) return aiAnswer('Hatane ke liye koi entry nahi hai.');
+      aiAct = { t: 'del', id: Number(last.id) };
+      const who = last.kind === 'party' && last.party ? ' (' + esc(last.party) + ')' : '';
+      aiPanel(`<div class="ai-tag">✦ Munim</div><div class="ai-ans">Sabse nayi entry hata dein?<br><b>${last.type === 'IN' ? 'Jama' : 'Kharcha'} ₹${fmt(last.amount)}</b> — ${esc(String(last.note || last.category || '').slice(0, 40))}${who}, ${fmtDateShort(entryDateISO(last))}</div><div class="ai-actions"><button class="btn-action" style="background:var(--danger);box-shadow:none" onclick="aiActDo()">Haan, hatao</button><button class="ai-ghost" onclick="aiPanel('')">Nahi</button></div>`);
+    }
+    function aiActDo() {
+      const a = aiAct; aiAct = null; aiPanel('');
+      if (!a) return;
+      if (a.t === 'budget') {
+        if (a.amt > 0) budgets[a.cat] = a.amt; else delete budgets[a.cat];
+        LS.setItem('ah_budgets_' + currentUser, JSON.stringify(budgets));
+        if (db && currentUser) db.collection('users').doc(currentUser).set({ budgets: budgets }, { mergeFields: ['budgets'] }).catch(() => {});
+        try { renderBudgets(); } catch (e) {}
+        showToast(a.amt > 0 ? `${a.cat} ka budget ₹${fmt(a.amt)} set ho gaya` : `${a.cat} ka budget hat gaya`);
+      } else if (a.t === 'del') {
+        const e = transactions.find(t => Number(t.id) === a.id);
+        if (!e) return;
+        txRemove(a.id);
+        showToast('Entry hat gayi', 'Undo ↩', () => txSave(e), 6000);
+      }
     }
     function aiNorm(o, fallbackNote) {
       const amount = Number(o && o.amount); if (!Number.isFinite(amount) || amount <= 0) return null;
@@ -2209,17 +2401,23 @@
       if (!promptText) return;
       toggleLoading(true);
       const isQuestion = /\?|kitna|kitne|kitni|kisse|kisko|kaun|batao|bata do|hisab|summary|kyun|kyu|kaise|compare|total|how|what|which|why|report/i.test(promptText);
+      const ledgerNeeded = isQuestion || (aiHistFresh().length > 0 && !/\d/.test(promptText) && promptText.length < 70);
       const sys = `You are "Munim", the AI assistant inside an Indian khata/ledger app. Today is ${todayISO()}. Reply with ONLY one JSON object, no markdown.
 Pick an intent:
 - "add": user states one or MORE transactions. Put each in entries[]. Resolve kal/parso/weekday/dates to YYYY-MM-DD.
 - "ask": user asks about their money. Answer ONLY from LEDGER, in the user's own language (default Hinglish), max 4 short lines, use ₹. Never invent numbers; if data is missing say so. Add one practical tip when useful.
 - "remind": user wants to remind a person about pending money; set party.
+- "budget": user wants to set, change or remove a monthly budget for a category; set budget_category (one of ${BUDGET_CATS.join(', ')}) and budget_amount (number, 0 = remove).
+- "delete_last": user wants to delete or undo the most recent entry.
+If PREVIOUS_CONVERSATION is present, the message may be a follow-up (e.g. "aur pichle mahine?"): answer in that context.
 Entry fields: amount (number), type "IN" (received/jama/salary/sale/money got back) or "OUT" (spent/gave), note, category (Farming, Ration, Rent, Fuel, Mandi, Salary, Health, Education, Transport, Bills, Shopping, Dukaan, General), mode (Cash, Bank, Credit, Udhar), date, party (a person's name when money is given to / taken from a person, e.g. "Ramesh ko 500 diya", "Suresh se 1000 liye" -> mode "Udhar"; else ""). Names often arrive misspelled from voice input: fix the spelling (Rmu->Ramu, Kmlesh->Kamlesh) in BOTH party and note, and if a name is close to one in KNOWN_PARTIES, reuse that exact spelling.
-JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","category":"General","mode":"Cash","date":"YYYY-MM-DD","party":""}],"answer":"","party":""}` + `\nKNOWN_PARTIES: ${JSON.stringify(partyGroups().map(g => g.name).slice(0, 40))}` + (isQuestion ? `\nLEDGER: ${JSON.stringify(aiContext())}` : '');
+JSON: {"intent":"add|ask|remind|budget|delete_last","entries":[{"amount":0,"type":"OUT","note":"","category":"General","mode":"Cash","date":"YYYY-MM-DD","party":""}],"answer":"","party":"","budget_category":"","budget_amount":0}` + `\nKNOWN_PARTIES: ${JSON.stringify(partyGroups().map(g => g.name).slice(0, 40))}` + aiHistText() + (ledgerNeeded ? `\nLEDGER: ${JSON.stringify(aiContext())}` : '');
       try {
         const raw = (await aiCall(sys, promptText)).trim().replace(/```json|```/g, "");
         const parsed = JSON.parse(raw.slice(raw.indexOf('{'), raw.lastIndexOf('}') + 1));
-        if (parsed.intent === 'ask' && parsed.answer) aiAnswer(parsed.answer);
+        if (parsed.intent === 'ask' && parsed.answer) { aiAnswer(parsed.answer); aiRemember(promptText, parsed.answer); }
+        else if (parsed.intent === 'budget') aiBudgetAsk(parsed);
+        else if (parsed.intent === 'delete_last') aiDeleteAsk();
         else if (parsed.intent === 'remind') {
           const g = partyGroups().find(x => parsed.party && (x.key === partyKey(parsed.party) || x.key.includes(partyKey(parsed.party))));
           if (g && g.bal > 0) { aiAnswer(`${g.name} ka ₹${fmt(g.bal)} baaki hai. WhatsApp reminder khul raha hai...`); sendPartyReminder(g.key); }
@@ -2246,11 +2444,24 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
       const why = /Failed to fetch|NetworkError|Load failed/i.test(aiErr) ? 'AI server tak request nahi pahunchi (internet ya proxy ka origin/CORS block)' : /HTTP/.test(aiErr) ? 'AI server ne error diya (' + aiErr + ')' : 'AI ka jawab samajh nahi aaya';
       const line = g => `${g.name}: ₹${fmt(Math.abs(g.bal))}`;
       let out;
+      const catHit = (AI_CAT_MAP.find(c => c[0].test(q)) || [0, null])[1] || ['Farming', 'Ration', 'Rent', 'Fuel', 'Mandi', 'Salary', 'Health', 'Education', 'Transport', 'Bills', 'Shopping', 'Dukaan'].find(c => new RegExp('\\b' + c + '\\b', 'i').test(q));
       if (/lena|kisse|kisko|udhar|baaki|dena/i.test(q)) {
         const owe = gs.filter(g => g.bal > 0).sort((a, b) => b.bal - a.bal).slice(0, 5).map(line);
         const give = gs.filter(g => g.bal < 0).sort((a, b) => a.bal - b.bal).slice(0, 5).map(line);
         out = owe.length ? 'Ye log aapko dene hain:\n' + owe.join('\n') : 'Kisi se paisa lena baaki nahi hai.';
         if (give.length) out += '\n\nAapko inhe dena hai:\n' + give.join('\n');
+      } else if (/sabse bada|biggest|largest|badi entry|bada kharcha/i.test(q)) {
+        const top = periodTx().filter(x => x.type === 'OUT').sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0)).slice(0, 3);
+        out = top.length ? `${per} ke sabse bade kharche:\n` + top.map(x => `₹${fmt(x.amount)} — ${String(x.note || x.category || '').slice(0, 30)} (${fmtDateShort(entryDateISO(x))})`).join('\n') : 'Is period me koi kharcha nahi hai.';
+      } else if (catHit && /kitna|kitne|kharcha|gaya|spend|\bpe\b|\bpar\b/i.test(q)) {
+        const mr = periodRange('month'), lr = periodRange('lastmonth'), a = aiCatTotals(mr)[catHit] || 0, b = aiCatTotals(lr)[catHit] || 0, bud = Number(budgets[catHit]) || 0;
+        out = `${catHit}: is mahine ₹${fmt(a)}, pichle mahine ₹${fmt(b)}.` + (bud > 0 ? `\nBudget ₹${fmt(bud)} me se ${Math.round(a / bud * 100)}% use hua.` : '');
+      } else if (/pichle|last month|tulna|compare/i.test(q)) {
+        const f = r => sumTx(ledgerTx().filter(x => { const d = entryDateISO(x); return d >= r[0] && d <= r[1]; })), c = f(periodRange('month')), l = f(periodRange('lastmonth')), df = c.out - l.out;
+        out = `Is mahine: jama ₹${fmt(c.inn)}, kharcha ₹${fmt(c.out)}\nPichle mahine: jama ₹${fmt(l.inn)}, kharcha ₹${fmt(l.out)}\n` + (df > 0 ? `Kharcha ₹${fmt(df)} zyada hai.` : df < 0 ? `Kharcha ₹${fmt(-df)} kam hai.` : 'Kharcha barabar hai.');
+      } else if (/balance|cash|bank/i.test(q)) {
+        const bal = {}; ledgerTx().forEach(x => { const m = x.mode || 'Cash'; bal[m] = (bal[m] || 0) + (x.type === 'IN' ? 1 : -1) * (Number(x.amount) || 0); });
+        out = 'Ab tak ka hisab (mode-wise):\n' + (Object.entries(bal).map(([m, v]) => `${m}: ₹${fmt(v)}`).join('\n') || 'Koi entry nahi hai.');
       } else if (/kharcha|kam|bachat|save/i.test(q)) {
         const cat = {}; periodTx().forEach(x => { if (x.type === 'OUT') cat[x.category || 'General'] = (cat[x.category || 'General'] || 0) + (Number(x.amount) || 0); });
         const top = Object.entries(cat).sort((a, b) => b[1] - a[1]).slice(0, 3);
@@ -2259,6 +2470,8 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
       aiAnswer(out + `\n\n⚠ Offline jawab — ${why}.`);
     }
     function fallbackLocalAI(prompt, isQuestion) {
+      if (/budget/i.test(prompt)) return aiAnswer('Budget set karne ke liye Munim AI ka connect hona zaroori hai. Abhi Settings me Mahine ka Budget se set kar sakte hain.');
+      if (/(last|aakhri|aakhiri|pichli|latest)\s+entry.*(hata|delete|undo|mita)|(hata|delete|mita)\w*\s+(do\s+)?(last|aakhri|aakhiri|pichli)\s+entry/i.test(prompt)) return aiDeleteAsk();
       const hasNum = /\d/.test(prompt);
       if (isQuestion && !hasNum) return localAsk(prompt);
       const list = [];
@@ -2297,7 +2510,8 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
       else if (prev < 1000 && cur > 0 && dom >= 5) nudges.push({ s: 30, h: `Is mahine abhi tak ₹${fmt(cur)} kharcha hua (pichle mahine ka data kam hai, tulna nahi ho sakti)` });
       munimPlus(nudges);
       nudges.sort((a, b) => b.s - a.s);
-      const chips = ['Is mahine ka hisab batao', 'Kisse paisa lena hai?', 'Kharcha kahan kam kar sakta hu?'];
+      const chips = ['Is mahine ka hisab batao', 'Kisse paisa lena hai?', 'Kharcha kahan kam kar sakta hu?', 'Pichle mahine se tulna karo', 'Sabse bada kharcha kaun sa tha?'];
+      try { const tc = Object.entries(spent).sort((a, b) => b[1] - a[1])[0]; if (tc && /^[A-Za-z]+$/.test(tc[0])) chips.splice(1, 0, `${tc[0]} par is mahine kitna gaya?`); } catch (e) {}
       el.innerHTML = `<div class="section-title" style="margin-bottom:6px;">✦ Munim AI</div>` +
         (nudges.slice(0, 4).map(n => `<div class="ins-line">• ${n.h}</div>`).join('') || `<div class="ins-line">Sab theek hai. Koi pending alert nahi.</div>`) +
         `<div class="mn-chips">${chips.map(c => `<span class="mn-chip" onclick="askMunim('${c}')">${c}</span>`).join('')}</div>`;
@@ -2461,10 +2675,28 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
-    function backupAndRestoreModal() { openModal('backup-modal'); }
+    function updateBackupInfo() {
+      const el = gid('bk-last'); if (!el) return;
+      const t = parseInt(LS.getItem('ah_last_backup_' + currentUser) || '0', 10);
+      el.textContent = t ? 'Pichla backup: ' + new Date(t).toLocaleDateString('hi-IN') : 'Abhi tak backup nahi liya gaya.';
+    }
+    function backupAndRestoreModal() { updateBackupInfo(); openModal('backup-modal'); }
+    // 7 din se purana (ya kabhi nahi liya) ho to din me ek baar yaad dilao
+    function backupNag() {
+      if (!currentUser || !transactions.length) return;
+      const now = Date.now(), last = parseInt(LS.getItem('ah_last_backup_' + currentUser) || '0', 10), nag = parseInt(LS.getItem('ah_backup_nag_' + currentUser) || '0', 10);
+      if (!last && transactions.length < 5) return;
+      if (now - last < 7 * 864e5 || now - nag < 864e5) return;
+      LS.setItem('ah_backup_nag_' + currentUser, String(now));
+      showToast(last ? 'Pichla backup 7 din se purana hai.' : 'Abhi tak backup nahi liya.', 'Backup lo', () => downloadBackupJSON(), 9000);
+    }
 
     function downloadBackupJSON() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(transactions));
+      let rec = []; try { recLoad(); rec = recurring; } catch (e) {}
+      const pack = { app: 'aasaan-hisaab', v: 2, date: new Date().toISOString(), transactions: transactions, budgets: budgets || {}, recurring: rec };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(pack));
+      LS.setItem('ah_last_backup_' + currentUser, String(Date.now()));
+      try { updateBackupInfo(); } catch (e) {}
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
       downloadAnchor.setAttribute("download", `AasaanHisaab_Backup_${currentUser}.json`);
@@ -2479,8 +2711,10 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
       const fileReader = new FileReader();
       fileReader.onload = async function (e) {
         try {
-          const restoredData = JSON.parse(e.target.result);
-          if (!Array.isArray(restoredData)) throw new Error("not array");
+          const raw = JSON.parse(e.target.result);
+          const restoredData = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.transactions) ? raw.transactions : null);
+          if (!restoredData) throw new Error("bad format");
+          const extras = Array.isArray(raw) ? null : raw;
 
           const modes = ['Cash', 'Bank', 'Credit', 'Udhar'];
           const valid = restoredData.filter(i => i && Number.isFinite(Number(i.id)) && Number.isFinite(Number(i.amount)) && (i.type === 'IN' || i.type === 'OUT'))
@@ -2494,7 +2728,7 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
               ...(i.kind === 'party' ? { kind: 'party', party: String(i.party || '').trim().slice(0, 40), dir: i.dir === 'GOT' ? 'GOT' : 'GAVE' } : {})
             }));
 
-          if (!valid.length) return alert("Is file me koi valid entry nahi mili.");
+          if (!valid.length && !(extras && (extras.budgets || extras.recurring))) return alert("Is file me koi valid entry nahi mili.");
 
           valid.forEach(txUpsertLocal);
           txCacheWrite();
@@ -2508,7 +2742,29 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
               batch.commit().catch(() => showToast('Cloud sync baad me hoga.'));
             }
           }
-          alert(`Backup safaltapurvak restore ho gaya! ${valid.length} entries mili.`);
+          let extraMsg = '';
+          if (extras && extras.budgets && typeof extras.budgets === 'object') {
+            const nb = {};
+            BUDGET_CATS.forEach(c => { const v = Number(extras.budgets[c]); if (Number.isFinite(v) && v > 0) nb[c] = v; });
+            if (Object.keys(nb).length) {
+              budgets = nb;
+              LS.setItem('ah_budgets_' + currentUser, JSON.stringify(budgets));
+              if (db && currentUser) db.collection("users").doc(currentUser).set({ budgets: budgets }, { mergeFields: ['budgets'] }).catch(() => {});
+              try { renderBudgets(); } catch (er) {}
+              extraMsg += ' Budget bhi wapas aa gaya.';
+            }
+          }
+          if (extras && Array.isArray(extras.recurring)) {
+            const okRec = extras.recurring.filter(r => r && r.id && String(r.note || '').trim() && Number(r.amount) > 0 && Number(r.day) >= 1 && Number(r.day) <= 28 && (r.type === 'IN' || r.type === 'OUT'))
+              .map(r => ({ id: String(r.id).slice(0, 30), note: String(r.note).slice(0, 60), amount: Number(r.amount), day: parseInt(r.day, 10), type: r.type, category: String(r.category || 'General').slice(0, 40), last: String(r.last || '').slice(0, 7) }));
+            if (okRec.length) {
+              recLoad();
+              okRec.forEach(r => { const i = recurring.findIndex(x => x.id === r.id); if (i >= 0) recurring[i] = r; else recurring.push(r); });
+              recSave(); render();
+              extraMsg += ` ${okRec.length} har-mahine ki entries bhi mili.`;
+            }
+          }
+          alert(`Backup safaltapurvak restore ho gaya! ${valid.length} entries mili.${extraMsg}`);
           closeModal('backup-modal');
         } catch (err) { alert("Invalid Backup File"); }
         event.target.value = '';
@@ -3012,6 +3268,17 @@ JSON: {"intent":"add|ask|remind","entries":[{"amount":0,"type":"OUT","note":"","
       if (w0 > 500 && w1 > w0 * 1.2) tips.push(`Is hafte kharcha pichle hafte se ${Math.round((w1 / w0 - 1) * 100)}% zyada hai.`);
       if (w0 > 500 && w1 < w0 * 0.8) tips.push('Is hafte kharcha kam raha. Aise hi chalta rahe!');
       if (tips.length) nudges.push({ s: 20, h: `Aaj ki salah: ${tips[Math.floor(now / dayMs) % tips.length]}` });
+      try {
+        const week = toISO(new Date(Date.now() - 7 * dayMs)), outs = all.filter(x => x.type === 'OUT');
+        let worst = null;
+        outs.filter(x => entryDateISO(x) >= week).forEach(x => {
+          const same = outs.filter(y => y.id !== x.id && (y.category || 'General') === (x.category || 'General') && entryDateISO(y) < week);
+          if (same.length < 4) return;
+          const avg = same.reduce((sm, y) => sm + (Number(y.amount) || 0), 0) / same.length, a = Number(x.amount) || 0;
+          if (avg > 0 && a >= 500 && a > avg * 3 && (!worst || a / avg > worst.r)) worst = { x, avg, r: a / avg };
+        });
+        if (worst) nudges.push({ s: 60, h: `Dhyan dein: <b>${esc(String(worst.x.note || worst.x.category || 'Entry').slice(0, 30))}</b> ₹${fmt(worst.x.amount)} hai, jabki ${esc(worst.x.category || 'General')} ka aam kharcha ~₹${fmt(Math.round(worst.avg))} rehta hai`});
+      } catch (e) {}
     }
 
     /* ---------- Install-able app (PWA) ---------- */
