@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Roitx Studio IDE v6.0 - Pro Engine (HTML, CSS, JS & Python Support) [Complete]
+   Roitx Studio IDE v6.2 - Pro Engine (HTML, CSS, JS & Python Support) [Complete]
    ========================================================================== */
 
 const STORAGE_KEY_HTML = "roitx_v5_html";
@@ -7,7 +7,7 @@ const STORAGE_KEY_CSS = "roitx_v5_css";
 const STORAGE_KEY_JS = "roitx_v5_js";
 const STORAGE_KEY_PY = "roitx_v5_py";
 
-let logCount = 0;
+let logCount = 0, holdRun = false;
 
 const defaultHTML = `<div class=\"card\">\n  <h1>Roitx Studio v5</h1>\n  <p>HTML, CSS, JS, Python & PHP IDE!</p>\n  <button onclick=\"sayHello()\">Click JS</button>\n  <!--php-->\n</div>`;
 const defaultCSS = `body {\n  background: #0a0c10;\n  color: #fff;\n  font-family: sans-serif;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100vh;\n  margin: 0;\n}\n\n.card {\n  background: #12161f;\n  padding: 30px;\n  border-radius: 12px;\n  border: 1px solid #00f0ff;\n  box-shadow: 0 0 20px rgba(0,240,255,0.2);\n  text-align: center;\n}\n\nh1 { color: #00f0ff; }\nbutton {\n  background: #00ff70;\n  border: none;\n  padding: 10px 20px;\n  font-weight: bold;\n  border-radius: 6px;\n  cursor: pointer;\n}`;
@@ -189,9 +189,32 @@ function loadStore() {
     return { current: p.id, projects: { [p.id]: p } };
 }
 
-function saveStore() {
+const IDB_NAME = 'roitx_db', IDB_STORE = 'kv';
+let idbOK = !!window.indexedDB;
+function idbOpen() { return new Promise((res, rej) => { const r = indexedDB.open(IDB_NAME, 1); r.onupgradeneeded = () => r.result.createObjectStore(IDB_STORE); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+async function idbGet(k) { const db = await idbOpen(); return new Promise((res, rej) => { const q = db.transaction(IDB_STORE).objectStore(IDB_STORE).get(k); q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error); }); }
+async function idbSet(k, v) { const db = await idbOpen(); return new Promise((res, rej) => { const t = db.transaction(IDB_STORE, 'readwrite'); t.objectStore(IDB_STORE).put(v, k); t.oncomplete = () => res(); t.onerror = () => rej(t.error); }); }
+function lsSave() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); return true; }
-    catch (e) { toast('Storage full - export your project!'); return false; }
+    catch (e) { toast('Storage full - Backup export karo!'); return false; }
+}
+function saveStore() {
+    if (!store) return false;
+    if (!idbOK) return lsSave();
+    idbSet(STORE_KEY, store).catch(() => { idbOK = false; lsSave(); });
+    return true;
+}
+// IndexedDB se load; na mile to purana localStorage data migrate hota hai
+async function loadStoreAsync() {
+    if (idbOK) {
+        try {
+            const s = await idbGet(STORE_KEY);
+            if (s && s.projects && Object.keys(s.projects).length) { if (!s.projects[s.current]) s.current = Object.keys(s.projects)[0]; return s; }
+        } catch (e) { idbOK = false; }
+    }
+    const s = loadStore();
+    if (idbOK) idbSet(STORE_KEY, s).catch(() => { idbOK = false; });
+    return s;
 }
 
 function currentProject() { return store.projects[store.current]; }
@@ -220,6 +243,7 @@ function openProjectInEditors(id) {
     if (store.current !== id) commitSave();
     store.current = id;
     const p = currentProject();
+    holdRun = !!p.untrusted;
     suspendSave = true;
     LANGS.forEach(l => { ta(l).value = p[l] || ''; updatePanel(l); histReset(l); });
     suspendSave = false;
@@ -326,7 +350,7 @@ function histMove(type, d) {
     const h = H(type), el = ta(type), n = h.i + d;
     if (!h.s.length || n < 0 || n >= h.s.length) { toast(d < 0 ? 'Nothing to undo' : 'Nothing to redo'); return; }
     h.i = n; const r = h.s[n]; h.lock = true;
-    el.value = r.v; el.setSelectionRange(r.a, r.b); h.lock = false; h.t = 0;
+    el.value = r.v; el.focus({ preventScroll: true }); el.setSelectionRange(r.a, r.b); h.lock = false; h.t = 0;
     updatePanel(type); revealCaret(el);
 }
 function editText(el, start, end, text, selStart, selEnd) {
@@ -481,10 +505,11 @@ window.tabKey = function() {
 window.undoEdit = function() { const el = getActiveEditorTextArea(); if (el) histMove(typeOf(el), -1); };
 window.redoEdit = function() { const el = getActiveEditorTextArea(); if (el) histMove(typeOf(el), 1); };
 window.expandEmmet = function() {
-    const el = getActiveEditorTextArea();
-    if (!el || el.id !== 'htmlInput') { toast('Emmet sirf HTML tab me chalta hai'); return; }
-    el.focus();
-    if (!tryEmmet(el)) toast('Emmet abbreviation nahi mila (e.g. div.card>p*3)');
+    const el = getActiveEditorTextArea(); if (!el) return;
+    const type = typeOf(el);
+    el.focus({ preventScroll: true });
+    const ok = (type === 'html' && tryEmmet(el)) || trySnippet(el, type);
+    if (!ok) toast(type === 'html' ? 'Emmet nahi mila (e.g. div.card>p*3)' : 'Snippet nahi mila (e.g. ' + ({ css: 'df', js: 'log', py: 'def', php: 'echo' }[type]) + ' likh ke dabao)');
 };
 
 /* ---- Emmet (HTML) ---- */
@@ -756,6 +781,7 @@ window.insertAtCursor = function(textareaId, textToInsert) {
    Runs fully client-side, so it works on GitHub Pages (no server needed).
    Output of the PHP tab is placed where <!--php--> is in the HTML tab (or appended at the end). */
 const PHP_CDN = 'https://cdn.jsdelivr.net/npm/php-wasm/PhpWeb.mjs';
+let lastPhpCode = null, forcePhp = false;
 let phpEngine = null, phpLoading = null, phpChain = Promise.resolve(), phpRunId = 0, lastPhpOut = '';
 const phpBuf = { out: '', err: '' };
 const phpText = (d) => Array.isArray(d) ? d.join('') : String(d == null ? '' : d);
@@ -828,7 +854,10 @@ function withPhp(html) {
 }
 
 let manualRun = false, autoOpened = false;
-window.runManualCode = function() { manualRun = true; triggerLivePreview(); };
+window.runManualCode = function() {
+    if (holdRun) { holdRun = false; const p = currentProject(); if (p) { delete p.untrusted; saveStore(); } }
+    manualRun = true; forcePhp = true; triggerLivePreview();
+};
 
 // togglePreviewPanel / openPreviewFullscreen / setDeviceMode / theme: see section 13
 
@@ -926,6 +955,7 @@ ${withPhp(htmlInput.value)}
 function triggerLivePreview() {
     if (!liveFrame || !htmlInput) return;
     clearTimeout(autoTimer);
+    if (holdRun) { toast('Shared code - check karke Run (\u25B6) dabao'); return; }
     if (skipFirstRun) {   // last run never finished (infinite loop?) -> don't freeze the page again
         skipFirstRun = false;
         try { localStorage.removeItem(RUN_FLAG); } catch (e) {}
@@ -936,9 +966,11 @@ function triggerLivePreview() {
     if (settings.clearConsole) clearConsole();
     try { localStorage.setItem(RUN_FLAG, '1'); } catch (e) {}
     if (phpInput && phpInput.value.trim()) {
-        const id = ++phpRunId;
-        runPhp(phpInput.value)
-            .then(out => { lastPhpOut = out; }, err => { lastPhpOut = ''; phpConsole('error', (err && err.message) || String(err)); })
+        const code = phpInput.value, id = ++phpRunId;
+        if (code === lastPhpCode && !forcePhp) { liveFrame.srcdoc = buildPreviewSource(); return; }
+        forcePhp = false;
+        runPhp(code)
+            .then(out => { lastPhpOut = out; lastPhpCode = code; }, err => { lastPhpOut = ''; lastPhpCode = null; phpConsole('error', (err && err.message) || String(err)); })
             .then(() => { if (id === phpRunId && liveFrame) liveFrame.srcdoc = buildPreviewSource(); });
     } else {
         phpRunId++; lastPhpOut = '';
@@ -1149,10 +1181,10 @@ async function importSharedFromHash() {
     try {
         const d = await decodeShare(location.hash.slice(3));
         commitSave();
-        const p = makeProject('Shared: ' + (d.n || 'project'), { html: d.h || '', css: d.c || '', js: d.j || '', py: d.p || '', php: d.q || '', res: d.s || null });
+        const p = makeProject('Shared: ' + (d.n || 'project'), { html: d.h || '', css: d.c || '', js: d.j || '', py: d.p || '', php: d.q || '', res: d.s || null, untrusted: true });
         store.projects[p.id] = p;
         openProjectInEditors(p.id);
-        toast('Shared project naye project me khul gaya');
+        toast('Shared project khul gaya - code check karke Run dabao');
         history.replaceState(null, '', location.href.split('#')[0]);
         return true;
     } catch (e) { toast('Share link kharab hai'); return false; }
@@ -1211,7 +1243,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (list) list.addEventListener('click', handleProjectClick);
     const pn = document.getElementById('projectName');
 
-    store = loadStore();
+    store = await loadStoreAsync();
     openProjectInEditors(store.current);
     if (pn) pn.textContent = currentProject().name;
 
@@ -1335,7 +1367,7 @@ window.exportAllSeparateFiles = function() {
 };
 
 /* ==========================================================================
-   13. v6.0 - Working navigation + CodePen-style features
+   13. v6.2 - Working navigation + CodePen-style features
        (menus, layouts, splitter, settings, auto-run, resources, console REPL, format)
    ========================================================================== */
 const SETTINGS_KEY = 'roitx_settings_v1';
@@ -1408,6 +1440,7 @@ window.togglePreviewPanel = function () { setLayout(settings.layout === 'editor'
 
 window.openPreviewNewTab = function () {
     closeMenus();
+    if (holdRun) { toast('Pehle Run dabao (shared code)'); return; }
     try {
         const url = URL.createObjectURL(new Blob([buildPreviewSource()], { type: 'text/html' }));
         if (!window.open(url, '_blank')) toast('Popup blocked - allow popups for this page');
@@ -1657,7 +1690,11 @@ window.formatCode = async function (type) {
     type = (type || '').replace('Input', '');
     const el = ta(type);
     if (!el || !el.value.trim()) return;
-    if (type === 'py' || type === 'php') { toast((type === 'py' ? 'Python' : 'PHP') + ' format abhi supported nahi hai'); return; }
+    if (type === 'py' || type === 'php') {   // safe tidy: trailing spaces + extra blank lines
+        const out = el.value.replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n').replace(/\n*$/, '\n');
+        if (out !== el.value) editText(el, 0, el.value.length, out, 0);
+        toast('Tidied (trailing spaces / blank lines)'); return;
+    }
     toast('Formatting...');
     try {
         await loadPrettier();
@@ -1691,7 +1728,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* ==========================================================================
-   14. v6.1 - Snippets, line operations, clipboard, import, cursor info
+   14. v6.2 - Snippets, line operations, clipboard, import, cursor info
    ========================================================================== */
 const SNIPPETS = {
     js: { log: 'console.log($|);', fn: 'function $|() {\n    \n}', af: 'const $| = () => {\n    \n};', for: 'for (let i = 0; i < $|; i++) {\n    \n}',
@@ -1717,6 +1754,7 @@ function trySnippet(el, type) {
     const v = el.value, s = el.selectionStart, ls = v.lastIndexOf('\n', s - 1) + 1, before = v.slice(ls, s);
     const m = /[\w-]+$/.exec(before);
     if (!m || !Object.prototype.hasOwnProperty.call(tbl, m[0])) return false;
+    if (before.slice(0, before.length - m[0].length).trim() !== '') return false;
     const indent = before.match(/^[ \t]*/)[0];
     let out = tbl[m[0]].split('\n').map((l, i) => i ? indent + l : l).join('\n');
     let cur = out.indexOf('$|'); out = out.replace('$|', '');
@@ -1766,10 +1804,27 @@ window.gotoLine = function () {
 window.clipAction = async function (a) {
     const el = getActiveEditorTextArea(); if (!el) return;
     try {
-        if (a === 'all') { el.focus(); el.select(); }
-        else if (a === 'copy') { await navigator.clipboard.writeText(el.value.slice(el.selectionStart, el.selectionEnd) || el.value); toast('Copied'); }
-        else if (a === 'paste') { const t = await navigator.clipboard.readText(); editText(el, el.selectionStart, el.selectionEnd, t); }
+        if (a === 'all') { el.focus({ preventScroll: true }); el.select(); updateCursorInfo(); return; }
+        if (a === 'paste') { const t = await navigator.clipboard.readText(); if (t) editText(el, el.selectionStart, el.selectionEnd, t); return; }
+        const v = el.value; let s = el.selectionStart, e = el.selectionEnd;
+        if (s === e) { s = v.lastIndexOf('\n', s - 1) + 1; e = v.indexOf('\n', e); e = e < 0 ? v.length : e + 1; }   // selection nahi = current line
+        await navigator.clipboard.writeText(v.slice(s, e));
+        if (a === 'cut') editText(el, s, e, ''); else { el.focus({ preventScroll: true }); toast('Copied'); }
     } catch (err) { toast('Clipboard permission nahi mili'); }
+};
+
+window.moveCursor = function (d) {
+    const el = getActiveEditorTextArea(); if (!el) return;
+    el.focus({ preventScroll: true });
+    const v = el.value; let p = el.selectionStart;
+    const ls = v.lastIndexOf('\n', p - 1) + 1, col = p - ls;
+    if (d === 'left') p = Math.max(0, p - 1);
+    else if (d === 'right') p = Math.min(v.length, p + 1);
+    else if (d === 'home') p = ls;
+    else if (d === 'end') { const i = v.indexOf('\n', p); p = i < 0 ? v.length : i; }
+    else if (d === 'up') { if (ls === 0) p = 0; else { const ps = v.lastIndexOf('\n', ls - 2) + 1; p = Math.min(ps + col, ls - 1); } }
+    else { const le = v.indexOf('\n', p); if (le < 0) p = v.length; else { let ne = v.indexOf('\n', le + 1); if (ne < 0) ne = v.length; p = Math.min(le + 1 + col, ne); } }
+    el.setSelectionRange(p, p); revealCaret(el); updateCursorInfo();
 };
 
 window.importFiles = async function (inp) {
@@ -1788,5 +1843,74 @@ function updateCursorInfo() {
     if (!el || !c) return;
     const b = el.value.slice(0, el.selectionStart).split('\n'), sel = el.selectionEnd - el.selectionStart;
     c.textContent = `Ln ${b.length}, Col ${b[b.length - 1].length + 1}` + (sel ? ` (${sel} sel)` : '');
+    updateDecor();
 }
 
+
+
+/* ==========================================================================
+   15. v6.2 - Backup/Restore, current-line + bracket highlight, Python/PHP tidy
+   ========================================================================== */
+window.backupAll = function () {
+    commitSave(); closeMenus();
+    triggerDownload('roitx-backup-' + new Date().toISOString().slice(0, 10) + '.json', JSON.stringify(store), 'application/json');
+    toast('Backup downloaded (' + Object.keys(store.projects).length + ' projects)');
+};
+window.restoreBackup = async function (inp) {
+    const f = inp.files[0]; if (!f) return;
+    try {
+        const d = JSON.parse(await f.text());
+        if (!d || typeof d.projects !== 'object') throw new Error('bad');
+        commitSave(); let n = 0;
+        Object.values(d.projects).forEach(p => {
+            if (!p || typeof p !== 'object') return;
+            const { id, ...rest } = p;
+            const c = makeProject(String(rest.name || 'Restored'), { ...rest, updated: Date.now(), untrusted: true });
+            store.projects[c.id] = c; n++;
+        });
+        saveStore(); renderProjects(); toast(n + ' project(s) restored - Run dabane par chalenge');
+    } catch (e) { toast('Backup file sahi nahi hai'); }
+    inp.value = ''; closeMenus();
+};
+
+/* ---- Current-line highlight + matching bracket box ---- */
+const _mctx = document.createElement('canvas').getContext('2d');
+function charW(el) {
+    const cs = getComputedStyle(el);
+    _mctx.font = `${cs.fontSize} ${cs.fontFamily}`;
+    return _mctx.measureText('M').width + (parseFloat(cs.letterSpacing) || 0);
+}
+function matchBracket(v, p) {
+    const O = '([{', C = ')]}';
+    let i = p - 1, ch = v[i];
+    if (!ch || !(O + C).includes(ch)) { i = p; ch = v[i]; if (!ch || !(O + C).includes(ch)) return null; }
+    const open = O.includes(ch), pair = open ? C[O.indexOf(ch)] : O[C.indexOf(ch)], d = open ? 1 : -1;
+    let depth = 0;
+    for (let j = i, n = 0; j >= 0 && j < v.length && n < 20000; j += d, n++) {
+        if (v[j] === ch) depth++;
+        else if (v[j] === pair && --depth === 0) return { a: i, b: j };
+    }
+    return null;
+}
+function updateDecor() {
+    const el = getActiveEditorTextArea(); if (!el) return;
+    const wrap = el.parentElement;
+    let cl = wrap.querySelector('.cur-line');
+    if (!cl) {
+        cl = document.createElement('div'); cl.className = 'cur-line'; wrap.insertBefore(cl, wrap.firstChild);
+        for (let i = 0; i < 2; i++) { const b = document.createElement('div'); b.className = 'br-box'; wrap.insertBefore(b, wrap.firstChild); }
+    }
+    const LH = codeLH(el), v = el.value, p = el.selectionStart, line = v.slice(0, p).split('\n').length - 1;
+    cl.style.top = (16 + line * LH - el.scrollTop) + 'px'; cl.style.height = LH + 'px';
+    cl.style.display = p === el.selectionEnd ? 'block' : 'none';
+    const boxes = wrap.querySelectorAll('.br-box');
+    boxes.forEach(b => { b.style.display = 'none'; });
+    if (p !== el.selectionEnd) return;
+    const m = matchBracket(v, p); if (!m) return;
+    const W = charW(el);
+    [m.a, m.b].forEach((idx, i) => {
+        const ls = v.lastIndexOf('\n', idx - 1) + 1, ln = v.slice(0, idx).split('\n').length - 1;
+        boxes[i].style.cssText = `display:block;top:${16 + ln * LH - el.scrollTop}px;left:${16 + (idx - ls) * W - el.scrollLeft}px;width:${W}px;height:${LH}px`;
+    });
+}
+document.addEventListener('DOMContentLoaded', () => { LANGS.forEach(l => ta(l).addEventListener('scroll', updateDecor)); });

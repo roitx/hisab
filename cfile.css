@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Roitx Studio IDE v6.0 - Pro Engine Stylesheet (cfile.css) [Complete]
+   Roitx Studio IDE v6.2 - Pro Engine Stylesheet (cfile.css) [Complete]
    ========================================================================== */
 
 :root {
@@ -775,7 +775,7 @@ textarea, .highlight-layer { line-height: var(--code-lh) !important; }
 
 
 /* ==========================================================================
-   v6.0 - Working navigation + CodePen-style features
+   v6.2 - Working navigation + CodePen-style features
    ========================================================================== */
 
 /* ---- Dropdown menus (Export / View) ---- */
@@ -877,3 +877,13 @@ textarea.set-input:focus { border-color: var(--accent-color) !important; }
     .project-chip i { display: none; }
     .header-actions { gap: 3px; }
 }
+
+
+/* v6.2 - toolbar swipe + separators + cursor info */
+.shortcut-bar { touch-action: pan-x; -webkit-overflow-scrolling: touch; }
+.sb-sep { width: 1px; background: var(--border-color); flex-shrink: 0; margin: 2px 2px; }
+#cursorInfo { margin-left: auto; margin-right: 14px; }
+
+/* v6.2 - current line + bracket match */
+.cur-line { position: absolute; left: 0; right: 0; background: rgba(127, 127, 127, 0.13); pointer-events: none; z-index: 0; }
+.br-box { position: absolute; display: none; pointer-events: none; z-index: 0; border: 1px solid var(--accent-color); border-radius: 2px; background: rgba(0, 240, 255, 0.12); }
