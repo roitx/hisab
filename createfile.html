@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
-    <title>Roitx Studio IDE v6.2</title>
+    <title>Roitx Studio IDE v6.4</title>
     <!-- Stylesheet -->
     <link rel="stylesheet" href="cfile.css">
     <!-- FontAwesome for Icons -->
@@ -73,6 +73,7 @@
                 <button class="tab-btn" id="tabBtnJs" onclick="switchEditorTab('js')">JS</button>
                 <button class="tab-btn" id="tabBtnPy" onclick="switchEditorTab('py')">Python</button>
                 <button class="tab-btn" id="tabBtnPhp" onclick="switchEditorTab('php')">PHP</button>
+                <button class="tab-btn" id="tabBtnX" onclick="switchEditorTab('x')" title="Extra CSS / JS files">Files</button>
             </div>
 
             <div class="editors-container">
@@ -137,11 +138,26 @@
                 </div>
 
 
+                <!-- Extra Files Panel (.css / .js) -->
+                <div class="editor-panel" id="xPanel">
+                    <div class="panel-header">
+                        <span class="panel-title"><select id="xSelect" class="set-select" onchange="xSwitch(this.value)"></select></span>
+                        <span class="panel-actions"><button class="mini-btn" onclick="xNew()">+ New</button><button class="mini-btn" onclick="xRename()">Rename</button><button class="mini-btn" onclick="xDelete()">Delete</button><button class="mini-btn" onclick="formatCode('x')">Format</button></span>
+                    </div>
+                    <div class="editor-body">
+                        <div class="line-numbers" id="xLineNums">1</div>
+                        <div class="code-area-wrapper">
+                            <textarea id="xInput" spellcheck="false"></textarea>
+                            <pre class="highlight-layer"><code id="xHighlight"></code></pre>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- PHP Panel (runs in browser via php-wasm) -->
                 <div class="editor-panel" id="phpPanel">
                     <div class="panel-header">
                         <span class="panel-title"><span class="file-icon php-icon">PHP</span> PHP</span>
-                        <span class="panel-actions"><button class="mini-btn" onclick="toast('PHP output HTML tab ke &lt;!--php--&gt; marker ki jagah dikhta hai (marker na ho to end me)')" title="How it works">?</button><button class="mini-btn" onclick="formatCode('php')">Tidy</button><button class="mini-btn" onclick="clearEditor('php')">Clear</button></span>
+                        <span class="panel-actions"><button class="mini-btn" onclick="toast('PHP output HTML tab ke &lt;!--php--&gt; marker ki jagah dikhta hai (marker na ho to end me)')" title="How it works">?</button><button class="mini-btn" onclick="formatCode('php')">Format</button><button class="mini-btn" onclick="clearEditor('php')">Clear</button></span>
                     </div>
                     <div class="editor-body">
                         <div class="line-numbers" id="phpLineNums">1</div>
@@ -353,3 +369,4 @@
     <script src="cfile.js"></script>
 </body>
 </html>
+ 

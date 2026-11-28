@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Roitx Studio IDE v6.2 - Pro Engine Stylesheet (cfile.css) [Complete]
+   Roitx Studio IDE v6.4 - Pro Engine Stylesheet (cfile.css) [Complete]
    ========================================================================== */
 
 :root {
@@ -775,7 +775,7 @@ textarea, .highlight-layer { line-height: var(--code-lh) !important; }
 
 
 /* ==========================================================================
-   v6.2 - Working navigation + CodePen-style features
+   v6.4 - Working navigation + CodePen-style features
    ========================================================================== */
 
 /* ---- Dropdown menus (Export / View) ---- */
@@ -879,11 +879,17 @@ textarea.set-input:focus { border-color: var(--accent-color) !important; }
 }
 
 
-/* v6.2 - toolbar swipe + separators + cursor info */
+/* v6.4 - toolbar swipe + separators + cursor info */
 .shortcut-bar { touch-action: pan-x; -webkit-overflow-scrolling: touch; }
 .sb-sep { width: 1px; background: var(--border-color); flex-shrink: 0; margin: 2px 2px; }
 #cursorInfo { margin-left: auto; margin-right: 14px; }
 
-/* v6.2 - current line + bracket match */
+/* v6.4 - current line + bracket match */
 .cur-line { position: absolute; left: 0; right: 0; background: rgba(127, 127, 127, 0.13); pointer-events: none; z-index: 0; }
 .br-box { position: absolute; display: none; pointer-events: none; z-index: 0; border: 1px solid var(--accent-color); border-radius: 2px; background: rgba(0, 240, 255, 0.12); }
+
+/* v6.4 - autocomplete popup + files select */
+.ac-box { position: absolute; z-index: 6; min-width: 140px; max-width: 80%; background: var(--bg-panel); border: 1px solid var(--accent-color); border-radius: 6px; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45); overflow: hidden; }
+.ac-item { display: block; width: 100%; text-align: left; background: transparent; border: none; color: var(--text-main); font-family: var(--font-code); font-size: 13px; padding: 7px 10px; cursor: pointer; }
+.ac-item.sel, .ac-item:hover { background: var(--accent-color); color: var(--bg-main); }
+#xSelect { max-width: 160px; }

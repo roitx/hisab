@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Roitx Studio IDE v6.2 - Pro Engine (HTML, CSS, JS & Python Support) [Complete]
+   Roitx Studio IDE v6.4 - Pro Engine (HTML, CSS, JS & Python Support) [Complete]
    ========================================================================== */
 
 const STORAGE_KEY_HTML = "roitx_v5_html";
@@ -85,7 +85,7 @@ function highlightPHP(code) {
     return tokenize(code, re, ['hl-tag', 'hl-comment', 'hl-string', 'hl-attr-name', 'hl-keyword', 'hl-number', 'hl-function']);
 }
 
-const LANGS = ['html', 'css', 'js', 'py', 'php'];
+const LANGS = ['html', 'css', 'js', 'py', 'php', 'x'];
 const INDENT = '    ';
 const ta = (l) => document.getElementById(l + 'Input');
 let suspendSave = false, saveTimer = null;
@@ -102,7 +102,7 @@ window.toast = function(msg) {
 // Sirf screen par dikhne wali lines (+ buffer) highlight hoti hain -> badi file par bhi lag nahi
 const WIN_BUF = 40;
 const winState = {};
-const PARSERS = { html: highlightHTML, css: highlightCSS, js: highlightJS, py: highlightPY, php: highlightPHP };
+const PARSERS = { html: highlightHTML, css: highlightCSS, js: highlightJS, py: highlightPY, php: highlightPHP, x: (c) => (xLang() === 'css' ? highlightCSS : highlightJS)(c) };
 
 function codeLH(el) { return parseFloat(getComputedStyle(el).lineHeight) || 22; }
 
@@ -232,6 +232,7 @@ function commitSave() {
     const p = currentProject();
     if (!p) return false;
     LANGS.forEach(l => { p[l] = ta(l).value; });
+    delete p.x; xFlush(); p.xi = xIdx;
     p.updated = Date.now();
     const ok = saveStore();
     if (ok && autoSaveStatus) autoSaveStatus.innerText = 'Auto-Saved';
@@ -246,6 +247,7 @@ function openProjectInEditors(id) {
     holdRun = !!p.untrusted;
     suspendSave = true;
     LANGS.forEach(l => { ta(l).value = p[l] || ''; updatePanel(l); histReset(l); });
+    xLoad();
     suspendSave = false;
     saveStore();
     const nameEl = document.getElementById('projectName');
@@ -306,7 +308,7 @@ function handleProjectClick(e) {
         }
     } else if (act === 'dup') {
         commitSave();
-        const c = makeProject(p.name + ' (copy)', { html: p.html, css: p.css, js: p.js, py: p.py, php: p.php, res: p.res ? JSON.parse(JSON.stringify(p.res)) : null });
+        const c = makeProject(p.name + ' (copy)', { html: p.html, css: p.css, js: p.js, py: p.py, php: p.php, files: p.files ? JSON.parse(JSON.stringify(p.files)) : [], res: p.res ? JSON.parse(JSON.stringify(p.res)) : null });
         store.projects[c.id] = c; saveStore(); renderProjects();
     } else if (act === 'del') {
         if (!confirm(`"${p.name}" delete kar du? Ye wapas nahi aayega.`)) return;
@@ -474,7 +476,7 @@ function setupSmartKeyboard(input, type) {
         editText(input, s, en, ch + close, s + 1);
     });
 
-    input.addEventListener('input', () => { updatePanel(type); histPush(type); updateCursorInfo(); });
+    input.addEventListener('input', () => { updatePanel(type); histPush(type); updateCursorInfo(); acUpdate(type); });
     ['keyup', 'click', 'focus'].forEach(ev => input.addEventListener(ev, updateCursorInfo));
 }
 
@@ -780,8 +782,9 @@ window.insertAtCursor = function(textareaId, textToInsert) {
 /* ---- PHP in the browser (php-wasm / WebAssembly) ----
    Runs fully client-side, so it works on GitHub Pages (no server needed).
    Output of the PHP tab is placed where <!--php--> is in the HTML tab (or appended at the end). */
-const PHP_CDN = 'https://cdn.jsdelivr.net/npm/php-wasm/PhpWeb.mjs';
-let lastPhpCode = null, forcePhp = false;
+const PHP_CDN = 'https://cdn.jsdelivr.net/npm/php-wasm@0.1.0/PhpWeb.mjs';
+let lastPhpCode = null, forcePhp = false, phpFmtLoad = null;
+const PHP_FMT = 'https://cdn.jsdelivr.net/npm/@prettier/plugin-php@0.19/standalone.js';
 let phpEngine = null, phpLoading = null, phpChain = Promise.resolve(), phpRunId = 0, lastPhpOut = '';
 const phpBuf = { out: '', err: '' };
 const phpText = (d) => Array.isArray(d) ? d.join('') : String(d == null ? '' : d);
@@ -820,6 +823,34 @@ function getPhp() {
     return phpLoading;
 }
 
+// Worker me PHP: infinite loop par page freeze nahi hota. Worker na chale to main-thread engine par fallback.
+let phpWorker = null, phpWorkerBad = false, phpWarm = false, phpMsgId = 0;
+const PHP_WORKER_SRC = "import { PhpWeb } from '" + PHP_CDN + "';\n" +
+    "const php = new PhpWeb(); let out = '', err = '';\n" +
+    "const txt = (d) => Array.isArray(d) ? d.join('') : String(d == null ? '' : d);\n" +
+    "php.addEventListener('output', (e) => { out += txt(e.detail); });\n" +
+    "php.addEventListener('error', (e) => { err += txt(e.detail); });\n" +
+    "self.onmessage = async (m) => { out = ''; err = '';\n" +
+    "  try { await php.run(m.data.code); } catch (e) { err += String((e && e.message) || e); }\n" +
+    "  self.postMessage({ id: m.data.id, out, err }); };";
+function phpWorkerRun(code) {
+    return new Promise((resolve, reject) => {
+        if (!phpWorker) {
+            toast('Loading PHP engine (first time only)...');
+            try { phpWorker = new Worker(URL.createObjectURL(new Blob([PHP_WORKER_SRC], { type: 'text/javascript' })), { type: 'module' }); phpWarm = false; }
+            catch (e) { reject(new Error('noworker')); return; }
+        }
+        const w = phpWorker, id = ++phpMsgId;
+        const kill = () => { w.terminate(); if (phpWorker === w) phpWorker = null; };
+        const done = () => { clearTimeout(t); w.removeEventListener('message', onMsg); w.removeEventListener('error', onErr); };
+        const t = setTimeout(() => { done(); kill(); reject(new Error('timeout')); }, phpWarm ? 5000 : 40000);
+        const onMsg = (e) => { if (!e.data || e.data.id !== id) return; done(); phpWarm = true; resolve(e.data); };
+        const onErr = () => { done(); kill(); reject(new Error('workerfail')); };
+        w.addEventListener('message', onMsg); w.addEventListener('error', onErr);
+        w.postMessage({ id, code });
+    });
+}
+
 // Plain-text output (no HTML tags) ko <pre> me dikhao taaki newlines na kharab hon
 function phpWrap(out) {
     if (!out || /<[a-z!\/]/i.test(out) || out.indexOf('\n') < 0) return out;
@@ -828,10 +859,21 @@ function phpWrap(out) {
 
 function runPhp(code) {
     const job = phpChain.then(async () => {
-        const php = await getPhp();
-        phpBuf.out = ''; phpBuf.err = '';
-        try { await php.run(code); } catch (e) { phpBuf.err += String((e && e.message) || e); }
-        const out = phpBuf.out, err = phpBuf.err;
+        let res = null;
+        if (!phpWorkerBad) {
+            try { res = await phpWorkerRun(code); }
+            catch (e) {
+                if (e.message === 'timeout') { phpConsole('error', 'PHP 5 sec se zyada chala - roka gaya (infinite loop?)'); return ''; }
+                phpWorkerBad = true;   // worker support nahi -> main thread
+            }
+        }
+        if (!res) {
+            const php = await getPhp();
+            phpBuf.out = ''; phpBuf.err = '';
+            try { await php.run(code); } catch (e) { phpBuf.err += String((e && e.message) || e); }
+            res = { out: phpBuf.out, err: phpBuf.err };
+        }
+        const out = res.out, err = res.err;
         err.split('\n').filter(l => l.trim()).forEach(l => {
             const m = /on line (\d+)/.exec(l);
             phpConsole('error', 'PHP: ' + l.trim(), m ? parseInt(m[1], 10) : 0);
@@ -941,7 +983,7 @@ function buildPreviewSource() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.11.1/brython_stdlib.js"><\/script>` : ''}
 </head>
 <body${py ? ' onload="brython()"' : ''}>
-${withPhp(htmlInput.value)}
+${inlineExtras(withPhp(htmlInput.value))}
 <script>(${iframeBootstrap.toString()})(${JSON.stringify({ off, jsLines })});<\/script>${resScripts()}
 <script>`;
     // User JS ki pehli line se pehle kitni lines hain -> error ka line number sahi nikalta hai
@@ -1131,6 +1173,7 @@ ${pyInput.value}
     ];
     if (hasPy) files.push({ name: 'main.py', data: pyInput.value });
     if (phpInput.value.trim()) files.push({ name: 'main.php', data: phpInput.value });
+    filesNow().forEach(f => files.push({ name: f.name, data: f.code }));
     triggerDownload(slug + '.zip', makeZip(files), 'application/zip');
     const m = document.getElementById('exportMenu'); if (m) m.classList.add('hidden');
     toast('ZIP downloaded');
@@ -1154,7 +1197,7 @@ async function pipeBytes(bytes, stream) {
 
 async function encodeShare() {
     const bytes = new TextEncoder().encode(JSON.stringify({
-        n: currentProject().name, h: htmlInput.value, c: cssInput.value, j: jsInput.value, p: pyInput.value, q: phpInput.value, s: projRes()
+        n: currentProject().name, h: htmlInput.value, c: cssInput.value, j: jsInput.value, p: pyInput.value, q: phpInput.value, f: filesNow(), s: projRes()
     }));
     if (window.CompressionStream) return 'z.' + toB64Url(await pipeBytes(bytes, new CompressionStream('deflate-raw')));
     return 'r.' + toB64Url(bytes);
@@ -1181,7 +1224,7 @@ async function importSharedFromHash() {
     try {
         const d = await decodeShare(location.hash.slice(3));
         commitSave();
-        const p = makeProject('Shared: ' + (d.n || 'project'), { html: d.h || '', css: d.c || '', js: d.j || '', py: d.p || '', php: d.q || '', res: d.s || null, untrusted: true });
+        const p = makeProject('Shared: ' + (d.n || 'project'), { html: d.h || '', css: d.c || '', js: d.j || '', py: d.p || '', php: d.q || '', files: Array.isArray(d.f) ? d.f : [], res: d.s || null, untrusted: true });
         store.projects[p.id] = p;
         openProjectInEditors(p.id);
         toast('Shared project khul gaya - code check karke Run dabao');
@@ -1285,6 +1328,8 @@ window.saveCurrentActiveFile = function() {
     } else if (document.getElementById('pyPanel').classList.contains('active')) {
         content = pyInput ? pyInput.value : '';
         defaultName = 'main.py';
+    } else if (document.getElementById('xPanel').classList.contains('active')) {
+        content = ta('x').value; defaultName = curX() ? curX().name : 'file.txt';
     } else if (document.getElementById('phpPanel').classList.contains('active')) {
         content = phpInput ? phpInput.value : '';
         defaultName = 'index.php';
@@ -1324,7 +1369,7 @@ ${cssInput ? cssInput.value : ''}
 </head>
 <body onload="brython()">
 
-${htmlInput ? withPhp(htmlInput.value) : ''}
+${htmlInput ? inlineExtras(withPhp(htmlInput.value)) : ''}
 ${resScripts()}
     <script>
 ${jsInput ? jsInput.value : ''}
@@ -1367,7 +1412,7 @@ window.exportAllSeparateFiles = function() {
 };
 
 /* ==========================================================================
-   13. v6.2 - Working navigation + CodePen-style features
+   13. v6.4 - Working navigation + CodePen-style features
        (menus, layouts, splitter, settings, auto-run, resources, console REPL, format)
    ========================================================================== */
 const SETTINGS_KEY = 'roitx_settings_v1';
@@ -1690,15 +1735,27 @@ window.formatCode = async function (type) {
     type = (type || '').replace('Input', '');
     const el = ta(type);
     if (!el || !el.value.trim()) return;
+    if (type === 'php') {
+        try {
+            toast('Formatting PHP...');
+            await loadPrettier();
+            phpFmtLoad = phpFmtLoad || loadScriptTag(PHP_FMT).catch(e => { phpFmtLoad = null; throw e; });
+            await phpFmtLoad;
+            if (!window.prettierPlugins || !prettierPlugins.php) throw new Error('plugin load nahi hua');
+            const out = (await prettier.format(el.value, { parser: 'php', plugins: prettierPlugins, tabWidth: 4, printWidth: 100 })).replace(/\n*$/, '\n');
+            if (out !== el.value) editText(el, 0, el.value.length, out, 0);
+            toast('PHP formatted'); return;
+        } catch (e) { toast('PHP formatter nahi chala (' + String((e && e.message) || e).split('\n')[0].slice(0, 45) + ') - Tidy kiya'); }
+    }
     if (type === 'py' || type === 'php') {   // safe tidy: trailing spaces + extra blank lines
-        const out = el.value.replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n').replace(/\n*$/, '\n');
+        const out = (type === 'py' ? el.value.replace(/^\t+/gm, (m) => '    '.repeat(m.length)) : el.value).replace(/[ \t]+$/gm, '').replace(/\n{3,}/g, '\n\n').replace(/\n*$/, '\n');
         if (out !== el.value) editText(el, 0, el.value.length, out, 0);
         toast('Tidied (trailing spaces / blank lines)'); return;
     }
     toast('Formatting...');
     try {
         await loadPrettier();
-        const out = await prettier.format(el.value, { parser: { html: 'html', css: 'css', js: 'babel' }[type], plugins: prettierPlugins, tabWidth: 4, printWidth: 100 });
+        const out = await prettier.format(el.value, { parser: { html: 'html', css: 'css', js: 'babel' }[type === 'x' ? xLang() : type], plugins: prettierPlugins, tabWidth: 4, printWidth: 100 });
         const clean = out.replace(/\n$/, '');
         if (clean !== el.value) editText(el, 0, el.value.length, clean, 0);
         toast('Formatted');
@@ -1728,7 +1785,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* ==========================================================================
-   14. v6.2 - Snippets, line operations, clipboard, import, cursor info
+   14. v6.4 - Snippets, line operations, clipboard, import, cursor info
    ========================================================================== */
 const SNIPPETS = {
     js: { log: 'console.log($|);', fn: 'function $|() {\n    \n}', af: 'const $| = () => {\n    \n};', for: 'for (let i = 0; i < $|; i++) {\n    \n}',
@@ -1750,7 +1807,7 @@ const SNIPPETS = {
         try: 'try {\n    $|\n} catch (Exception $e) {\n    echo $e->getMessage();\n}' }
 };
 function trySnippet(el, type) {
-    const tbl = SNIPPETS[type]; if (!tbl) return false;
+    const tbl = SNIPPETS[type === 'x' ? xLang() : type]; if (!tbl) return false;
     const v = el.value, s = el.selectionStart, ls = v.lastIndexOf('\n', s - 1) + 1, before = v.slice(ls, s);
     const m = /[\w-]+$/.exec(before);
     if (!m || !Object.prototype.hasOwnProperty.call(tbl, m[0])) return false;
@@ -1766,7 +1823,7 @@ function trySnippet(el, type) {
 
 window.lineOp = function (op) {
     const el = getActiveEditorTextArea(); if (!el) return;
-    const type = typeOf(el), v = el.value, s = el.selectionStart, e = el.selectionEnd;
+    const type = typeOf(el) === 'x' ? xLang() : typeOf(el), v = el.value, s = el.selectionStart, e = el.selectionEnd;
     const ls = v.lastIndexOf('\n', s - 1) + 1;
     let le = v.indexOf('\n', e > s && v[e - 1] === '\n' ? e - 1 : e); if (le < 0) le = v.length;
     const block = v.slice(ls, le), lines = block.split('\n');
@@ -1849,7 +1906,7 @@ function updateCursorInfo() {
 
 
 /* ==========================================================================
-   15. v6.2 - Backup/Restore, current-line + bracket highlight, Python/PHP tidy
+   15. v6.4 - Backup/Restore, current-line + bracket highlight, Python/PHP tidy
    ========================================================================== */
 window.backupAll = function () {
     commitSave(); closeMenus();
@@ -1914,3 +1971,123 @@ function updateDecor() {
     });
 }
 document.addEventListener('DOMContentLoaded', () => { LANGS.forEach(l => ta(l).addEventListener('scroll', updateDecor)); });
+
+
+/* ==========================================================================
+   16. v6.4 - Multi-file (extra .css/.js files) + Autocomplete popup
+   ========================================================================== */
+let xIdx = 0;
+const xFiles = () => { const p = currentProject(); return p.files || (p.files = []); };
+const curX = () => xFiles()[xIdx];
+function xLang() { const f = store && curX(); return f ? f.lang : 'js'; }
+function xFlush() { const f = store && curX(); if (f && ta('x') && !ta('x').disabled) f.code = ta('x').value; }
+function filesNow() { xFlush(); return xFiles().map(f => ({ name: f.name, lang: f.lang, code: f.code })); }
+const fileCode = (f) => (f === curX() ? ta('x').value : f.code);
+function xRefresh() {
+    const sel = $id('xSelect'), fs = xFiles();
+    sel.innerHTML = fs.length ? fs.map((f, i) => `<option value="${i}">${escapeHTML(f.name)}</option>`).join('') : '<option>(no files - tap + New)</option>';
+    sel.value = String(xIdx);
+    ta('x').disabled = !fs.length;
+    const b = $id('tabBtnX'); if (b) b.textContent = 'Files' + (fs.length ? ' (' + fs.length + ')' : '');
+}
+function xLoad() {
+    const fs = xFiles();
+    xIdx = Math.max(0, Math.min(currentProject().xi || 0, fs.length - 1));
+    ta('x').disabled = false;
+    ta('x').value = fs.length ? fs[xIdx].code : '';
+    histReset('x'); updatePanel('x'); xRefresh();
+}
+window.xSwitch = function (i) { xFlush(); currentProject().xi = +i || 0; xLoad(); };
+const xNameOK = (n, skip) => !n.includes('/') && !xFiles().some(f => f !== skip && f.name === n);
+window.xNew = function () {
+    const n = (prompt('File name (.css ya .js):', 'style.css') || '').trim(); if (!n) return;
+    const m = /\.(css|js)$/i.exec(n);
+    if (!m) { toast('Sirf .css ya .js files'); return; }
+    if (!xNameOK(n)) { toast('Naam galat ya pehle se hai'); return; }
+    xFlush(); const lang = m[1].toLowerCase();
+    xFiles().push({ name: n, lang, code: '' }); currentProject().xi = xFiles().length - 1; xLoad(); scheduleSave();
+    toast(lang === 'css' ? 'HTML me likho: <link rel="stylesheet" href="' + n + '">' : 'HTML me likho: <script src="' + n + '"></script>');
+};
+window.xRename = function () {
+    const f = curX(); if (!f) return;
+    const n = (prompt('Naya naam:', f.name) || '').trim();
+    if (!n || n === f.name) return;
+    if (!n.toLowerCase().endsWith('.' + f.lang)) { toast('Extension .' + f.lang + ' hi rakho'); return; }
+    if (!xNameOK(n, f)) { toast('Naam galat ya pehle se hai'); return; }
+    f.name = n; xRefresh(); scheduleSave();
+};
+window.xDelete = function () {
+    const f = curX(); if (!f || !confirm('"' + f.name + '" delete kar du?')) return;
+    xFiles().splice(xIdx, 1); currentProject().xi = Math.max(0, xIdx - 1); xLoad(); scheduleSave(); scheduleAutoRun();
+};
+// HTML me <link href="name.css"> / <script src="name.js"></script> ko file ke code se badal do (preview + single-page export)
+function inlineExtras(h) {
+    if (!store) return h;
+    xFlush();
+    xFiles().forEach(f => {
+        const n = f.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), code = fileCode(f);
+        const re = f.lang === 'css' ? new RegExp(`<link[^>]*href=["'](?:\\./)?${n}["'][^>]*>`, 'gi') : new RegExp(`<script[^>]*src=["'](?:\\./)?${n}["'][^>]*>\\s*</script>`, 'gi');
+        h = h.replace(re, () => f.lang === 'css' ? `<style>/* ${f.name} */\n${code}</style>` : `<script>\n${code.replace(/<\/script/gi, '<\\/script')}</script>`);
+    });
+    return h;
+}
+
+/* ---- Autocomplete popup (Arrow keys + Enter/Tab ya tap) ---- */
+const AC = {
+    html: 'div span p a ul ol li h1 h2 h3 h4 img input button form label select option textarea section article header footer nav main aside table thead tbody tr td th video audio canvas iframe script style link meta title class href src alt id placeholder type value onclick name target rel'.split(' '),
+    css: 'display flex grid block none inline-block position absolute relative fixed sticky justify-content align-items flex-direction flex-wrap gap margin padding border border-radius background background-color color font-size font-weight font-family width height min-height max-width overflow transition transform opacity box-shadow cursor z-index text-align line-height grid-template-columns space-between center column row pointer'.split(' '),
+    js: 'function const let return console.log document.querySelector document.querySelectorAll document.getElementById addEventListener setTimeout setInterval forEach map filter reduce JSON.stringify JSON.parse fetch async await Promise localStorage Math.random Math.floor Array.isArray innerHTML textContent classList'.split(' '),
+    py: 'def class import from return print range len input self lambda True False None elif else except finally with raise pass while for in not and or isinstance enumerate'.split(' '),
+    php: 'echo function foreach array isset empty return class public private protected static namespace require include implode explode count strlen str_replace var_dump print_r json_encode date'.split(' ')
+};
+const acState = { items: [], sel: -1, el: null, tok: '' };
+function acHide() { const b = $id('acBox'); if (b) b.classList.add('hidden'); acState.items = []; acState.sel = -1; }
+function acMark() { document.querySelectorAll('#acBox .ac-item').forEach((b, i) => b.classList.toggle('sel', i === acState.sel)); }
+function acAccept(i) {
+    const w = acState.items[i], el = acState.el; if (w === undefined || !el) return;
+    const s = el.selectionStart; acHide();
+    editText(el, s - acState.tok.length, s, w);
+}
+function acUpdate(type) {
+    const el = ta(type), v = el.value, p = el.selectionStart;
+    if (!el || p !== el.selectionEnd || /[\w$]/.test(v[p] || '')) return acHide();
+    const ls = v.lastIndexOf('\n', p - 1) + 1, m = /[\w$.-]+$/.exec(v.slice(ls, p));
+    if (!m || m[0].length < 3) return acHide();
+    const tok = m[0], lang = type === 'x' ? xLang() : type, seen = new Set();
+    const pool = (AC[lang] || []).concat(v.length < 300000 ? (v.match(/[A-Za-z_$][\w$-]{2,}/g) || []) : []);
+    const items = pool.filter(w => w !== tok && w.startsWith(tok) && !seen.has(w) && seen.add(w)).slice(0, 6);
+    if (!items.length) return acHide();
+    Object.assign(acState, { items, sel: -1, el, tok });
+    const wrap = el.parentElement;
+    let box = $id('acBox');
+    if (!box) {
+        box = document.createElement('div'); box.id = 'acBox'; box.className = 'ac-box hidden';
+        box.addEventListener('mousedown', (e) => e.preventDefault());
+        box.addEventListener('click', (e) => { const it = e.target.closest('.ac-item'); if (it) acAccept(+it.dataset.i); });
+    }
+    if (box.parentElement !== wrap) wrap.appendChild(box);
+    box.innerHTML = items.map((w, i) => `<button type="button" class="ac-item" data-i="${i}">${escapeHTML(w)}</button>`).join('');
+    box.classList.remove('hidden');
+    const LH = codeLH(el), W = charW(el), line = v.slice(0, p).split('\n').length - 1;
+    let top = 16 + (line + 1) * LH - el.scrollTop;
+    if (top + box.offsetHeight > el.clientHeight) top -= LH + box.offsetHeight;
+    box.style.top = Math.max(0, top) + 'px';
+    box.style.left = Math.max(0, Math.min(16 + (p - ls - tok.length) * W - el.scrollLeft, el.clientWidth - box.offsetWidth)) + 'px';
+}
+document.addEventListener('DOMContentLoaded', () => {
+    LANGS.forEach(l => {
+        const el = ta(l);
+        el.addEventListener('blur', () => setTimeout(acHide, 150));
+        el.addEventListener('scroll', acHide);
+        el.addEventListener('keydown', (e) => {   // pehle chalta hai (capture), isliye Tab/Enter/arrows yahin handle
+            if (!acState.items.length) return;
+            const k = e.key;
+            if (k === 'ArrowDown' || k === 'ArrowUp') {
+                e.preventDefault(); e.stopImmediatePropagation();
+                const n = acState.items.length; acState.sel = (acState.sel + (k === 'ArrowDown' ? 1 : -1) + n) % n; acMark();
+            } else if ((k === 'Enter' || k === 'Tab') && acState.sel >= 0) {
+                e.preventDefault(); e.stopImmediatePropagation(); acAccept(acState.sel);
+            } else if (k === 'Escape' || k === 'Enter') acHide();
+        }, true);
+    });
+});
